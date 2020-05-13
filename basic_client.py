@@ -3,6 +3,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
 
 import socket 
 
@@ -23,18 +25,39 @@ public_key = private_key.public_key()
 # public key bytes to send
 public_key_bytes = public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
 
-
+# send public key
 s.sendto(public_key_bytes, (HOST, 1337))
 
-data = s.recv(1024)
 # get server's public key 
+data = s.recv(1024)
 
+# load server's public key
+server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
 
+# TODO
 # perform exchange
+shared_key = private_key.exchange(ec.ECDH(), server_public_key)
 
-
+# TODO
 # compare shared keys
+derived_key = HKDF(
+    algorithm=hashes.SHA256(),
+    length=32,
+    salt=None,
+    info=b'handshake data',
+    backend=default_backend()
+).derive(shared_key)
 
-print(data)
-print(public_key_bytes)
+# encrypt/decrypt
+aesgcm = AESGCM(derived_key)
+mess = b'witaj serwerze!'
+aad = b"authenticated but unencrypted data"
 
+data = s.recv(1024)
+
+nonce = os.urandom(12)
+ct = aesgcm.encrypt(nonce, mess, None)
+
+s.sendto(nonce + ct, (HOST, 1337))
+
+print(aesgcm.decrypt(data[:12], data[12:], None))

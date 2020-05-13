@@ -1,0 +1,44 @@
+
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|A7|A6|A5|A4|A3|A2|A1|A0|C7|C6|C5|C4|C3|C2|C1|C0|
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|					Name I						|
++-----------------------------------------------+
+|					Name II						|
++-----------------------------------------------+
+						.
+						.
+						.
++-----------------------------------------------+
+|				   Name XVI						|
++-----------------------------------------------+
+|				 	 Dane						|
+|				  Komunikaty					|
++-----------------------------------------------+
+
+
+I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
+	1. Piersze bajt - sprawy administracyjne:
+		A7 -> ACK
+		A6 ->
+		A5 -> 
+		A4 -> 
+		A3 -> 
+		A2 -> 
+		A1 -> 
+		A0 -> 
+	2. Drugi bajt - sprawy komunikacyjne:
+		C7 -> ACK
+		C6 ->
+		C5 -> 
+		C4 -> 
+		C3 -> 
+		C2 -> 
+		C1 -> 
+		C0 ->
+
+II 32 bajty na nazwe użytkownika.
+
+
+III dane i komunikaty (do 990 bajtow)
+

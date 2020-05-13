@@ -1,0 +1,35 @@
+ciągle nasłuchiwanie na połączenie.
+
+odebranie połączenie skutkuje uruchonienie nowego wątku, który odeśle ACK do serwera, a następnie wykona jego żądanie. Następnie poczeka na ACK i zakończy wątek.
+
+serwer bedzie przechowywał dane uzytkowników zalogowanych  w formie obiektow, gdzie bedą się znajdowały dane takei jak adres IP, ID w bazie itp.
+
+serwer po uruchomieniu będzie oczekiwał na logowanie uzytkownika (I), rejestracje (II), zmiana hasła (III), chęć połączenia z innym użytkownikiem (IV):
+	I logowanie:
+		1. uzytkownik łączy się z serwerem i stalają klucz sesji
+		2. uzytkownik wysyła komunikat o checi logowania do systemu oraz podaje niezbedne dane (login/ID, skrot hasla)
+		3. server weryfikuje dane i odsyła stosowna wiadomość
+		4. jesli haslo było niepoprawne, wróc do punku 2.
+		5. przesłanie danych użytkownika.
+		6. koniec sesji.
+	II rejestracja:
+		1. uzytkownik łączy się z serwerem i stalają klucz sesji
+		2. uzytkowni wysyła komunikat o checi rejestracji do systemu i podaje niezbedne dane (login, skrot hasla oraz adres email)
+		3. serwer zapisuje dane do bazy.
+		4. jesli dane są poprawne (login jest unikatowy) serwer odsyła ACK i patrz punkt 5, jesli nie wroc do punkt 2.
+		5. koniec sesji.
+	III zmiana hasla:
+		1. uzytkownik zapomnial hasla.
+		2. musi podać login, email (podany przy rejestracji) oraz nowe haslo (dwa razy).
+		3. serwer weryfikuje dane i wysyła odpowiednia odpowiedź.
+		4. haslo zostaje zmienione lub uzytkownik musi ponowić probę.
+
+	IV chęc połączenia:
+
+
+
+
+
+
+
+
