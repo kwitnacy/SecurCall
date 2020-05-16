@@ -13,12 +13,12 @@ def transive_thread(val):
 
 
 
-x = threading.Thread(target=receive_thread, args=(2, ))
-y = threading.Thread(target=transive_thread, args=(3, ))
-
-x.start()
-y.start()
-
+threading.Thread(target=receive_thread, args=(2, )).start()
+threading.Thread(target=transive_thread, args=(3, )).start()
+threading.Thread(target=transive_thread, args=(4, )).start()
+threading.Thread(target=transive_thread, args=(5, )).start()
+threading.Thread(target=transive_thread, args=(6, )).start()
+threading.Thread(target=transive_thread, args=(7, )).start()
 
 print('hej main 1')
 time.sleep(1)

@@ -5,12 +5,12 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import os
-
+import time
 import socket 
 
 
 HOST = '127.0.0.1'
-PORT = 1336
+PORT = 4030
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((HOST, PORT))
@@ -29,7 +29,7 @@ public_key_bytes = public_key.public_bytes(encoding=serialization.Encoding.PEM, 
 s.sendto(public_key_bytes, (HOST, 1337))
 
 # get server's public key 
-data = s.recv(1024)
+data, server_addr = s.recvfrom(1024)
 
 # load server's public key
 server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
@@ -51,11 +51,13 @@ aesgcm = AESGCM(derived_key)
 mess = b'witaj serwerze!'
 aad = b"authenticated but unencrypted data"
 
-data = s.recv(1024)
-
 nonce = os.urandom(12)
 ct = aesgcm.encrypt(nonce, mess, None)
 
-s.sendto(nonce + ct, (HOST, 1337))
+time.sleep(3)
+s.sendto(nonce + ct, server_addr)
+
+data = s.recv(1024)
 
 print(aesgcm.decrypt(data[:12], data[12:], None))
+

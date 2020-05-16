@@ -5,12 +5,25 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import os
-
+import time
 import socket 
 
+frame = {
+	'login': 0x01,
+	'logout': 0x02,
+	'signup': 0x03,
+	'add contact': 0x04,
+	'edit contact': 0x08,
+	'delete contact': 0x0C,
+}
+
+
+USERNAME = 'kwitnoncy'
+PASSWD = '123QWERTY'
+EMAIL = 'kwitn@put.poznna.pl'
 
 HOST = '127.0.0.1'
-PORT = 1336
+PORT = 4000
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((HOST, PORT))
@@ -29,7 +42,7 @@ public_key_bytes = public_key.public_bytes(encoding=serialization.Encoding.PEM, 
 s.sendto(public_key_bytes, (HOST, 1337))
 
 # get server's public key 
-data = s.recv(1024)
+data, server_addr = s.recvfrom(1024)
 
 # load server's public key
 server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
@@ -48,14 +61,31 @@ derived_key = HKDF(
 
 # encrypt/decrypt
 aesgcm = AESGCM(derived_key)
-mess = b'witaj serwerze!'
-aad = b"authenticated but unencrypted data"
+nonce = os.urandom(12)
+
+
+# login, begin:
+sign_up_data = {
+	'user_name' : USERNAME,
+	'passwd_hash' : PASSWD,
+	'email_hash' : EMAIL
+}
+
+mess = bytearray()
+mess.append(0x00)
+mess.append(0x00)
+
+mess[0] = frame['login'] 
+mess[1] = int('0b00000000', 2)
+mess.extend(map(ord, str(sign_up_data)))
+
+ct = aesgcm.encrypt(nonce, bytes(mess), None)
+
+s.sendto(nonce + ct, server_addr)
 
 data = s.recv(1024)
 
-nonce = os.urandom(12)
-ct = aesgcm.encrypt(nonce, mess, None)
-
-s.sendto(nonce + ct, (HOST, 1337))
-
 print(aesgcm.decrypt(data[:12], data[12:], None))
+# login, end:
+
+s.close()

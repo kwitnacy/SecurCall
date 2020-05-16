@@ -1,0 +1,14 @@
+Dodawanie kontaktu:
+	Klient (A) wysyła zapytanie, że chcialby mieć w kontakcie clienta B.
+	Serwer sprawdza, czy client B istnieje.
+	(klient B istnieje) Klient A zyskał kontakt (odpowiedni wpis w bazie danych).
+	(klient B nie istnieje) Klient dostaje informacje, że klient nie istnieje. Można powtórzyć próbę (nowa sesja).
+
+Edycja kontaktu:
+	Klient wysyła json reprezentujacy kontakt, ktory jest dodany do bazy danych).
+	Serwer uzupelania baze dancyh i odsyla okejke.
+
+Usunięcie kontaktu:
+	kleint wysyła informacje o kontakcie, ktory chce usunąć.
+	Serwer usuwa wpis i wysyła okejke.
+
