@@ -24,20 +24,33 @@ I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
 +-------------------------------+---------------------------+
 |		A7 -> ACK				| 128 -> 0x80 -> 0b10000000 |
 |		A6 -> NACK				| 64  -> 0x40 -> 0b01000000 | +---> 0x04 -> add contact
-|		A5 -> reserved			| 32  -> 0x20 -> 0b00100000 | |   > 0x08 -> edit contact
+|		A5 -> END_TRANS			| 32  -> 0x20 -> 0b00100000 | |   > 0x08 -> edit contact
 |		A4 -> reserved			| 16  -> 0x10 -> 0b00010000 | |   > 0x0C -> delete contact
 |	A3, A2 -> contact stuff		| 8   -> 0x08 -> 0b00001100 |-+
 |	A1, A0 -> login stuff		| 2   -> 0x02 -> 0b00000011 |-----> 0x01 -> login
 +-------------------------------+---------------------------+		0x02 -> logout
-	2. Drugi bajt - sprawy komunikacyjne:							0x03 -> signup
+																	0x03 -> signup
+	2. Drugi bajt - sprawy komunikacyjne:							
 		C7 -> ACK
-		C6 -> -+
-		C5 ->  |
-		C4 ->  |
-		C3 ->  |- INVITE, RING, BUSY, OK, NOK, BYE, DATA 
-		C2 ->  |
-		C1 ->  |
-		C0 -> -+
+		C6 -> XXXXXXX
+		C5 -> XXXXXXX
+		C4 -> NOK
+		C3 -> OK
+		C2 -> RINGING
+		C1 -> TRYING
+		C0 -> CALL
++-------------------------------+---------------------------+
+|	  code -> name 				| value (dec, hex, bin)	    |
++-------------------------------+---------------------------+
+|		A7 -> ACK				| 128 -> 0x80 -> 0b10000000 |
+|		A6 -> XXXXXX			| 64  -> 0x40 -> 0b01000000 |
+|		A5 -> XXXXXX			| 32  -> 0x20 -> 0b00100000 |
+|		A4 -> NOK				| 16  -> 0x10 -> 0b00010000 |
+|		A3 -> OK				| 8   -> 0x08 -> 0b00001000 |
+|		A2 -> RINGING 			| 4   -> 0x04 -> 0b00000100 |
+|		A1 -> TRYING			| 2   -> 0x02 -> 0b00000010 |
+|		A0 -> CALLING			| 1   -> 0x01 -> 0b00000001 |
++-------------------------------+---------------------------+		
 
 II 32 bajty na nazwe użytkownika.
 

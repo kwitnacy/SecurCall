@@ -44,6 +44,9 @@ public_key = private_key.public_key()
 # public key bytes to send
 public_key_bytes = public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
 
+print(public_key_bytes)
+print(len(public_key_bytes))
+
 # get clients's public key 
 data, addr = s.recvfrom(1024)
 print(data, addr)

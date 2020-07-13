@@ -51,6 +51,26 @@ aesgcm = AESGCM(derived_key)
 mess = b'witaj serwerze!'
 aad = b"authenticated but unencrypted data"
 
+d = {
+    'user_name': 'client_b',
+    'passwd_hash': 'asdasdtest',
+    'email_hash': 'test@test.pl'
+    }
+
+mess = bytearray()
+mess.append(0x03)
+mess.append(0x00)
+mess.extend(map(ord, str(d)))
+
+nonce = os.urandom(12)
+ct = aesgcm.encrypt(nonce, bytes(mess), None)
+s.sendto(nonce + ct, (HOST, 1337))
+
+
+
+print(aesgcm.decrypt(data[:12], data[12:], None))
+
+"""
 data = s.recv(1024)
 
 nonce = os.urandom(12)
@@ -59,3 +79,4 @@ ct = aesgcm.encrypt(nonce, mess, None)
 s.sendto(nonce + ct, (HOST, 1337))
 
 print(aesgcm.decrypt(data[:12], data[12:], None))
+"""
