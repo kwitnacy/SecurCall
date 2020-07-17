@@ -115,9 +115,8 @@ class Server():
             }
 
 
-
     # TODO
-    def call(self, j) -> dict:
+    def call(self, j: dict, client_a_addr: (str, int), client_a_aes_engine, server_public_key, server_private_key, s_sock):
         ###############################################################
         # call to somebody :) 
         # Get "CALL CLIENT B"
@@ -141,20 +140,225 @@ class Server():
         # Client A initiates RTP connection.
         # Work here is done.
         # Main thread waits for "BYE" and sends it to other client.
-        raise Exception('Not Implemented yet')
-        return {}
+        try:
+            client_a = self.ONLINE_USERS[j['token']]
+        except KeyError:
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+        
 
-    
-    # TODO
-    def ringing(self, j) -> dict:
-        # signal that client is ringing
-        raise Exception('Not Implemented yet')
-        return {}
+        to_call = j['to_call']
+        try:
+            to_call_token = self.users[to_call]['token']
+        except KeyError:
+            return {
+                "status": "Error",
+                "mess": "User is not online"
+            }
+        if to_call_token not in self.ONLINE_USERS:
+            return {
+                "status": "Error",
+                "mess": "User is not online"
+            }
+        else:
+            client_b_ip = self.ONLINE_USERS[to_call_token]['ip_addr']
+            client_b_ip = client_b_ip[0], client_b_ip[1] + 1
+            print(client_b_ip, "client b ip")
+            client_b_user_name = self.ONLINE_USERS[to_call_token]['user_name']
 
+        # send pub key to client B
+        s_sock.sendto(server_public_key, client_b_ip)
+
+        # get pub key from client B
+        try:
+            client_b_pub_key = s_sock.recv(1024)
+        except s.timeout:
+            return {
+                "status": "Error",
+                "mess": "Timeout. No key from client b"
+            }
+        client_b_pub_key = serialization.load_pem_public_key(client_b_pub_key, backend=default_backend())
+
+        # create client_b_aes_engine
+        shared_key = server_private_key.exchange(ec.ECDH(), client_b_pub_key)
+        derived_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=None,
+            info=b'handshake data',
+            backend=default_backend()
+        ).derive(shared_key)
+        client_b_aes_engine = AESGCM(derived_key)
+
+        # send client B "CALL"
+        to_send_calling = bytearray()
+        to_send_calling.append(0x00)
+        to_send_calling.append(0x01)
+        to_send_calling.extend(map(ord, str({'user_name': client_a['user_name']})))
+        nounce = os.urandom(12)
+        to_send_calling = client_b_aes_engine.encrypt(nounce, bytes(to_send_calling), None)
+        s_sock.sendto(nounce + to_send_calling, client_b_ip)
+        print("send CALL to client b")
+
+        # send client A "TRYING"
+        to_send_trying = bytearray()
+        to_send_trying.append(0x00)
+        to_send_trying.append(0x02)
+        nounce = os.urandom(12)
+        to_send_trying = client_a_aes_engine.encrypt(nounce, bytes(to_send_trying), None)
+        s_sock.sendto(nounce + to_send_trying, client_a_addr)
+        print("send TRYING to client A")
+
+        # wait 15 seconds for "RINGING" from client B
+        #   if no "RINGING" end
+        #   else send client A "RINGING"
+        s_sock.settimeout(15)
+        try:
+            data, addr = s_sock.recvfrom(1024)
+        except s.timeout:
+            return {
+                "status": "Error",
+                "mess": "No Ringing message"
+            } 
+
+        if addr != client_b_ip:
+            return {
+                "status": "Error",
+                "mess": "Somebody else responsed"
+            }
+        
+        data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
+        if data[1] != 0x04:
+            return {
+                "status": "Error",
+                "mess": "Wrong response from client B"
+            }
+        
+        print("got ringing from client B")
+        to_send_ringing = bytearray()
+        to_send_ringing.append(0x00)
+        to_send_ringing.append(0x04)
+        nounce = os.urandom(12)
+        to_send_ringing = client_a_aes_engine.encrypt(nounce, bytes(to_send_ringing), None)
+        s_sock.sendto(nounce + to_send_ringing, client_a_addr)
+        print("send RINGING to clien A")
+        
+        # get "ACK" from client A
+        try:
+            data, addr = s_sock.recvfrom(1024)
+        except s.timeout:
+            # TODO
+            # timeout while waiting for ack from client A
+            pass
+
+        data = client_a_aes_engine.decrypt(data[:12], data[12:], None)
+        if data[1] != 0x08:
+            # TODO
+            # client A send no ACK
+            pass
+
+        print("got ACK from client A for ringing from client B")
+
+        to_send_ringing_ACK = bytearray()
+        to_send_ringing_ACK.append(0x00)
+        to_send_ringing_ACK.append(0x80)
+        nounce = os.urandom(12)
+        to_send_ringing_ACK = client_b_aes_engine.encrypt(nounce, bytes(to_send_ringing_ACK), None)
+        s_sock.sendto(nounce + to_send_ringing_ACK, client_b_ip)
+
+
+        s_sock.settimeout(120)      # long timeout time because its ringing time
+        try:
+            data, addr = s_sock.recvfrom(1024)
+        except s.timeout:
+            pass
+
+        s_sock.settimeout(self.TIMEOUT)
+
+        data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
+
+        if data[1] == 0x08:
+            # OK
+            print("got OK from client B")
+            to_send_ok = bytearray()
+            to_send_ok.append(0x00)
+            to_send_ok.append(0x08)
+            to_send_ok.extend(map(ord, str({
+                'user_name': client_b_user_name,
+                'ip_addr': client_b_ip[0],
+                'ip_port': client_b_ip[1]
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            to_send_ok = client_a_aes_engine.encrypt(nounce, bytes(to_send_ok), None)
+            s_sock.sendto(nounce + to_send_ok, client_a_addr)
+            
+            print("send OK to client A")
+        elif data[1] == 0x10:
+            # NOK
+            print("got NOK from client b")
+            to_send_nok = bytearray()
+            to_send_nok.append(0x00)
+            to_send_nok.append(0x10)
+            nounce = os.urandom(12)
+            to_send_nok = client_a_aes_engine.encrypt(nounce, bytes(to_send_nok), None)
+            s_sock.sendto(nounce + to_send_nok, client_a_addr)
+            return {
+                "status": "OK",
+                "mess": "Call was rejected"
+            }
+        else:
+            # guwno
+            print("Got some shit")
+            to_send_nok = bytearray()
+            to_send_nok.append(0x00)
+            to_send_nok.append(0x10)
+            nounce = os.urandom(12)
+            to_send_nok = client_a_aes_engine.encrypt(nounce, bytes(to_send_nok), None)
+            s_sock.sendto(nounce + to_send_nok, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "Got some wrong byte"
+            }
+
+        try:
+            data, addr = s_sock.recvfrom(1024)
+        except s.timeout:
+            # TODO
+            # client A did not send ACK for OK for ringing
+            return {}
+
+        data = client_a_aes_engine.decrypt(data[:12], data[12:], None)
+
+        if data[1] == 0x80:
+            nounce = os.urandom(12)
+            to_send_ACK = bytearray()
+            to_send_ACK.append(0x00)
+            to_send_ACK.append(0x80)
+            to_send_ACK = client_b_aes_engine.encrypt(nounce, bytes(to_send_ACK), None)
+            s_sock.sendto(nounce + to_send_ACK, client_b_ip)
+        else:
+            # TODO
+            # didnt get ACK
+            return {}
+        
+        return {
+            "status": "OK",
+            "mess": "call was estamblished"
+        }
+
+
+    def bye(self, j: dict, client_a_addr: (str, int), client_a_aes_engine, server_public_key, server_private_key, s_sock):
+    # Send BYE frame to users in conversation
+    # Get addresses from client a, send to client b BYE
+    # Forward ACK from client b to client a
+        pass
 
     def session(self, data, addr, free_port):
         session_socket = s.socket(s.AF_INET, s.SOCK_DGRAM)
         session_socket.bind((self.HOST, free_port))
+        session_socket.settimeout(self.TIMEOUT)
 
         private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
 	
@@ -208,11 +412,17 @@ class Server():
             pass
         elif code[0] == 0x06:
             pass
+        elif code[1] == 0x01:
+            response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
 
         nounce = os.urandom(12)
         ct = aesgcm.encrypt(nounce, json.dumps(response).encode('utf-8'), None)
 
         session_socket.sendto(nounce + ct, addr)
+        
+        session_socket.close()
+        self.FREE_PORTS.append(free_port)
+        self.FREE_PORTS.sort()
 
 
     def recv_connection(self):
@@ -231,10 +441,10 @@ class Server():
 
     def console(self):
         commands = ['ousers  	-> prints online users', 
-                    'users 		-> print all users', 
-                    'quit/close	-> fucks everything up', 
-                    'help 		-> help'
-                    ]
+            'users 		-> print all users', 
+            'quit/close	-> fucks everything up', 
+            'help 		-> help'
+            ]
         
         while self.RUNNING:
             command = input('>>>')

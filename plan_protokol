@@ -18,7 +18,7 @@
 
 
 I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
-	1. Piersze bajt - sprawy administracyjne:
+1. Piersze bajt - sprawy administracyjne:
 +-------------------------------+---------------------------+
 |	  code -> name 				| value (dec, hex, bin)	    |
 +-------------------------------+---------------------------+
@@ -30,21 +30,21 @@ I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
 |	A1, A0 -> login stuff		| 2   -> 0x02 -> 0b00000011 |-----> 0x01 -> login
 +-------------------------------+---------------------------+		0x02 -> logout
 																	0x03 -> signup
-	2. Drugi bajt - sprawy komunikacyjne:							
-		C7 -> ACK
-		C6 -> XXXXXXX
-		C5 -> XXXXXXX
-		C4 -> NOK
-		C3 -> OK
-		C2 -> RINGING
-		C1 -> TRYING
-		C0 -> CALL
+2. Drugi bajt - sprawy komunikacyjne:							
+	C7 -> ACK
+	C6 -> XXXXXXX
+	C5 -> XXXXXXX
+	C4 -> NOK
+	C3 -> OK
+	C2 -> RINGING
+	C1 -> TRYING
+	C0 -> CALL
 +-------------------------------+---------------------------+
 |	  code -> name 				| value (dec, hex, bin)	    |
 +-------------------------------+---------------------------+
 |		A7 -> ACK				| 128 -> 0x80 -> 0b10000000 |
 |		A6 -> XXXXXX			| 64  -> 0x40 -> 0b01000000 |
-|		A5 -> XXXXXX			| 32  -> 0x20 -> 0b00100000 |
+|		A5 -> BYE				| 32  -> 0x20 -> 0b00100000 |
 |		A4 -> NOK				| 16  -> 0x10 -> 0b00010000 |
 |		A3 -> OK				| 8   -> 0x08 -> 0b00001000 |
 |		A2 -> RINGING 			| 4   -> 0x04 -> 0b00000100 |

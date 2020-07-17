@@ -29,7 +29,7 @@ class Client:
         }
 
         self.HOST = '127.0.0.1'
-        self.PORT = 4000
+        self.PORT = 4200
         self.TIMESOUT = 10
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -132,7 +132,7 @@ class Client:
         print(data, "hej hej")
         code = data[:2]
         j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
-        
+
         
         if code[1] == 0x20:
             # BYE 
@@ -367,12 +367,12 @@ class Client:
 c = Client(
     server_addr='127.0.0.1',
     server_port=1337,
-    user_name='client_a', 
-    passwd = 'test_pass_client_a',
-    email='test_email_a'
+    user_name='client_b', 
+    passwd = 'test_pass_client_b',
+    email='test_email_b'
 )
 
 c.sign_in()
 c.log_in()
-c.make_call('client_b')
+
 
