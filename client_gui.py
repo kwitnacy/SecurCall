@@ -2,18 +2,179 @@ import tkinter as tk
 
 
 def create_main_menu(menu, logo):
+    # TODO stała wielkość okna przy dużej liczbie rekordów
     def spis_polaczen():
         spis = tk.Toplevel(menu)
         spis.title("Spis połączeń - SecurCall")
 
+        testjs = {
+            'dane': [
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                }
+            ]
+        }
 
+        spis.columnconfigure(1, weight=1, minsize=200)
+        spis.columnconfigure(2, weight=1, minsize=100)
+
+        frame = tk.Frame(
+            master=spis,
+        )
+        frame.grid(row=1, column=1, padx=15, pady=10, sticky="nw", columnspan=2)
+        label = tk.Label(master=frame, text='Spis połączeń', font=("Consolas", "14", 'bold'))
+        label.pack(side=tk.LEFT)
+
+        rowcounter = 2
+
+        for record in testjs['dane']:
+            frame = tk.Frame(
+                master=spis,
+            )
+            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
+            label = tk.Label(master=frame, text=record['imie'], font=("Consolas", "11", 'bold'))
+            label.pack(side=tk.LEFT)
+
+            frame = tk.Frame(
+                master=spis,
+            )
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
+            label = tk.Label(master=frame, text=record['data'], font=("Helvetica", "10"))
+            label.pack(side=tk.RIGHT)
+
+            rowcounter += 1
+
+            frame = tk.Frame(
+                master=spis,
+            )
+            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
+            label = tk.Label(master=frame, text='Czas rozmowy: ' + record['czas_rozmowy'], font=("Helvetica", "10"))
+            label.pack(side=tk.LEFT)
+
+            frame = tk.Frame(
+                master=spis,
+            )
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
+            label = tk.Label(master=frame, text=record['godzina'], font=("Helvetica", "10"))
+            label.pack(side=tk.RIGHT)
+
+            rowcounter += 1
+
+    # TODO wszystko tu xd
     def ustawienia():
         ustaw = tk.Toplevel(menu)
         ustaw.title("Ustawienia - SecurCall")
 
+    # TODO stała wielkość okna przy dużej liczbie rekordów, notatka multiline
     def kontakty():
+        def zadzwon_kontakt():
+            pass
+
+        def edytuj_kontakt():
+            pass
+
+        def usun_kontakt():
+            pass
+
         kontakt = tk.Toplevel(menu)
         kontakt.title("Kontakty - SecurCall")
+        testjs = {
+            'dane': [
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu blablalbalbalblablalbalblalbladbadlbaldbl asfasfassa fasfasf'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                }
+            ]
+        }
+
+        kontakt.columnconfigure(1, weight=1, minsize=200)
+        kontakt.columnconfigure(2, weight=1, minsize=100)
+
+        frame = tk.Frame(
+            master=kontakt,
+        )
+        frame.grid(row=1, column=1, padx=15, pady=10, sticky="nw", columnspan=2)
+        label = tk.Label(master=frame, text='Spis kontaktów', font=("Consolas", "14", 'bold'))
+        label.pack(side=tk.LEFT)
+
+        rowcounter = 2
+        labels = []
+        buttons = []
+        for record in testjs['dane']:
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=1, padx=15, pady=10, sticky="nw")
+            label = tk.Label(master=frame, text=record['imie'], font=("Consolas", "11", 'bold'))
+            label.pack(side=tk.LEFT)
+            labels.append(label)
+
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="s")
+            button = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"),
+                               command=zadzwon_kontakt)
+            button.pack(side=tk.LEFT)
+            buttons.append(button)
+
+            rowcounter += 1
+
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
+            label = tk.Label(master=frame, text='ID: ' + record['id'], font=("Helvetica", "10"))
+            label.pack(side=tk.LEFT)
+            labels.append(label)
+
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="nw")
+            button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"), command=edytuj_kontakt)
+            button.pack(side=tk.LEFT)
+            buttons.append(button)
+
+            rowcounter += 1
+
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
+            if record['notatka'] == '':
+                label = tk.Label(master=frame, text='Brak notatki.', font=("Helvetica", "10"))
+                label.pack(side=tk.LEFT)
+                labels.append(label)
+            else:
+                label = tk.Label(master=frame, text=record['notatka'], font=("Helvetica", "10"))
+                label.pack(side=tk.LEFT)
+                labels.append(label)
+
+            frame = tk.Frame(
+                master=kontakt,
+            )
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="nw")
+            button = tk.Button(master=frame, padx=14.4, text="Usuń", font=("Helvetica", "10"), command=usun_kontakt)
+            button.pack(side=tk.LEFT)
+            buttons.append(button)
+
+            rowcounter += 1
 
     def zadzwon():
         entry1.insert(0, 'kliknieto')
@@ -80,6 +241,13 @@ def create_main_menu(menu, logo):
 
     frame = tk.Frame(
         master=menu,
+    )
+    frame.grid(row=2, column=2, pady=0, sticky="n")
+    error_label = tk.Label(master=frame, text="", font=("Helvetica", "8"), fg='red')
+    error_label.pack()
+
+    frame = tk.Frame(
+        master=menu,
         borderwidth=1
     )
     frame.grid(row=2, column=3, padx=10, pady=10)
@@ -106,7 +274,7 @@ def create_main_menu(menu, logo):
         master=menu,
     )
     frame.grid(row=4, column=1, padx=15, pady=0, sticky="w", columnspan=2)
-    label4 = tk.Label(master=frame, text="Jan Kowalski", font=("Helvetica", "10", "bold"))
+    label4 = tk.Label(master=frame, text="Jan Kowalski", font=("Consolas", "10", "bold"))
     label4.pack(side=tk.TOP, pady=3)
     button6 = tk.Button(master=frame, padx=20, fg="red", text="Rozłącz", font=("Helvetica", "10", "bold"), command=rozlacz)
     button6.pack(side=tk.BOTTOM, pady=10)
