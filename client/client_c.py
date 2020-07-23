@@ -29,7 +29,7 @@ class Client:
         }
 
         self.HOST = '127.0.0.1'
-        self.PORT = 4000
+        self.PORT = 4400
         self.TIMESOUT = 10
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -390,7 +390,7 @@ class Client:
 
         return res
 
-    
+
     def send_bye(self, user_name: str) -> bytes:
         mess = bytearray()
         mess.append(0x00)
@@ -414,21 +414,19 @@ class Client:
         response = self.aes_engine.decrypt(data[:12], data[12:], None)
 
         return response
-        
+
 
 
 c = Client(
     server_addr='127.0.0.1',
     server_port=1337,
-    user_name='client_a', 
-    passwd = 'test_pass_client_a',
-    email='test_email_a'
+    user_name='client_c', 
+    passwd = 'test_pass_client_c',
+    email='test_email_c'
 )
 
 c.sign_in()
 c.log_in()
 c.make_call('client_b')
-time.sleep(20)
-c.send_bye('client_b')
-
+c.send_bye()
 

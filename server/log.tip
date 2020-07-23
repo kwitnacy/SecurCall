@@ -1,0 +1,87 @@
+[Jul 20 10:37:17] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 10:37:17] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 10:37:21] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 10:37:21] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 10:37:21] client A: client_a wants to call client b: client_b
+[Jul 20 10:37:22] Client B: client_b rejectced the call
+[Jul 20 10:38:06] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Jul 20 10:38:06] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 10:38:13] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 20 10:38:13] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 10:38:13] client A: client_a wants to call client b: client_b
+[Jul 20 10:38:14] Call was estamblished between Client A: client_aand Client B: client_b
+[Jul 20 11:22:40] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 11:22:40] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 11:22:44] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 11:22:44] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 11:22:44] client A: client_a wants to call client b: client_b
+[Jul 20 11:22:45] Call was estamblished between Client A: client_aand Client B: client_b
+[Jul 20 11:46:54] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 11:46:54] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 11:47:04] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 11:47:04] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 11:47:04] client A: client_c wants to call client b: client_b
+[Jul 20 11:47:05] Client B: client_b rejectced the call
+[Jul 20 11:47:56] Sign-in from:127.0.0.1:4400, username: client_c: name taken, account was not created
+[Jul 20 11:47:56] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 11:47:56] client A: client_c wants to call client b: client_b
+[Jul 20 11:48:16] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 11:48:16] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 11:48:19] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 11:48:19] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 11:48:19] client A: client_c wants to call client b: client_b
+[Jul 20 11:48:20] Call was estamblished between Client A: client_cand Client B: client_b
+[Jul 20 11:48:28] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 11:48:28] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 11:48:28] client A: client_a wants to call client b: client_b
+[Jul 20 11:48:28] Client B: client_b sent wrong code
+[Jul 20 11:58:15] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 11:58:15] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 11:58:18] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 11:58:18] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 11:58:18] client A: client_c wants to call client b: client_b
+[Jul 20 11:58:20] Call was estamblished between Client A: client_cand Client B: client_b
+[Jul 20 11:58:25] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 11:58:25] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 11:58:25] client A: client_a wants to call client b: client_b
+[Jul 20 11:58:25] Client B: client_b is busy
+[Jul 20 12:00:25] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 12:00:25] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 12:00:28] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 12:00:28] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 12:00:28] client A: client_c wants to call client b: client_b
+[Jul 20 12:00:30] Call was estamblished between Client A: client_cand Client B: client_b
+[Jul 20 12:00:33] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 12:00:33] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 12:00:33] client A: client_a wants to call client b: client_b
+[Jul 20 12:00:33] Client B: client_b is busy
+[Jul 20 12:02:02] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 12:02:02] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 12:02:08] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 12:02:08] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 12:02:08] client A: client_c wants to call client b: client_b
+[Jul 20 12:02:09] Call was estamblished between Client A: client_cand Client B: client_b
+[Jul 20 12:02:14] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 12:02:14] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 12:02:14] client A: client_a wants to call client b: client_b
+[Jul 20 12:02:14] Client B: client_b is busy
+[Jul 20 12:19:05] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 12:19:05] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 12:19:10] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 12:19:10] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 12:19:10] client A: client_a wants to call client b: client_b
+[Jul 20 12:19:11] Call was estamblished between Client A: client_aand Client B: client_b
+[Jul 20 12:19:15] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 12:19:15] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 12:19:15] client A: client_c wants to call client b: client_b
+[Jul 20 12:19:15] Client B: client_b is busy
+[Jul 20 12:20:42] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Jul 20 12:20:42] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Jul 20 12:20:45] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 20 12:20:45] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 20 12:20:45] client A: client_a wants to call client b: client_b
+[Jul 20 12:20:46] Call was estamblished between Client A: client_aand Client B: client_b
+[Jul 20 12:20:49] Sign-in from:127.0.0.1:4400, username: client_c: account was created
+[Jul 20 12:20:49] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 20 12:20:49] client A: client_c wants to call client b: client_b
+[Jul 20 12:20:49] Client B: client_b is busy

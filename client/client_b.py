@@ -81,6 +81,8 @@ class Client:
         print(data.decode('utf-8'))
 
         self.socket_call.close()
+        while self.BUSY:
+            print('rozmowa')
 
 
     def call_get_pack(self):
@@ -96,6 +98,8 @@ class Client:
         mess = 'no co tam byczq?'.encode('utf-8')
         conn.send(mess)
         conn.close()
+        while self.BUSY:
+            print('rozmowa')
 
 
     def get_info(self, server_public_bytes: bytes, server_info_addr: (str, int)) -> None:
@@ -132,13 +136,33 @@ class Client:
         print(data, "hej hej")
         code = data[:2]
         j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
-
+        
         
         if code[1] == 0x20:
-            # BYE 
-            pass
+            self.BUSY = False
+            to_send_bye = bytearray()
+            to_send_bye.append(0x00)
+            to_send_bye.append(0x20)
+            nounce = os.urandom(12)
+            to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
+            self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
+            print('Got BYE sent BYE')
+            # TODO
+            return {}
 
         elif code[1] == 0x01:
+            if self.BUSY:
+                to_send_busy = bytearray()
+                to_send_busy.append(0x00)
+                to_send_busy.append(0x06)
+                nounce = os.urandom(12)
+                to_send_busy = aes_engine_call.encrypt(nounce, bytes(to_send_busy), None)
+                self.socket_info.sendto(nounce + to_send_busy, server_info_addr)
+                print('Sent BUSY, PAPA')
+
+                # TODO
+                return {}
+                
             to_send_ringing = bytearray()
             to_send_ringing.append(0x00)
             to_send_ringing.append(0x04)
@@ -161,20 +185,21 @@ class Client:
                 # Send OK/NOK
                 to_send_ok = bytearray()
                 to_send_ok.append(0x00)
-                # to_send_ok.append(0x08) # OK
-                to_send_ok.append(0x10) # NOK
+                to_send_ok.append(0x08) # OK
+                # to_send_ok.append(0x10) # NOK
                 nounce = os.urandom(12)
                 to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
                 self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
 
-                # print("send OK")
-                print("send NOK")
+                print("send OK")
+                # print("send NOK")
                 
                 data, server_info_addr = self.socket_info.recvfrom(1024)
                 data = aes_engine_call.decrypt(data[:12], data[12:], None)
 
                 # Get ACK
                 if data[1] == 0x80:
+                    self.BUSY = True
                     self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
                     self.thread_call_get.start()
 
@@ -254,7 +279,8 @@ class Client:
         mess.append(0x01)
         mess.extend(map(ord, str({
             "to_call": user_name,
-            "token": self.token
+            "token": self.token,
+            "user_name": self.user_data['user_name']
             }).replace("'", "\"")))
 
         server_addr = self.crypto_stuff()
@@ -287,6 +313,10 @@ class Client:
 
         if data[1] == 0x04:
             print(user_name + '\'s phone is ringing')
+        elif data[1] == 0x06:
+            print(user_name + ' is busy')
+            # TODO
+            return {}
         else:
             return {
                 "status": "Error",
@@ -361,6 +391,29 @@ class Client:
         return res
 
 
+    def send_bye(self, user_name: str) -> bytes:
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x20)
+        mess.extend(map(ord, str({
+            "called": user_name,
+            "token": self.token,
+            "user_name": self.user_data['user_name']
+            }).replace("'", "\"")))
+
+        server_addr = self.crypto_stuff()
+        nounce = os.urandom(12)
+        ct = self.aes_engine.encrypt(nounce, bytes(mess), None)
+
+        self.socket.sendto(nounce + ct, server_addr)
+
+        data, addr = self.socket.recvfrom(1024)
+        
+        self.BUSY = False
+
+        response = self.aes_engine.decrypt(data[:12], data[12:], None)
+
+        return response
 
 
 
@@ -374,5 +427,4 @@ c = Client(
 
 c.sign_in()
 c.log_in()
-
 
