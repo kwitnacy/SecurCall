@@ -1,7 +1,239 @@
 import tkinter as tk
+from functools import partial
 
 
-def create_main_menu(menu, logo):
+def create_prelogin_screen(logo):
+    menu = tk.Frame()
+
+    def logowanie():
+        set_frame(create_login_screen(img))
+
+    def rejestracja():
+        set_frame(create_registration_screen(img))
+
+    menu.columnconfigure(1, weight=1, minsize=200)
+    menu.columnconfigure(2, weight=1, minsize=200)
+    menu.rowconfigure(1, weight=1, minsize=50)
+    menu.rowconfigure(2, weight=1, minsize=50)
+    menu.rowconfigure(3, weight=1, minsize=50)
+    menu.rowconfigure(4, weight=1, minsize=15)
+
+    # --------- 1 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=1, column=1, padx=40, pady=10, sticky="ew", columnspan=2)
+    label1 = tk.Label(master=frame, image=logo)
+    label1.pack()
+
+    # --------- 2 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=2, column=1, padx=10, pady=10, sticky="n", columnspan=2)
+    label1 = tk.Label(master=frame, text="Witaj! Co chcesz zrobić?", font=("Consolas", "15", 'bold'))
+    label1.pack()
+
+    # --------- 3 ROW ----------
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=3, column=1, padx=20, pady=10, sticky="e")
+    button1 = tk.Button(master=frame, text="Logowanie", font=("Helvetica", "10", "bold"), command=logowanie)
+    button1.pack()
+
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=3, column=2, padx=20, pady=10, sticky="w")
+    button2 = tk.Button(master=frame, text="Rejestracja", font=("Helvetica", "10", "bold"), command=rejestracja)
+    button2.pack()
+
+    return menu
+
+
+def create_login_screen(logo):
+    menu = tk.Frame()
+
+    def logowanie():
+        set_frame(create_main_menu(img))
+
+    def cofnij():
+        set_frame(create_prelogin_screen(img))
+
+    menu.columnconfigure(1, weight=1, minsize=100)
+    menu.columnconfigure(2, weight=1, minsize=200)
+    menu.columnconfigure(3, weight=1, minsize=100)
+    menu.rowconfigure(1, weight=1, minsize=50)
+    menu.rowconfigure(2, weight=1, minsize=50)
+    menu.rowconfigure(3, weight=1, minsize=50)
+    menu.rowconfigure(4, weight=1, minsize=50)
+    menu.rowconfigure(5, weight=1, minsize=15)
+
+    # --------- 1 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=1, column=1, padx=40, pady=10, sticky="ew", columnspan=3)
+    label1 = tk.Label(master=frame, image=logo)
+    label1.pack()
+
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=1, column=1, padx=20, pady=10, sticky="w")
+    button2 = tk.Button(master=frame, text="Cofnij", font=("Helvetica", "10"), command=cofnij)
+    button2.pack()
+
+    # --------- 2 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=2, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Login", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 3 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=3, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Hasło", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 4 ROW ----------
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=4, column=1, padx=20, pady=10, sticky="ew", columnspan=3)
+    button1 = tk.Button(padx=64, master=frame, text="Zaloguj", font=("Helvetica", "10", "bold"), command=logowanie)
+    button1.pack()
+
+    return menu
+
+
+def create_registration_screen(logo):
+    menu = tk.Frame()
+
+    def logowanie():
+        set_frame(create_main_menu(img))
+
+    def cofnij():
+        set_frame(create_prelogin_screen(img))
+
+    menu.columnconfigure(1, weight=1, minsize=100)
+    menu.columnconfigure(2, weight=1, minsize=200)
+    menu.columnconfigure(3, weight=1, minsize=100)
+    menu.rowconfigure(1, weight=1, minsize=50)
+    menu.rowconfigure(2, weight=1, minsize=50)
+    menu.rowconfigure(3, weight=1, minsize=50)
+    menu.rowconfigure(4, weight=1, minsize=50)
+    menu.rowconfigure(5, weight=1, minsize=50)
+    menu.rowconfigure(6, weight=1, minsize=50)
+    menu.rowconfigure(7, weight=1, minsize=15)
+
+    # --------- 1 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=1, column=1, padx=40, pady=10, sticky="ew", columnspan=3)
+    label1 = tk.Label(master=frame, image=logo)
+    label1.pack()
+
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=1, column=1, padx=20, pady=10, sticky="w")
+    button2 = tk.Button(master=frame, text="Cofnij", font=("Helvetica", "10"), command=cofnij)
+    button2.pack()
+
+    # --------- 2 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=2, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Login", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 3 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=3, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Email", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 4 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=4, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=4, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Hasło", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 5 ROW ----------
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=5, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry1.pack(side=tk.LEFT, expand=True)
+
+    frame = tk.Frame(
+        master=menu,
+    )
+    frame.grid(row=5, column=1, padx=10, pady=10, sticky="e")
+    label1 = tk.Label(master=frame, text="Powtórz hasło", font=("Consolas", "10"))
+    label1.pack()
+
+    # --------- 6 ROW ----------
+    frame = tk.Frame(
+        master=menu
+    )
+    frame.grid(row=6, column=1, padx=20, pady=10, sticky="ew", columnspan=3)
+    button1 = tk.Button(padx=54, master=frame, text="Zarejestruj", font=("Helvetica", "10", "bold"), command=logowanie)
+    button1.pack()
+
+    return menu
+
+
+def create_main_menu(logo):
+    menu = tk.Frame()
     # TODO stała wielkość okna przy dużej liczbie rekordów
     def spis_polaczen():
         spis = tk.Toplevel(menu)
@@ -69,6 +301,9 @@ def create_main_menu(menu, logo):
 
             rowcounter += 1
 
+        spis.rowconfigure(rowcounter, weight=1, minsize=15)
+
+
     # TODO wszystko tu xd
     def ustawienia():
         ustaw = tk.Toplevel(menu)
@@ -79,8 +314,70 @@ def create_main_menu(menu, logo):
         def zadzwon_kontakt():
             pass
 
-        def edytuj_kontakt():
-            pass
+        def edytuj_kontakt(recnum):
+            recnum -= 2
+            edyt = tk.Toplevel(kontakt)
+            edyt.title("Edycja kontaktu - SecurCall")
+
+            edyt.columnconfigure(1, weight=1, minsize=50)
+            edyt.columnconfigure(2, weight=1, minsize=200)
+            edyt.rowconfigure(1, weight=1, minsize=50)
+            edyt.rowconfigure(2, weight=1, minsize=50)
+            edyt.rowconfigure(3, weight=1, minsize=50)
+            edyt.rowconfigure(4, weight=1, minsize=50)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=3)
+            label1 = tk.Label(master=frame, text="Edycja kontaktu", font=("Consolas", "14", "bold"))
+            label1.pack()
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=2, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+            entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+            entry1.insert(tk.END, testjs['dane'][recnum]['imie'])
+            entry1.pack(side=tk.RIGHT, expand=True)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
+            label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=3, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+            entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+            entry1.insert(tk.END, testjs['dane'][recnum]['id'])
+            entry1.pack(side=tk.RIGHT, expand=True)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+            label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=4, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+            text1 = tk.Text(master=frame, height=4, width=26, font=("Helvetica", "10"))
+            text1.insert(tk.END, testjs['dane'][recnum]['notatka'])
+            text1.pack(side=tk.RIGHT)
+
+            frame = tk.Frame(
+                master=edyt,
+            )
+            frame.grid(row=4, column=1, padx=10, pady=10, sticky="en")
+            label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
+
 
         def usun_kontakt():
             pass
@@ -92,7 +389,7 @@ def create_main_menu(menu, logo):
                 {
                     'imie': 'Jan Kowalski',
                     'id': 'janekkk',
-                    'notatka': 'Kierownik działu blablalbalbalblablalbalblalbladbadlbaldbl asfasfassa fasfasf'
+                    'notatka': 'Kierownik działu'
                 },
                 {
                     'imie': 'Robert Molenda',
@@ -113,6 +410,7 @@ def create_main_menu(menu, logo):
         label.pack(side=tk.LEFT)
 
         rowcounter = 2
+        recordcounter = 0
         labels = []
         buttons = []
         for record in testjs['dane']:
@@ -129,7 +427,7 @@ def create_main_menu(menu, logo):
             )
             frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="s")
             button = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"),
-                               command=zadzwon_kontakt)
+                               command=partial(zadzwon_kontakt, recordcounter))
             button.pack(side=tk.LEFT)
             buttons.append(button)
 
@@ -147,7 +445,8 @@ def create_main_menu(menu, logo):
                 master=kontakt,
             )
             frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="nw")
-            button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"), command=edytuj_kontakt)
+            button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"),
+                               command=partial(edytuj_kontakt, recordcounter))
             button.pack(side=tk.LEFT)
             buttons.append(button)
 
@@ -175,6 +474,9 @@ def create_main_menu(menu, logo):
             buttons.append(button)
 
             rowcounter += 1
+            recordcounter += 1
+
+        kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
 
     def zadzwon():
         entry1.insert(0, 'kliknieto')
@@ -299,13 +601,28 @@ def create_main_menu(menu, logo):
     return menu
 
 
-if __name__ == '__main__':
-    men = tk.Tk()
-    men.title("SecurCall")
+def set_frame(new_frame):
+    global current
 
+    # hide current tk.Frame
+    current.pack_forget()
+
+    # show new tk.Frame
+    current = new_frame
+    current.pack()
+
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    root.title("SecurCall")
+
+    global img
     img = tk.PhotoImage(file="logo.png")
     img = img.subsample(1, 1)
 
-    men = create_main_menu(men, img)
-    men.mainloop()
+
+    current = create_prelogin_screen(img)
+    current.pack()
+    #set_frame(create_main_menu(img))
+    root.mainloop()
 
