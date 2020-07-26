@@ -136,8 +136,7 @@ class Client:
         print(data, "hej hej")
         code = data[:2]
         j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
-        
-        
+ 
         if code[1] == 0x20:
             self.BUSY = False
             to_send_bye = bytearray()
@@ -147,8 +146,6 @@ class Client:
             to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
-            # TODO
-            return {}
 
         elif code[1] == 0x01:
             if self.BUSY:
@@ -177,31 +174,37 @@ class Client:
             data = aes_engine_call.decrypt(data[:12], data[12:], None)
 
             # Got ACK
+            if data[1] != 0x80:
+                print('something went wrong, wrong byte (after RINGING)')
+                return {
+                    "status": "Error",
+                    "mess": "got wrong byte after RINGING"
+                }
+
+            print('RING RING')
+            print(j['user_name'], 'is calling you')
+            time.sleep(1)
+
+            # Send OK/NOK
+            to_send_ok = bytearray()
+            to_send_ok.append(0x00)
+            to_send_ok.append(0x08) # OK
+            # to_send_ok.append(0x10) # NOK
+            nounce = os.urandom(12)
+            to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
+            self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
+
+            print("send OK")
+            # print("send NOK")
+            
+            data, server_info_addr = self.socket_info.recvfrom(1024)
+            data = aes_engine_call.decrypt(data[:12], data[12:], None)
+
+            # Get ACK
             if data[1] == 0x80:
-                print('RING RING')
-                print(j['user_name'], 'is calling you')
-                time.sleep(1)
-
-                # Send OK/NOK
-                to_send_ok = bytearray()
-                to_send_ok.append(0x00)
-                # to_send_ok.append(0x08) # OK
-                to_send_ok.append(0x10) # NOK
-                nounce = os.urandom(12)
-                to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
-                self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
-
-                # print("send OK")
-                print("send NOK")
-                
-                data, server_info_addr = self.socket_info.recvfrom(1024)
-                data = aes_engine_call.decrypt(data[:12], data[12:], None)
-
-                # Get ACK
-                if data[1] == 0x80:
-                    self.BUSY = True
-                    self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
-                    self.thread_call_get.start()
+                self.BUSY = True
+                self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
+                self.thread_call_get.start()
 
         else:
             print('got shitty mess')
@@ -220,7 +223,9 @@ class Client:
         )
         
         self.socket.sendto(public_key_bytes, (self.server_addr_main, self.server_port_main))
-        data, SERVER_ADDR = self.socket.recvfrom(4096)
+        data, SERVER_ADDR = self.socket.recvfrom(1024)
+
+        print(data)
 
         server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
         shared_key = private_key.exchange(ec.ECDH(), server_public_key)
@@ -273,6 +278,7 @@ class Client:
             self.token = res['token']
             self.thread_info.start()
 
+
     def make_call(self, user_name: str) -> bytes:
         mess = bytearray()
         mess.append(0x00)
@@ -315,8 +321,10 @@ class Client:
             print(user_name + '\'s phone is ringing')
         elif data[1] == 0x06:
             print(user_name + ' is busy')
-            # TODO
-            return {}
+            return {
+                "status": "Error",
+                "mess": "Client is busy"
+            }
         else:
             return {
                 "status": "Error",
@@ -362,6 +370,7 @@ class Client:
                 "client_b_ip_port": j['ip_port'],
                 "client_b_name": j['user_name']
             }
+            self.conversation_token = j['conversation_token']
             flag_ok = True
             print("call starts")
         elif data[1] == 0x10:
@@ -398,7 +407,8 @@ class Client:
         mess.extend(map(ord, str({
             "called": user_name,
             "token": self.token,
-            "user_name": self.user_data['user_name']
+            "user_name": self.user_data['user_name'],
+            "conversation_token": self.conversation_token
             }).replace("'", "\"")))
 
         server_addr = self.crypto_stuff()
@@ -408,10 +418,13 @@ class Client:
         self.socket.sendto(nounce + ct, server_addr)
 
         data, addr = self.socket.recvfrom(1024)
-        
-        self.BUSY = False
 
         response = self.aes_engine.decrypt(data[:12], data[12:], None)
+        
+        print(response)
+
+        self.BUSY = False
+        self.conversation_token = None
 
         return response
 
@@ -427,6 +440,6 @@ c = Client(
 
 c.sign_in()
 c.log_in()
-c.make_call('client_b')
-c.send_bye()
+# c.make_call('client_b')
+
 

@@ -49,3 +49,111 @@ II 32 bajty na nazwe użytkownika.
 
 III dane i komunikaty (do 990 bajtow)
 
+users  = {
+	'kwitnoncy': {
+		'user_name': 'kwitnoncy',
+		'passwd_hash': '123QWERTY',
+		'email_hash': 'kwitn@put.poznan.pl',
+		'ip_addr': None,
+		'contacts':[
+			{
+				'user_name': 'rojber',
+				'note': 'Robert, kolega ze studiow'
+			},
+			{
+				'user_name': 'ASdASD',
+				'note': 'ASDASDASD'
+			}],
+		'missed_calls': []
+	}, 
+	'rojber': {
+		'user_name': 'rojber', 
+		'passwd_hash': '123QWERTY',
+		'email_hash': 'kwitn@put.poznan.pl',
+		'ip_addr': None,
+		'contacts': [],
+		'missed_calls': []
+	},
+	'client_b': {
+		'user_name': 'client_b',
+		'passwd_hash': '119e0c37fa5ee85eabaa47a6be31ec162a647d2c8e2f38e2d76c6fd022094c1e',
+		'email_hash': '6cd1fe9410ee7d6ead1836f48bdf98410f5eedcf0677c7e2eba5c8df9a0beb3d',
+		'ip_addr': ('127.0.0.1', 4200),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': 'b718ab729a5256785cc1a8642cbb931a369c9e61d941f3a45e01b7ca0ce32242'
+	}, 
+	'client_a': {
+		'user_name': 'client_a',
+		'passwd_hash': '2d4141dddfef3c2c91c11c1b4dc90c6cd95c65384490326984829aa4734989f1',
+		'email_hash': 'f20a36c36406cffd57be9a441983465b4902272a6a4e6dfa58394a73eba5224f',
+		'ip_addr': ('127.0.0.1', 4000),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': '8795ecba7e5742615bf61317cf93741f2b926f75f3eb5c4c2736862efb76639c'
+	}, 
+	'client_c': {
+		'user_name': 'client_c',
+		'passwd_hash': '2abadd7a268f5520070823cf8109bafe99d6a029596002d09aa18cd292ef8d7e',
+		'email_hash': '082a3102c5dc9c882ea5182537001a7a20f5a702f41843eaefc290db1a8f662a',
+		'ip_addr': ('127.0.0.1', 4400),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': 'df18c2012abfb26c9f1f84757e9b496a207875824de3181343575c59bbbd7fe0'
+	}
+}
+
+onine users = {
+	'b718ab729a5256785cc1a8642cbb931a369c9e61d941f3a45e01b7ca0ce32242': {
+		'user_name': 'client_b',
+		'passwd_hash': '119e0c37fa5ee85eabaa47a6be31ec162a647d2c8e2f38e2d76c6fd022094c1e',
+		'email_hash': '6cd1fe9410ee7d6ead1836f48bdf98410f5eedcf0677c7e2eba5c8df9a0beb3d',
+		'ip_addr': ('127.0.0.1', 4200),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': 'b718ab729a5256785cc1a8642cbb931a369c9e61d941f3a45e01b7ca0ce32242'
+	}, 
+	'8795ecba7e5742615bf61317cf93741f2b926f75f3eb5c4c2736862efb76639c': {
+		'user_name': 'client_a',
+		'passwd_hash': '2d4141dddfef3c2c91c11c1b4dc90c6cd95c65384490326984829aa4734989f1',
+		'email_hash': 'f20a36c36406cffd57be9a441983465b4902272a6a4e6dfa58394a73eba5224f',
+		'ip_addr': ('127.0.0.1', 4000),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': '8795ecba7e5742615bf61317cf93741f2b926f75f3eb5c4c2736862efb76639c'
+	}, 
+	'1f65cb55424f64974d7d6adbaee16560ff7e697792222fcc41007bce035bb527': {
+		'user_name': 'client_c',
+		'passwd_hash': '2abadd7a268f5520070823cf8109bafe99d6a029596002d09aa18cd292ef8d7e',
+		'email_hash': '082a3102c5dc9c882ea5182537001a7a20f5a702f41843eaefc290db1a8f662a',
+		'ip_addr': ('127.0.0.1', 4400),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': 'df18c2012abfb26c9f1f84757e9b496a207875824de3181343575c59bbbd7fe0'
+	},
+	'df18c2012abfb26c9f1f84757e9b496a207875824de3181343575c59bbbd7fe0': {
+		'user_name': 'client_c',
+		'passwd_hash': '2abadd7a268f5520070823cf8109bafe99d6a029596002d09aa18cd292ef8d7e',
+		'email_hash': '082a3102c5dc9c882ea5182537001a7a20f5a702f41843eaefc290db1a8f662a',
+		'ip_addr': ('127.0.0.1', 4400),
+		'user_ID': 0,
+		'contacts': [],
+		'missed_calls': [],
+		'busy': False,
+		'token': 'df18c2012abfb26c9f1f84757e9b496a207875824de3181343575c59bbbd7fe0'
+	}
+}
+
+

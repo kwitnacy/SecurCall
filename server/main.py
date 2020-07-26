@@ -21,6 +21,7 @@ class Server():
         self.FREE_PORTS = [i for i in range(1338, 1401, 1)]
         self.ONLINE_USERS = {}
         self.CALLS = {}
+        self.NAME_TOKEN = {}
         self.RUNNING = True
         self.TIMEOUT = 10
  
@@ -38,7 +39,24 @@ class Server():
 
 
     def close_all(self) -> None:
-        pass
+        # save users
+        f = open('users.py', 'w')
+
+        for user in self.users.values():
+            try:
+                del(user['token'])
+            except KeyError:
+                pass
+            try:
+                del(user['ip_addr'])
+            except KeyError:
+                pass
+            try:
+                del(user['busy'])
+            except KeyError:
+                pass
+        f.write('users = ' + str(self.users).replace("'", "\""))
+        f.close()
 
 
     def log(self, s: str) -> None:
@@ -62,12 +80,14 @@ class Server():
             self.ONLINE_USERS[token] = self.users[j['user_name']]
             self.ONLINE_USERS[token]['ip_addr'] = client_addr
             self.ONLINE_USERS[token]['busy'] = False
-            self.users[j['user_name']]['token'] = token
 
+            self.NAME_TOKEN[j['user_name']] = token
             return {
                 "status": "OK",
                 "mess": "Logged in",
-                "token": token
+                "token": token,
+                "contacts": self.users[j['user_name']]['contacts'],
+                "missed_call": self.users[j['user_name']]['missed_calls']
             }
         else:
             self.log('Login from: ' + str(client_addr[0]) + ':' + str(client_addr[1]) + ', username: ' + j['user_name']
@@ -116,8 +136,17 @@ class Server():
                 }
             if j['passwd_hash']:
                 self.users[j['user_name']] = j
-                self.users[j['user_name']]['ip_addr'] = None
-                self.users[j['user_name']]['user_ID'] = 0
+                self.users[j['user_name']]['contacts'] = []
+                self.users[j['user_name']]['missed_calls'] = []
+                try:
+                    del(self.users[j['user_name']]['busy'])
+                except KeyError:
+                    pass
+                try:
+                    del(self.users[j['user_name']]['ip_addr'])
+                except KeyError:
+                    pass
+ 
 
                 self.log('Sign-in from:' + str(client_addr[0]) + ':' + str(client_addr[1]) + ', username: ' +
                         j['user_name'] + ': account was created')
@@ -168,11 +197,11 @@ class Server():
                 "status": "Error",
                 "mess": "No token"
             }
-        
 
         to_call = j['to_call']
         try:
-            to_call_token = self.users[to_call]['token']
+            # to_call_token = self.users[to_call]['token']
+            to_call_token = self.NAME_TOKEN[to_call]
         except KeyError:
             self.log("Client A: " + j['user_name'] + " wanted to call Client B: " + to_call + " but client B does not exist")
             return {
@@ -257,12 +286,12 @@ class Server():
         data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
         if data[1] == 0x06:
             self.log("Client B: " + client_b_user_name + " is busy")
-            to_send_busy = bytearray()
-            to_send_busy.append(0x00)
-            to_send_busy.append(0x06)
-            nounce = os.urandom(12)
-            to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
-            s_sock.sendto(nounce + to_send_busy, client_a_addr)
+            # to_send_busy = bytearray()
+            # to_send_busy.append(0x00)
+            # to_send_busy.append(0x06)
+            # nounce = os.urandom(12)
+            # to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
+            # s_sock.sendto(nounce + to_send_busy, client_a_addr)
             return {
                 "status": "OK",
                 "mess": "Client B is busy"
@@ -320,16 +349,19 @@ class Server():
         s_sock.settimeout(self.TIMEOUT)
 
         data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
+        conversation_token = None
 
         if data[1] == 0x08:
             # OK
+            conversation_token = str(os.urandom(12).hex())
             to_send_ok = bytearray()
             to_send_ok.append(0x00)
             to_send_ok.append(0x08)
             to_send_ok.extend(map(ord, str({
                 'user_name': client_b_user_name,
                 'ip_addr': client_b_ip[0],
-                'ip_port': client_b_ip[1]
+                'ip_port': client_b_ip[1],
+                'conversation_token': conversation_token
             }).replace("'", "\"")))
             nounce = os.urandom(12)
             to_send_ok = client_a_aes_engine.encrypt(nounce, bytes(to_send_ok), None)
@@ -365,6 +397,7 @@ class Server():
             data, addr = s_sock.recvfrom(1024)
         except s.timeout:
             # client A did not send ACK for OK for ringing
+            self.log("client_a no ACK for OK")
             to_send_nack = bytearray()
             to_send_nack.append(0x00)
             to_send_nack.append(0x40)
@@ -383,6 +416,9 @@ class Server():
             to_send_ACK = bytearray()
             to_send_ACK.append(0x00)
             to_send_ACK.append(0x80)
+            to_send_ACK.extend(map(ord, str({
+                'conversation_token': conversation_token
+            }).replace("'", "\"")))
             to_send_ACK = client_b_aes_engine.encrypt(nounce, bytes(to_send_ACK), None)
             s_sock.sendto(nounce + to_send_ACK, client_b_ip)
         else:
@@ -400,6 +436,11 @@ class Server():
             }
         
         self.log("Call was estamblished between Client A: " + j['user_name'] + "and Client B: " + client_b_user_name)
+        self.CALLS[conversation_token] = {
+            "A": client_a['user_name'],
+            "B": client_b_user_name,
+            "start": time.strftime('[%h %d %H:%M:%S') + ']'
+        }
         return {
             "status": "OK",
             "mess": "call was estamblished"
@@ -407,10 +448,203 @@ class Server():
 
 
     def bye(self, j: dict, client_a_addr: (str, int), client_a_aes_engine, server_public_key, server_private_key, s_sock):
-    # Send BYE frame to users in conversation
-    # Get addresses from client a, send to client b BYE
-    # Forward ACK from client b to client a
+        # Send BYE frame to users in conversation
+        # Get addresses from client a, send to client b BYE
+        # Forward ACK from client b to client a
+        try:
+            t = j['token']
+        except KeyError:
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "No token provided"
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "No token provided"
+            }
+        
+        conversation = None
+
+        try:
+            conversation = self.CALLS[j['conversation_token']]
+        except KeyError:
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "No such call"
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "No such call"
+            }
+        
+        if j['user_name'] not in conversation.values():
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "You are not part of conversation"
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "You are not part of conversation"
+            }
+        
+        client_a = self.users[j['user_name']]
+        client_b = self.users[conversation['A']] if conversation['B'] == j['user_name'] else self.users[conversation['B']]
+        
+        s_sock.sendto(server_public_key, (client_b['ip_addr'][0], client_b['ip_addr'][1] + 1))
+
+        # get key from client b
+        try:
+            client_b_pub_key, client_b_ip = s_sock.recvfrom(1024)
+        except s.timeout:
+            self.log("Client B: " + client_b_user_name + " but client B did not send key")
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "Got no pub key from client b"
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "Got no pub key from client b"
+            }
+             
+        client_b_pub_key = serialization.load_pem_public_key(client_b_pub_key, backend=default_backend())
+
+        shared_key = server_private_key.exchange(ec.ECDH(), client_b_pub_key)
+        derived_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=None,
+            info=b'handshake data',
+            backend=default_backend()
+        ).derive(shared_key)
+        client_b_aes_engine = AESGCM(derived_key)
+
+        # send bye to client b
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x20)
+        mess.extend(map(ord, str({
+            "conversation_token": j['conversation_token'],
+            "client_a_user_name": client_a['user_name']
+        }).replace("'", "\"")))
+        nounce = os.urandom(12)
+        mess = client_b_aes_engine.encrypt(nounce, bytes(mess), None)
+        s_sock.sendto(nounce + mess, client_b_ip)
+
+        # get ACK from client b
+        try:
+            data, client_b_ip = s_sock.recvfrom(1024)
+        except s.timeout:
+            self.log("Client B: " + client_b_user_name + " did not sent ACK for BYE")
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "Got no ACK for BYE"
+            }).replace("'", "\"")))
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+            return {
+                "status": "Error",
+                "mess": "Got no pub key from client b"
+            }
+
+        data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
+        
+        if data[1] != 0x80:
+            # GOT NO ACK
+            pass
+
+        # send ACK to client A
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x80)
+        nounce = os.urandom(12)
+        mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+        s_sock.sendto(nounce + mess, client_a_addr)
+
+        self.log("Call between: " + client_a['user_name'] + ", " + client_b['user_name'] + " ended")
+        return {
+            "status": "OK",
+            "mess": "Call was ended"
+        }
+
+
+    def add_contact(self, j: dict, client_addr: (str, int)) -> dict:
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to add contact from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+
+        try:
+            if j['to_add'] not in self.users:
+                self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add ' + j['to_add'] + ' but there are no such user')
+                return {
+                    "status": "Error",
+                    "mess": "No such user"
+                }
+
+        except KeyError:
+            self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add contact but gave no name')
+            return {
+                "status": "Error",
+                "mess": "No name was given"
+            }
+        self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].append({
+           'user_name': j['to_add'],
+           'note': ''
+        })
+
+        return {
+            "status": "OK",
+            "mess": "Contact was added"
+        }
+
+
+    def modify_contact(self, j: dict, client_addr: (str, int)) -> dict:
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to modify contact from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+        
+
+
+    def delete_contact(self, j: dict) -> dict:
         pass
+
 
     def session(self, data, addr, free_port):
         session_socket = s.socket(s.AF_INET, s.SOCK_DGRAM)
@@ -449,6 +683,7 @@ class Server():
         code = req[:2]
         data = json.loads(req[2:].decode('utf-8').replace("'", "\""))
 
+        send_res = True
         response = {
             "status": "Error",
             "mess": "wrong byte"
@@ -471,13 +706,17 @@ class Server():
             pass
         elif code[1] == 0x01:
             response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
+            send_res = False
         elif code[1] == 0x20:
+            print('papa')
             response = self.bye(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
+            send_res = False
 
-        nounce = os.urandom(12)
-        ct = aesgcm.encrypt(nounce, json.dumps(response).encode('utf-8'), None)
+        if send_res:
+            nounce = os.urandom(12)
+            ct = aesgcm.encrypt(nounce, json.dumps(response).encode('utf-8'), None)
 
-        session_socket.sendto(nounce + ct, addr)
+            session_socket.sendto(nounce + ct, addr)
         
         session_socket.close()
         self.FREE_PORTS.append(free_port)
@@ -501,8 +740,9 @@ class Server():
     def console(self):
         commands = ['ousers  	-> prints online users', 
             'users 		-> print all users', 
-            'quit/close	-> fucks everything up', 
-            'help 		-> help'
+            'quit/close	        -> close all', 
+            'help 		-> help',
+            'nametoken          -> prints names with tokens'
             ]
         
         while self.RUNNING:
@@ -518,6 +758,8 @@ class Server():
             elif command == 'help':
                 for x in commands:
                     print(x)
+            elif command == 'nametoken':
+                print(self.NAME_TOKEN)
             else:
                 print('wrong command')
                 for x in commands:
