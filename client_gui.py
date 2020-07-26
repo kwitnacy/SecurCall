@@ -1,5 +1,6 @@
 import tkinter as tk
 from functools import partial
+import scrollable
 
 
 def create_prelogin_screen(logo):
@@ -234,13 +235,79 @@ def create_registration_screen(logo):
 
 def create_main_menu(logo):
     menu = tk.Frame()
-    # TODO stała wielkość okna przy dużej liczbie rekordów
     def spis_polaczen():
-        spis = tk.Toplevel(menu)
-        spis.title("Spis połączeń - SecurCall")
+        spis_pol = tk.Toplevel(menu)
+        spis_pol.title("Spis połączeń - SecurCall")
+
+        header = tk.Frame(spis_pol)
+        header.pack()
+        sp = tk.Frame(spis_pol)
+        sp.pack()
+
+        spis = scrollable.Scrollable(sp)
 
         testjs = {
             'dane': [
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'czas_rozmowy': '45:21',
+                    'data': '10.04.2020',
+                    'godzina': '12:05'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'czas_rozmowy': '1:21',
+                    'data': '21.04.2020',
+                    'godzina': '3:05'
+                },
                 {
                     'imie': 'Jan Kowalski',
                     'czas_rozmowy': '45:21',
@@ -256,15 +323,17 @@ def create_main_menu(logo):
             ]
         }
 
+        header.columnconfigure(1, weight=1, minsize=200)
+        header.columnconfigure(2, weight=1, minsize=100)
         spis.columnconfigure(1, weight=1, minsize=200)
         spis.columnconfigure(2, weight=1, minsize=100)
 
         frame = tk.Frame(
-            master=spis,
+            master=header,
         )
-        frame.grid(row=1, column=1, padx=15, pady=10, sticky="nw", columnspan=2)
+        frame.grid(row=1, column=1, padx=15, pady=10, columnspan=2)
         label = tk.Label(master=frame, text='Spis połączeń', font=("Consolas", "14", 'bold'))
-        label.pack(side=tk.LEFT)
+        label.pack()
 
         rowcounter = 2
 
@@ -302,6 +371,7 @@ def create_main_menu(logo):
             rowcounter += 1
 
         spis.rowconfigure(rowcounter, weight=1, minsize=15)
+        spis.update()
 
 
     # TODO wszystko tu xd
@@ -309,12 +379,15 @@ def create_main_menu(logo):
         ustaw = tk.Toplevel(menu)
         ustaw.title("Ustawienia - SecurCall")
 
-    # TODO stała wielkość okna przy dużej liczbie rekordów, notatka multiline
+    # TODO notatka multiline
     def kontakty():
         def zadzwon_kontakt():
             pass
 
         def edytuj_kontakt(recnum):
+            def zapisz_edycje():
+                pass
+
             recnum -= 2
             edyt = tk.Toplevel(kontakt)
             edyt.title("Edycja kontaktu - SecurCall")
@@ -325,6 +398,8 @@ def create_main_menu(logo):
             edyt.rowconfigure(2, weight=1, minsize=50)
             edyt.rowconfigure(3, weight=1, minsize=50)
             edyt.rowconfigure(4, weight=1, minsize=50)
+            edyt.rowconfigure(4, weight=1, minsize=50)
+
 
             frame = tk.Frame(
                 master=edyt,
@@ -378,14 +453,80 @@ def create_main_menu(logo):
             label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
             label1.pack(side=tk.RIGHT)
 
+            frame = tk.Frame(
+                master=edyt
+            )
+            frame.grid(row=1, column=2, padx=10, pady=10, sticky="e")
+            button1 = tk.Button(master=frame, text="Zapisz", font=("Helvetica", "10", "bold"),
+                                command=zapisz_edycje)
+            button1.pack(side=tk.RIGHT)
+
 
         def usun_kontakt():
             pass
 
-        kontakt = tk.Toplevel(menu)
-        kontakt.title("Kontakty - SecurCall")
+        kontakty = tk.Toplevel(menu)
+        kontakty.title("Kontakty - SecurCall")
+
+        header = tk.Frame(kontakty)
+        header.pack()
+        k = tk.Frame(kontakty)
+        k.pack()
+
+        kontakt = scrollable.Scrollable(k)
+
         testjs = {
             'dane': [
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                },
+                {
+                    'imie': 'Jan Kowalski',
+                    'id': 'janekkk',
+                    'notatka': 'Kierownik działu'
+                },
+                {
+                    'imie': 'Robert Molenda',
+                    'id': 'robert',
+                    'notatka': ''
+                },
                 {
                     'imie': 'Jan Kowalski',
                     'id': 'janekkk',
@@ -399,15 +540,17 @@ def create_main_menu(logo):
             ]
         }
 
+        header.columnconfigure(1, weight=1, minsize=200)
+        header.columnconfigure(2, weight=1, minsize=100)
         kontakt.columnconfigure(1, weight=1, minsize=200)
         kontakt.columnconfigure(2, weight=1, minsize=100)
 
         frame = tk.Frame(
-            master=kontakt,
+            master=header,
         )
-        frame.grid(row=1, column=1, padx=15, pady=10, sticky="nw", columnspan=2)
+        frame.grid(row=1, column=1, padx=15, pady=10, columnspan=2)
         label = tk.Label(master=frame, text='Spis kontaktów', font=("Consolas", "14", 'bold'))
-        label.pack(side=tk.LEFT)
+        label.pack()
 
         rowcounter = 2
         recordcounter = 0
@@ -425,7 +568,7 @@ def create_main_menu(logo):
             frame = tk.Frame(
                 master=kontakt,
             )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="s")
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
             button = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"),
                                command=partial(zadzwon_kontakt, recordcounter))
             button.pack(side=tk.LEFT)
@@ -444,7 +587,7 @@ def create_main_menu(logo):
             frame = tk.Frame(
                 master=kontakt,
             )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="nw")
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
             button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"),
                                command=partial(edytuj_kontakt, recordcounter))
             button.pack(side=tk.LEFT)
@@ -468,8 +611,8 @@ def create_main_menu(logo):
             frame = tk.Frame(
                 master=kontakt,
             )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="nw")
-            button = tk.Button(master=frame, padx=14.4, text="Usuń", font=("Helvetica", "10"), command=usun_kontakt)
+            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
+            button = tk.Button(master=frame, padx=14.5, text="Usuń", font=("Helvetica", "10"), command=usun_kontakt)
             button.pack(side=tk.LEFT)
             buttons.append(button)
 
@@ -477,6 +620,8 @@ def create_main_menu(logo):
             recordcounter += 1
 
         kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
+        kontakt.update()
+
 
     def zadzwon():
         entry1.insert(0, 'kliknieto')
@@ -619,7 +764,6 @@ if __name__ == '__main__':
     global img
     img = tk.PhotoImage(file="logo.png")
     img = img.subsample(1, 1)
-
 
     current = create_prelogin_screen(img)
     current.pack()
