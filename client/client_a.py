@@ -456,6 +456,42 @@ class Client:
         return response
 
 
+    def add_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x04)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_add": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def modify_contact(self, user_name: str, data: dict) -> dict:
+        mess = bytearray()
+        mess.append(0x08)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_modify": user_name,
+            "contact": data
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def delete_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x0C)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_delete": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
 
 c = Client(
     server_addr='127.0.0.1',
@@ -467,8 +503,18 @@ c = Client(
 
 c.sign_in()
 c.log_in()
+print(c.add_contact("kwitnoncy"))
+print(c.add_contact("rojber"))
+print(c.add_contact("test_wrong"))
+
+print(c.modify_contact("kwitnoncy", {"name":"Piotr Kwiatkowski", "note":"kolega"}))
+
+print(c.delete_contact("rojber"))
+
+"""
 c.make_call('client_b')
 time.sleep(2)
 c.send_bye('client_b')
+"""
 
 

@@ -208,3 +208,51 @@
 [Jul 25 13:06:43] Login from: 127.0.0.1:4200, username: client_b: success :)
 [Jul 25 13:06:44] Sign-in from:127.0.0.1:4400, username: client_c: account was created
 [Jul 25 13:06:44] Login from: 127.0.0.1:4400, username: client_c: success :)
+[Jul 27 12:04:21] Sign-in from:127.0.0.1:4000, username: client_a: account was created
+[Jul 27 12:04:21] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:26:14] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:26:14] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:26:14] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:26:14] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:32:37] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:32:37] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:32:37] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:32:37] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:33:39] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:33:39] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:33:39] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:33:39] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:34:13] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:34:13] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:34:13] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:34:13] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:34:13] client_a wanted to add the contact but no data was given
+[Jul 27 14:36:27] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:36:27] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:36:27] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:36:27] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:36:27] client_a wanted to add the contact but no data was given
+[Jul 27 14:36:27] client_a wanted to add the contact but no data was given
+[Jul 27 14:38:47] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:38:47] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:38:47] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:38:47] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:38:47] client_a wanted to add the contact but no data was given
+[Jul 27 14:38:47] client_a wanted to add the contact but no data was given
+[Jul 27 14:39:33] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:39:33] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:39:33] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:39:33] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:40:25] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:40:25] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:40:25] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:40:25] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:42:13] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:42:13] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:42:13] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:42:13] client_a wanted to add test_wrong but there are no such user
+[Jul 27 14:42:13] client_a wanted to add the contact but no data was given
+[Jul 27 14:43:00] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Jul 27 14:43:00] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Jul 27 14:43:00] client_a wanted to add contact but kwitnoncy already exists
+[Jul 27 14:43:00] client_a wanted to add test_wrong but there are no such user

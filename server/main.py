@@ -136,7 +136,7 @@ class Server():
                 }
             if j['passwd_hash']:
                 self.users[j['user_name']] = j
-                self.users[j['user_name']]['contacts'] = []
+                self.users[j['user_name']]['contacts'] = {}
                 self.users[j['user_name']]['missed_calls'] = []
                 try:
                     del(self.users[j['user_name']]['busy'])
@@ -292,6 +292,11 @@ class Server():
             # nounce = os.urandom(12)
             # to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
             # s_sock.sendto(nounce + to_send_busy, client_a_addr)
+            self.users[client_b_user_name]['missed_calls'].append({
+                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "who": j['user_name']
+            })
+
             return {
                 "status": "OK",
                 "mess": "Client B is busy"
@@ -612,17 +617,24 @@ class Server():
                     "status": "Error",
                     "mess": "No such user"
                 }
-
         except KeyError:
             self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add contact but gave no name')
             return {
                 "status": "Error",
                 "mess": "No name was given"
             }
-        self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].append({
+
+        if j['to_add'] in self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].keys():
+            self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add contact but ' + j['to_add'] + ' already exists')
+            return {
+                "status": "Error",
+                "mess": "Contact already exists"
+            }
+
+        self.users[self.ONLINE_USERS[token]['user_name']]['contacts'][j['to_add']] = {
            'user_name': j['to_add'],
            'note': ''
-        })
+        }
 
         return {
             "status": "OK",
@@ -639,10 +651,59 @@ class Server():
                 "status": "Error",
                 "mess": "No token"
             }
-        
+        print(j)
+        try:
+            if j['to_modify'] not in self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].keys() or not j['contact']:
+                self.log(self.ONLINE_USERS[token]['user_name'] + 'has no contact: ' + j['to_modify'])
+                return {
+                    "status": "Error",
+                    "mess": "No such contact"
+                }
+        except KeyError:
+            self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add the contact but no data was given')
+            return {
+                "status": "Error",
+                "mess": "No contact data was given"
+            }
+
+        self.users[self.ONLINE_USERS[token]['user_name']]['contacts'][j['to_modify']] = j['contact']
+        return {
+            "status": "OK",
+            "mess": "Contact was changed"
+        }
 
 
-    def delete_contact(self, j: dict) -> dict:
+    def delete_contact(self, j: dict, client_addr: (str, int)) -> dict:
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to modify contact from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+        try:
+            if j['to_delete'] not in self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].keys():
+                self.log(self.ONLINE_USERS[token]['user_name'] + 'has no contact: ' + j['to_delete'])
+                return {
+                    "status": "Error",
+                    "mess": "No such contact"
+                }
+        except:
+            self.log(self.ONLINE_USERS[token]['user_name'] + ' wanted to add the contact but no data was given')
+            return {
+                "status": "Error",
+                "mess": "No contact data was given"
+            }
+
+        del(self.users[self.ONLINE_USERS[token]['user_name']]['contacts'][j['to_delete']])
+        return {
+            "status": "OK",
+            "mess": "Deleted contact"
+        }
+
+
+    def get_conntacts(self, j: dict, client_addr: (str, int)) -> dict:
         pass
 
 
@@ -681,7 +742,12 @@ class Server():
         req = aesgcm.decrypt(data[:12], data[12:], None)
 
         code = req[:2]
-        data = json.loads(req[2:].decode('utf-8').replace("'", "\""))
+        try:
+            data = json.loads(req[2:].decode('utf-8').replace("'", "\""))
+        except:
+            print(req[2:].decode('utf-8').replace("'", "\""))
+            print("BLOND")
+            return None
 
         send_res = True
         response = {
@@ -689,26 +755,39 @@ class Server():
             "mess": "wrong byte"
         }
 
+        # log in
         if code[0] == 0x01:
             response = self.log_in(data, addr)
 
+        # log out
         elif code[0] == 0x02:
             response = self.log_out(data)
 
+        # sign in
         elif code[0] == 0x03:
             response = self.sign_in(data, addr)
 
+        # add contact
         elif code[0] == 0x04:
+            response = self.add_contact(data, addr)
+
+        # edit contact
+        elif code[0] == 0x08:
+            response = self.modify_contact(data, addr)
+
+        # delete contact
+        elif code[0] == 0x0C:
+            response = self.delete_contact(data, addr)
+
+        # get contacts
+        elif code[0] == 0x0E:
             pass
-        elif code[0] == 0x05:
-            pass
-        elif code[0] == 0x06:
-            pass
+
         elif code[1] == 0x01:
             response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
             send_res = False
+
         elif code[1] == 0x20:
-            print('papa')
             response = self.bye(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
             send_res = False
 
