@@ -2,6 +2,7 @@ import socket
 import pyaudio
 import time
 import threading
+import audioop
 
 
 class Client:
@@ -38,9 +39,10 @@ class Client:
     def init_audio_input(self):
         def callback(in_data, frame_count, time_info, status):
             try:
+                in_data = audioop.lin2alaw(in_data, 2)
                 self.UDP_CONNECTION.sendto(in_data, ("127.0.0.1", 12345))
             except Exception as e:
-                # print("UDP sending error:", e)
+                print("UDP sending error:", e)
                 return in_data, pyaudio.paComplete
             return in_data, pyaudio.paContinue
 
@@ -59,10 +61,13 @@ class Client:
                 try:
                     self.UDP_CONNECTION.settimeout(1)
                     in_data, _ = self.UDP_CONNECTION.recvfrom(self.CHUNK * 2)
+                    # print('first: ', len(in_data))
+                    in_data = audioop.alaw2lin(in_data, 2)
+                    # print('second', len(in_data))
                     self.UDP_CONNECTION.settimeout(None)
                     break
                 except socket.timeout as e:
-                    # print("Odtwarzanie błąd 1:", e)
+                    print("Odtwarzanie błąd 1:", e)
                     continue
                 except:
                     return in_data, pyaudio.paComplete

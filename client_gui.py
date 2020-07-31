@@ -238,6 +238,7 @@ def create_main_menu(logo):
     def spis_polaczen():
         spis_pol = tk.Toplevel(menu)
         spis_pol.title("Spis połączeń - SecurCall")
+        spis_pol.resizable(False, False)
 
         header = tk.Frame(spis_pol)
         header.pack()
@@ -379,7 +380,6 @@ def create_main_menu(logo):
         ustaw = tk.Toplevel(menu)
         ustaw.title("Ustawienia - SecurCall")
 
-    # TODO notatka multiline
     def kontakty():
         def zadzwon_kontakt():
             pass
@@ -391,6 +391,7 @@ def create_main_menu(logo):
             recnum -= 2
             edyt = tk.Toplevel(kontakt)
             edyt.title("Edycja kontaktu - SecurCall")
+            edyt.resizable(False, False)
 
             edyt.columnconfigure(1, weight=1, minsize=50)
             edyt.columnconfigure(2, weight=1, minsize=200)
@@ -461,7 +462,6 @@ def create_main_menu(logo):
                                 command=zapisz_edycje)
             button1.pack(side=tk.RIGHT)
 
-
         def usun_kontakt():
             pass
 
@@ -480,7 +480,7 @@ def create_main_menu(logo):
                 {
                     'imie': 'Jan Kowalski',
                     'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
+                    'notatka': 'Kierownik działu bla bla bla bla bla bla blablablabla balb al bal balb abla balb ala'
                 },
                 {
                     'imie': 'Robert Molenda',
@@ -604,7 +604,7 @@ def create_main_menu(logo):
                 label.pack(side=tk.LEFT)
                 labels.append(label)
             else:
-                label = tk.Label(master=frame, text=record['notatka'], font=("Helvetica", "10"))
+                label = tk.Label(master=frame, text='Notatka: ' + record['notatka'], font=("Helvetica", "10"), wraplength=250, justify=tk.LEFT)
                 label.pack(side=tk.LEFT)
                 labels.append(label)
 
