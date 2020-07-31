@@ -3,6 +3,7 @@ import pyaudio
 import time
 import threading
 import audioop
+from pylibsrtp import Policy, Session
 
 
 class Client:
@@ -40,7 +41,14 @@ class Client:
         def callback(in_data, frame_count, time_info, status):
             try:
                 in_data = audioop.lin2alaw(in_data, 2)
-                self.UDP_CONNECTION.sendto(in_data, ("127.0.0.1", 12345))
+                # TODO wypełnienie nagłówka protokołu
+                in_data = b'\x80\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + in_data
+                """ zabezpieczenie transmisji
+                key = (b'\x00' * 30)
+                tx_policy = Policy(key=key, ssrc_type=Policy.SSRC_ANY_OUTBOUND)
+                tx_session = Session(policy=tx_policy)
+                in_data = tx_session.protect(in_data)"""
+                self.UDP_CONNECTION.sendto(in_data, ("127.0.0.1", 12344))
             except Exception as e:
                 print("UDP sending error:", e)
                 return in_data, pyaudio.paComplete
@@ -61,8 +69,13 @@ class Client:
                 try:
                     self.UDP_CONNECTION.settimeout(1)
                     in_data, _ = self.UDP_CONNECTION.recvfrom(self.CHUNK * 2)
+                    """ zabezpieczenie transmisji
+                    key = (b'\x00' * 30)
+                    rx_policy = Policy(key=key, ssrc_type=Policy.SSRC_ANY_INBOUND)
+                    rx_session = Session(policy=rx_policy)
+                    in_data = rx_session.unprotect(in_data)"""
                     # print('first: ', len(in_data))
-                    in_data = audioop.alaw2lin(in_data, 2)
+                    in_data = audioop.alaw2lin(in_data[12:], 2)
                     # print('second', len(in_data))
                     self.UDP_CONNECTION.settimeout(None)
                     break
@@ -86,7 +99,7 @@ class Client:
         tmp = 55555
         self.UDP_CONNECTION = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            self.UDP_CONNECTION.bind(("127.0.0.1", 12345))
+            self.UDP_CONNECTION.bind(("127.0.0.1", 12344))
         except Exception as e:
             pass
             # print("UDP init error:", str(e))
