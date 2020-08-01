@@ -3,6 +3,8 @@ import pyaudio
 import time
 import threading
 import audioop
+import random
+import secrets
 from pylibsrtp import Policy, Session
 
 
@@ -16,12 +18,28 @@ class Client:
         self.frames2 = []
         self.p = pyaudio.PyAudio()
         self.UDP_CONNECTION = None
+        self.SEQUENCE_NUM = 0
+        self.TIMESTAMP = 0
+        self.SSRC = 0
+        self.SRTPkey = secrets.token_bytes(30)
+        self.rx_session = None
+        self.tx_session = None
 
     def test(self):
         self.init_UDP_connection()
+        self.init_session()
         t_udp_controller = threading.Thread(target=self.udp_controller)
         t_udp_controller.start()
         return True
+
+    def init_session(self):
+        self.SEQUENCE_NUM = random.randint(1, 9999)
+        self.TIMESTAMP = random.randint(1, 9999)
+        self.SSRC = random.randint(1, 9999)
+        tx_policy = Policy(key=self.SRTPkey, ssrc_type=Policy.SSRC_ANY_OUTBOUND)
+        self.tx_session = Session(policy=tx_policy)
+        rx_policy = Policy(key=self.SRTPkey, ssrc_type=Policy.SSRC_ANY_INBOUND)
+        self.rx_session = Session(policy=rx_policy)
 
     def udp_controller(self):
         inp = self.init_audio_input()
@@ -41,17 +59,19 @@ class Client:
         def callback(in_data, frame_count, time_info, status):
             try:
                 in_data = audioop.lin2alaw(in_data, 2)
-                # TODO wypełnienie nagłówka protokołu
-                in_data = b'\x80\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + in_data
-                """ zabezpieczenie transmisji
-                key = (b'\x00' * 30)
-                tx_policy = Policy(key=key, ssrc_type=Policy.SSRC_ANY_OUTBOUND)
-                tx_session = Session(policy=tx_policy)
-                in_data = tx_session.protect(in_data)"""
+                in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
+                          self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4, byteorder='big') + in_data
+                in_data = self.tx_session.protect(in_data)
                 self.UDP_CONNECTION.sendto(in_data, ("127.0.0.1", 12344))
             except Exception as e:
                 print("UDP sending error:", e)
                 return in_data, pyaudio.paComplete
+
+            if self.SEQUENCE_NUM > 65530:
+                self.SEQUENCE_NUM = random.randint(1, 9999)
+            else:
+                self.SEQUENCE_NUM += 1
+            self.TIMESTAMP += 1
             return in_data, pyaudio.paContinue
 
         p = pyaudio.PyAudio()
@@ -69,11 +89,7 @@ class Client:
                 try:
                     self.UDP_CONNECTION.settimeout(1)
                     in_data, _ = self.UDP_CONNECTION.recvfrom(self.CHUNK * 2)
-                    """ zabezpieczenie transmisji
-                    key = (b'\x00' * 30)
-                    rx_policy = Policy(key=key, ssrc_type=Policy.SSRC_ANY_INBOUND)
-                    rx_session = Session(policy=rx_policy)
-                    in_data = rx_session.unprotect(in_data)"""
+                    in_data = self.rx_session.unprotect(in_data)
                     # print('first: ', len(in_data))
                     in_data = audioop.alaw2lin(in_data[12:], 2)
                     # print('second', len(in_data))
