@@ -704,7 +704,20 @@ class Server():
 
 
     def get_conntacts(self, j: dict, client_addr: (str, int)) -> dict:
-        pass
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to modify contact from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+
+        return {
+            "status": "OK",
+            "mess": "Contacts",
+            "contacts": self.users[self.ONLINE_USERS[token]['user_name']]['contacts']
+        }
 
 
     def session(self, data, addr, free_port):
