@@ -493,6 +493,17 @@ class Client:
         return self.send_req(mess)
 
 
+    def get_contacts(self) -> dict:
+        mess = bytearray()
+        mess.append(0x0E)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
 c = Client(
     server_addr='127.0.0.1',
     server_port=1337,
@@ -507,9 +518,11 @@ print(c.add_contact("kwitnoncy"))
 print(c.add_contact("rojber"))
 print(c.add_contact("test_wrong"))
 
-print(c.modify_contact("kwitnoncy", {"name":"Piotr Kwiatkowski", "note":"kolega"}))
+print(c.modify_contact("kwitnoncy", {"name": "Piotr Kwiatkowski", "note": "kolega"}))
+print(c.modify_contact("rojber", {"name": "Robert Molenda", "note": "kolega"}))
 
-print(c.delete_contact("rojber"))
+
+print(c.get_contacts())
 
 """
 c.make_call('client_b')

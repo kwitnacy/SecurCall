@@ -355,10 +355,12 @@ class Server():
 
         data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
         conversation_token = None
+        srtp_security_token = None
 
         if data[1] == 0x08:
             # OK
             conversation_token = str(os.urandom(12).hex())
+            srtp_security_token = str(os.urandom(30).hex())
             to_send_ok = bytearray()
             to_send_ok.append(0x00)
             to_send_ok.append(0x08)
@@ -366,7 +368,8 @@ class Server():
                 'user_name': client_b_user_name,
                 'ip_addr': client_b_ip[0],
                 'ip_port': client_b_ip[1],
-                'conversation_token': conversation_token
+                'conversation_token': conversation_token,
+                'srtp_security_token': srtp_security_token
             }).replace("'", "\"")))
             nounce = os.urandom(12)
             to_send_ok = client_a_aes_engine.encrypt(nounce, bytes(to_send_ok), None)
@@ -422,7 +425,8 @@ class Server():
             to_send_ACK.append(0x00)
             to_send_ACK.append(0x80)
             to_send_ACK.extend(map(ord, str({
-                'conversation_token': conversation_token
+                'conversation_token': conversation_token,
+                'srtp_security_token': srtp_security_token
             }).replace("'", "\"")))
             to_send_ACK = client_b_aes_engine.encrypt(nounce, bytes(to_send_ACK), None)
             s_sock.sendto(nounce + to_send_ACK, client_b_ip)
@@ -651,7 +655,7 @@ class Server():
                 "status": "Error",
                 "mess": "No token"
             }
-        print(j)
+
         try:
             if j['to_modify'] not in self.users[self.ONLINE_USERS[token]['user_name']]['contacts'].keys() or not j['contact']:
                 self.log(self.ONLINE_USERS[token]['user_name'] + 'has no contact: ' + j['to_modify'])
@@ -794,7 +798,7 @@ class Server():
 
         # get contacts
         elif code[0] == 0x0E:
-            pass
+            response = self.get_conntacts(data, addr)
 
         elif code[1] == 0x01:
             response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)

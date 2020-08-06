@@ -1,0 +1,8 @@
+[Aug 05 21:05:33] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 05 21:05:33] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 05 21:05:33] client_a wanted to add contact but kwitnoncy already exists
+[Aug 05 21:05:33] client_a wanted to add test_wrong but there are no such user
+[Aug 05 21:07:00] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 05 21:07:00] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 05 21:07:00] client_a wanted to add contact but kwitnoncy already exists
+[Aug 05 21:07:00] client_a wanted to add test_wrong but there are no such user
