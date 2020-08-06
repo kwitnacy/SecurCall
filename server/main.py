@@ -402,7 +402,7 @@ class Server():
             }
 
         try:
-            data, addr = s_sock.recvfrom(1024)
+            data, client_a_addr = s_sock.recvfrom(1024)
         except s.timeout:
             # client A did not send ACK for OK for ringing
             self.log("client_a no ACK for OK")
@@ -426,7 +426,9 @@ class Server():
             to_send_ACK.append(0x80)
             to_send_ACK.extend(map(ord, str({
                 'conversation_token': conversation_token,
-                'srtp_security_token': srtp_security_token
+                'srtp_security_token': srtp_security_token,
+                'ip_addr': client_a_addr[0],
+                'ip_port': client_a_addr[1],
             }).replace("'", "\"")))
             to_send_ACK = client_b_aes_engine.encrypt(nounce, bytes(to_send_ACK), None)
             s_sock.sendto(nounce + to_send_ACK, client_b_ip)

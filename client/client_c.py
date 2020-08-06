@@ -52,6 +52,23 @@ class Client:
         self.thread_info = threading.Thread(target=self.info_fun, args=())
 
 
+    def update_user_data(self, user_name: str, passwd: str, email: str = '') -> None:
+        if email:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex())
+            }
+        else:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : ''
+            }
+
+        return None
+
+
     def info_fun(self):
         print('info :)')
         
@@ -181,30 +198,12 @@ class Client:
                     "mess": "got wrong byte after RINGING"
                 }
 
+            self.aes_engine_call = aes_engine_call
+            self.server_info_addr = server_info_addr
             print('RING RING')
             print(j['user_name'], 'is calling you')
             time.sleep(1)
-
-            # Send OK/NOK
-            to_send_ok = bytearray()
-            to_send_ok.append(0x00)
-            to_send_ok.append(0x08) # OK
-            # to_send_ok.append(0x10) # NOK
-            nounce = os.urandom(12)
-            to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
-            self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
-
-            print("send OK")
-            # print("send NOK")
-            
-            data, server_info_addr = self.socket_info.recvfrom(1024)
-            data = aes_engine_call.decrypt(data[:12], data[12:], None)
-
-            # Get ACK
-            if data[1] == 0x80:
-                self.BUSY = True
-                self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
-                self.thread_call_get.start()
+            self.send_ok()
 
         else:
             print('got shitty mess')
@@ -213,6 +212,44 @@ class Client:
         # TODO
         return None 
             
+
+    def send_ok(self):
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x08)
+        nounce = os.urandom(12)
+        mess = self.aes_engine_call.encrypt(nounce, bytes(mess), None)
+        self.socket_info.sendto(nounce + mess, self.server_info_addr)
+
+        print('Send OK')
+
+        data, server_info_addr = self.socket_info.recvfrom(1024)
+        data = self.aes_engine_call.decrypt(data[:12], data[12:], None)
+
+        j = json.load(data[2:].decode('utf-8').replace("'", "\""))
+        self.caller = {
+            'ip_addr': j['ip_addr'],
+            'port': j['port'],
+            'conversation_token': j['conversation_token'],
+            'srtp_security_token': j['srtp_security_token']
+        }
+
+        if data[1] == 0x80:
+            self.BUSY = True
+            self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
+            self.thread_call_get.start()
+
+
+    def send_nok(self):
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x10)
+        nounce = os.urandom(12)
+        mess = self.aes_engine_call.encrypt(nounce, bytes(mess), None)
+        self.socket_info.sendto(nounce + mess, self.server_info_addr)
+
+        print('Send NOK')
+
 
     def crypto_stuff(self) -> (str, int):
         private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
@@ -428,6 +465,53 @@ class Client:
 
         return response
 
+
+    def add_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x04)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_add": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def modify_contact(self, user_name: str, data: dict) -> dict:
+        mess = bytearray()
+        mess.append(0x08)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_modify": user_name,
+            "contact": data
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def delete_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x0C)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_delete": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def get_contacts(self) -> dict:
+        mess = bytearray()
+        mess.append(0x0E)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
 
 
 c = Client(

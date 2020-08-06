@@ -52,6 +52,23 @@ class Client:
         self.thread_info = threading.Thread(target=self.info_fun, args=())
 
 
+    def update_user_data(self, user_name: str, passwd: str, email: str = '') -> None:
+        if email:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex())
+            }
+        else:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : ''
+            }
+
+        return None
+
+
     def info_fun(self):
         print('info :)')
         
@@ -188,21 +205,6 @@ class Client:
             time.sleep(1)
             self.send_ok()
 
-            """
-            # Send OK/NOK
-            to_send_ok = bytearray()
-            to_send_ok.append(0x00)
-            to_send_ok.append(0x08) # OK
-            # to_send_ok.append(0x10) # NOK
-            nounce = os.urandom(12)
-            to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
-            self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
-
-            print("send OK")
-            # print("send NOK")
-            """
-            
-
         else:
             print('got shitty mess')
             return None
@@ -223,6 +225,14 @@ class Client:
 
         data, server_info_addr = self.socket_info.recvfrom(1024)
         data = self.aes_engine_call.decrypt(data[:12], data[12:], None)
+
+        j = json.load(data[2:].decode('utf-8').replace("'", "\""))
+        self.caller = {
+            'ip_addr': j['ip_addr'],
+            'port': j['port'],
+            'conversation_token': j['conversation_token'],
+            'srtp_security_token': j['srtp_security_token']
+        }
 
         if data[1] == 0x80:
             self.BUSY = True
@@ -524,10 +534,8 @@ print(c.modify_contact("rojber", {"name": "Robert Molenda", "note": "kolega"}))
 
 print(c.get_contacts())
 
-"""
 c.make_call('client_b')
 time.sleep(2)
 c.send_bye('client_b')
-"""
 
 
