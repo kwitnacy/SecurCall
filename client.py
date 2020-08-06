@@ -1,34 +1,535 @@
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import socket
 import pyaudio
 import time
+import os
 import threading
 import audioop
 import random
+import json
 import secrets
 from pylibsrtp import Policy, Session
+from typing import Optional, Union
+
+# TODO update danych klienta
+
+
+def my_hash(b: bytes) -> bytes:
+    h = hashes.Hash(hashes.SHA256(), default_backend())
+    h.update(b)
+    return h.finalize()
 
 
 class Client:
-    def __init__(self):
+    def __init__(self, server_addr: str = '', server_port: int = 0):
+        # --- PYAUDIO CONFIG VARS ---
         self.CHUNK = 512
         self.FORMAT = pyaudio.paInt16
         self.CHANNELS = 1
         self.RATE = 44100
-        self.frames1 = []
-        self.frames2 = []
-        self.p = pyaudio.PyAudio()
+
+        # --- UDP VARS ---
         self.UDP_CONNECTION = None
+        self.HOST = '127.0.0.1'
+        self.PORT = random.randint(5000, 30000) * 2
+        self.TIMESOUT = 10
+
+        # --- RTP/SRTP VARS ---
         self.SEQUENCE_NUM = 0
         self.TIMESTAMP = 0
         self.SSRC = 0
-        self.SRTPkey = secrets.token_bytes(30)
+        self.SRTPkey = None
         self.rx_session = None
         self.tx_session = None
+        self.call_thread = None
 
+        # --- CLIENT DATA ---
+        self.user_data = None
+
+        # --- SIP DATA ---
+        self.ONLINE = False
+        self.BUSY = False
+        self.RUNNING = True
+
+        self.aes_engine = None
+
+        # --- SIP SOCKETS ---
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((self.HOST, self.PORT + 2))
+
+        self.socket_info = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket_info.bind((self.HOST, self.PORT + 3))
+
+        self.server_addr_main = server_addr
+        self.server_port_main = server_port
+
+        self.thread_info = threading.Thread(target=self.info_fun, args=())
+
+    # --- AUTHENTICATION ---
+    def sign_in(self, user_name: str = '', passwd: str = '', email: str = '') -> bool:
+        mess = bytearray()
+        mess.append(0x03)
+        mess.append(0x00)
+        user_data = {
+            'user_name': user_name,
+            'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+            'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex())
+        }
+        mess.extend(map(ord, str(user_data).replace("'", "\"")))
+        res = self.send_req(mess=bytes(mess))
+        if res['status'] == 'OK':
+            return True
+        else:
+            return False
+
+    def log_in(self, user_name: str = '', passwd: str = '', email: str = '') -> bool:
+        mess = bytearray()
+        mess.append(0x01)
+        mess.append(0x00)
+        user_data = {
+            'user_name': user_name,
+            'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+            'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex())
+        }
+        mess.extend(map(ord, str(user_data).replace("'", "\"")))
+        res = self.send_req(mess=bytes(mess))
+
+        if res['status'] == 'OK':
+            self.ONLINE = True
+            self.token = res['token']
+            self.user_data = {
+                'user_name': user_name,
+                'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex())
+            }
+            self.thread_info.start()
+            return True
+        else:
+            return False
+
+    # --- SERVER COMMUNICATION ---
+    def send_req(self, mess: Union[bytes, bytearray] = None) -> dict:
+        server_addr = self.crypto_stuff()
+        nonce = os.urandom(12)
+
+        ct = self.aes_engine.encrypt(nonce, bytes(mess), None)
+
+        self.socket.sendto(nonce + ct, server_addr)
+        data = self.socket.recv(1024)
+
+        response = self.aes_engine.decrypt(data[:12], data[12:], None)
+
+        j = json.loads(response)
+
+        return j
+
+    def info_fun(self):
+        print('info :)')
+
+        # listen for datagrams from server about phonecalls
+        self.socket_info.settimeout(self.TIMESOUT)
+        while self.RUNNING:
+            try:
+                data, addr = self.socket_info.recvfrom(1024)
+                self.get_info(data, addr)
+            except socket.timeout:
+                pass
+
+    def get_info(self, server_public_bytes: bytes, server_info_addr: (str, int)) -> None:
+        print("chyba ktos bedzie dzwonil")
+        private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
+        public_key = private_key.public_key()
+        public_key_bytes = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+        server_public_key = serialization.load_pem_public_key(server_public_bytes, backend=default_backend())
+        shared_key = private_key.exchange(ec.ECDH(), server_public_key)
+
+        derived_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=None,
+            info=b'handshake data',
+            backend=default_backend()
+        ).derive(shared_key)
+
+        aes_engine_call = AESGCM(derived_key)
+
+        # Got server public key
+
+        # Sent self public key to server
+        self.socket_info.sendto(public_key_bytes, server_info_addr)
+
+        # Got "request"
+        data, server_info_addr = self.socket_info.recvfrom(1024)
+
+        data = aes_engine_call.decrypt(data[:12], data[12:], None)
+
+        print(data, "hej hej")
+        code = data[:2]
+        j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
+
+        if code[1] == 0x20:
+            self.BUSY = False
+            to_send_bye = bytearray()
+            to_send_bye.append(0x00)
+            to_send_bye.append(0x20)
+            nounce = os.urandom(12)
+            to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
+            self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
+            print('Got BYE sent BYE')
+
+        elif code[1] == 0x01:
+            if self.BUSY:
+                to_send_busy = bytearray()
+                to_send_busy.append(0x00)
+                to_send_busy.append(0x06)
+                nounce = os.urandom(12)
+                to_send_busy = aes_engine_call.encrypt(nounce, bytes(to_send_busy), None)
+                self.socket_info.sendto(nounce + to_send_busy, server_info_addr)
+                print('Sent BUSY, PAPA')
+
+                # TODO
+                return {}
+
+            to_send_ringing = bytearray()
+            to_send_ringing.append(0x00)
+            to_send_ringing.append(0x04)
+            nounce = os.urandom(12)
+            to_send_ringing = aes_engine_call.encrypt(nounce, bytes(to_send_ringing), None)
+            time.sleep(0.5)
+            self.socket_info.sendto(nounce + to_send_ringing, server_info_addr)
+            print("sent RINGING")
+
+            # Waitting for ACK for RINGING to start ringing
+            data, server_info_addr = self.socket_info.recvfrom(1024)
+            data = aes_engine_call.decrypt(data[:12], data[12:], None)
+
+            # Got ACK
+            if data[1] != 0x80:
+                print('something went wrong, wrong byte (after RINGING)')
+                return {
+                    "status": "Error",
+                    "mess": "got wrong byte after RINGING"
+                }
+
+            self.aes_engine_call = aes_engine_call
+            self.server_info_addr = server_info_addr
+            print('RING RING')
+            print(j['user_name'], 'is calling you')
+            time.sleep(1)
+            self.send_ok()
+
+            """
+            # Send OK/NOK
+            to_send_ok = bytearray()
+            to_send_ok.append(0x00)
+            to_send_ok.append(0x08) # OK
+            # to_send_ok.append(0x10) # NOK
+            nounce = os.urandom(12)
+            to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
+            self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
+
+            print("send OK")
+            # print("send NOK")
+            """
+
+
+        else:
+            print('got shitty mess')
+            return None
+
+        # TODO
+        return None
+
+    def send_ok(self):
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x08)
+        nounce = os.urandom(12)
+        mess = self.aes_engine_call.encrypt(nounce, bytes(mess), None)
+        self.socket_info.sendto(nounce + mess, self.server_info_addr)
+
+        print('Send OK')
+
+        data, server_info_addr = self.socket_info.recvfrom(1024)
+        data = self.aes_engine_call.decrypt(data[:12], data[12:], None)
+
+        j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
+        self.caller = {
+            'ip_addr': j['ip_addr'],
+            'port': j['ip_port'],
+            'conversation_token': j['conversation_token'],
+            'srtp_security_token': j['srtp_security_token']
+        }
+
+        if data[1] == 0x80:
+            self.BUSY = True
+            self.SRTPkey = bytes.fromhex(self.caller['srtp_security_token'])
+            thread_call = threading.Thread(target=self.call, args=[self.caller['ip_addr'], self.caller['port']])
+            thread_call.start()
+            # self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
+            # self.thread_call_get.start()
+
+    def send_nok(self):
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x10)
+        nounce = os.urandom(12)
+        mess = self.aes_engine_call.encrypt(nounce, bytes(mess), None)
+        self.socket_info.sendto(nounce + mess, self.server_info_addr)
+
+        print('Send NOK')
+
+    def crypto_stuff(self) -> (str, int):
+        private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
+        public_key = private_key.public_key()
+        public_key_bytes = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        self.socket.sendto(public_key_bytes, (self.server_addr_main, self.server_port_main))
+        data, SERVER_ADDR = self.socket.recvfrom(1024)
+
+        print(data)
+
+        server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
+        shared_key = private_key.exchange(ec.ECDH(), server_public_key)
+        derived_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=None,
+            info=b'handshake data',
+            backend=default_backend()
+        ).derive(shared_key)
+
+        self.aes_engine = AESGCM(derived_key)
+
+        return SERVER_ADDR
+
+    """def call_send_pack(self, client_b_info: dict):
+        # init connection
+        print('Calling somebody')
+        print(client_b_info)
+        mess = 'hi ' + client_b_info['client_b_name'] + ' how are you doing?'
+        mess = mess.encode('utf-8')
+        time.sleep(0.5)
+        self.socket_call.connect((client_b_info['client_b_ip_addr'], client_b_info['client_b_ip_port'] + 1))
+
+        self.socket_call.send(mess)
+
+        data = self.socket_call.recv(1024)
+
+        print(data.decode('utf-8'))
+
+        self.socket_call.close()
+        while self.BUSY:
+            print('rozmowa')
+
+    def call_get_pack(self):
+        # listen for incomming connetcion
+        print('Being called')
+        self.socket_call.bind((self.HOST, self.PORT + 2))
+        self.socket_call.listen(1)
+        print('listening')
+        conn, addr = self.socket_call.accept()
+        print(addr)
+        data = conn.recv(1024)
+        print(data)
+        mess = 'no co tam byczq?'.encode('utf-8')
+        conn.send(mess)
+        conn.close()
+        while self.BUSY:
+            print('rozmowa')"""
+
+    # --- SIGNALIZATION ---
+
+    def make_call(self, user_name: str) -> bytes:
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x01)
+        mess.extend(map(ord, str({
+            "to_call": user_name,
+            "token": self.token,
+            "user_name": self.user_data['user_name']
+        }).replace("'", "\"")))
+
+        server_addr = self.crypto_stuff()
+        nounce = os.urandom(12)
+        ct = self.aes_engine.encrypt(nounce, bytes(mess), None)
+
+        # sending CALLING to server
+        self.socket.sendto(nounce + ct, server_addr)
+
+        # waiting for TRYING
+        data, addr = self.socket.recvfrom(1024)
+        data = self.aes_engine.decrypt(data[:12], data[12:], None)
+        print(data.decode('utf-8'))
+
+        if data[1] == 0x02:
+            print("TRYING")
+        else:
+            return {"error": "No trying"}
+
+        self.socket.settimeout(15)  # to wait for ringing
+        try:
+            data, addr = self.socket.recvfrom(1024)
+        except socket.timeout:
+            return {
+                "status": "Error",
+                "mess": "Got no RINGING"
+            }
+
+        data = self.aes_engine.decrypt(data[:12], data[12:], None)
+
+        if data[1] == 0x04:
+            print(user_name + '\'s phone is ringing')
+        elif data[1] == 0x06:
+            print(user_name + ' is busy')
+            return {
+                "status": "Error",
+                "mess": "Client is busy"
+            }
+        else:
+            return {
+                "status": "Error",
+                "mess": "Got wrong byte"
+            }
+
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x80)
+        nounce = os.urandom(12)
+        mess = self.aes_engine.encrypt(nounce, bytes(mess), None)
+        self.socket.sendto(nounce + mess, addr)
+
+        self.socket.settimeout(120)  # wainting for OK or for NOK
+
+        try:
+            data, addr = self.socket.recvfrom(1024)
+        except socket.timeout:
+            return {
+                "status": "Error",
+                "mess": "No reaction (OK/NOK)"
+            }
+
+        data = self.aes_engine.decrypt(data[:12], data[12:], None)
+        print(data)
+
+        res = {}
+        client_b_info = {}
+        flag_ok = False
+
+        if data[1] == 0x08:
+            # OK
+            j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
+            res = {
+                "status": "OK",
+                "mess": "call is estanblished",
+                "client_b_ip_addr": j['ip_addr'],
+                "client_b_ip_port": j['ip_port'],
+                "client_b_name": j['user_name'],
+                "srtp_security_token": j['srtp_security_token']
+            }
+            client_b_info = {
+                "client_b_ip_addr": j['ip_addr'],
+                "client_b_ip_port": j['ip_port'],
+                "client_b_name": j['user_name']
+            }
+            self.conversation_token = j['conversation_token']
+            flag_ok = True
+            print("call starts")
+        elif data[1] == 0x10:
+            # NOK
+            res = {
+                "status": "Error",
+                "mess": "Call was rejected"
+            }
+            print("call rejected")
+        else:
+            return {
+                "status": "Error",
+                "mess": "Wrong frame (waited for NOK or OK)"
+            }
+
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x80)
+        nounce = os.urandom(12)
+        mess = self.aes_engine.encrypt(nounce, bytes(mess), None)
+        self.socket.sendto(nounce + mess, addr)
+
+        """if flag_ok is True:
+            self.call_thread = threading.Thread(target=self.call, args=[j['ip_addr'], j['ip_port']])
+            self.call_thread.start()
+        """
+        return res
+
+    # --- CONTACTS MANAGEMENT ---
+    def get_contacts(self) -> dict:
+        mess = bytearray()
+        mess.append(0x0E)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+    def add_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x04)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_add": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+    def modify_contact(self, user_name: str, data: dict) -> dict:
+        mess = bytearray()
+        mess.append(0x08)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_modify": user_name,
+            "contact": data
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+    def delete_contact(self, user_name: str) -> dict:
+        mess = bytearray()
+        mess.append(0x0C)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+            "to_delete": user_name
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    # --- AUDIO TRANSMISSION ---
     def test(self):
         self.init_UDP_connection()
         self.init_session()
-        t_udp_controller = threading.Thread(target=self.udp_controller)
+        t_udp_controller = threading.Thread(target=self.udp_controller, args=[self.HOST, self.PORT])
+        t_udp_controller.start()
+        return True
+
+    def call(self, ip_to_send: str, port_to_send: int):
+        self.init_UDP_connection()
+        self.init_session()
+        t_udp_controller = threading.Thread(target=self.udp_controller, args=[ip_to_send, port_to_send])
         t_udp_controller.start()
         return True
 
@@ -41,8 +542,8 @@ class Client:
         rx_policy = Policy(key=self.SRTPkey, ssrc_type=Policy.SSRC_ANY_INBOUND)
         self.rx_session = Session(policy=rx_policy)
 
-    def udp_controller(self):
-        inp = self.init_audio_input()
+    def udp_controller(self, ip_to_send, port_to_send):
+        inp = self.init_audio_input(ip_to_send, port_to_send)
         output = self.init_audio_output()
 
         inp.start_stream()
@@ -55,14 +556,14 @@ class Client:
         output.stop_stream()
         output.close()
 
-    def init_audio_input(self):
+    def init_audio_input(self, ip_to_send, port_to_send):
         def callback(in_data, frame_count, time_info, status):
             try:
                 in_data = audioop.lin2alaw(in_data, 2)
                 in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
                           self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4, byteorder='big') + in_data
                 in_data = self.tx_session.protect(in_data)
-                self.UDP_CONNECTION.sendto(in_data, ("127.0.0.1", 12344))
+                self.UDP_CONNECTION.sendto(in_data, (ip_to_send, port_to_send))
             except Exception as e:
                 print("UDP sending error:", e)
                 return in_data, pyaudio.paComplete
@@ -112,14 +613,12 @@ class Client:
         return stream
 
     def init_UDP_connection(self):
-        tmp = 55555
         self.UDP_CONNECTION = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            self.UDP_CONNECTION.bind(("127.0.0.1", 12344))
+            self.UDP_CONNECTION.bind((self.HOST, self.PORT))
         except Exception as e:
             pass
             # print("UDP init error:", str(e))
-        self.UDP_MY_PORT = tmp
 
 
 if __name__ == "__main__":

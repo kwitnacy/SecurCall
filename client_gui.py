@@ -1,7 +1,14 @@
 import tkinter as tk
 from functools import partial
 import scrollable
+import client
 
+
+global c
+c = client.Client(
+    server_addr='127.0.0.1',
+    server_port=1337,
+)
 
 def create_prelogin_screen(logo):
     menu = tk.Frame()
@@ -53,11 +60,15 @@ def create_prelogin_screen(logo):
     return menu
 
 
-def create_login_screen(logo):
+def create_login_screen(logo, errortext=''):
     menu = tk.Frame()
 
     def logowanie():
-        set_frame(create_main_menu(img))
+        res = c.log_in(entry1.get(), entry2.get())
+        if res is True:
+            set_frame(create_main_menu(img))
+        else:
+            errorlabel['text'] = 'Błędne dane!'
 
     def cofnij():
         set_frame(create_prelogin_screen(img))
@@ -77,7 +88,9 @@ def create_login_screen(logo):
     )
     frame.grid(row=1, column=1, padx=40, pady=10, sticky="ew", columnspan=3)
     label1 = tk.Label(master=frame, image=logo)
-    label1.pack()
+    label1.pack(side=tk.TOP)
+    errorlabel = tk.Label(master=frame, text=errortext, font=("Helvetica", "10", "bold"), fg="red")
+    errorlabel.pack(side=tk.BOTTOM)
 
     frame = tk.Frame(
         master=menu
@@ -106,8 +119,8 @@ def create_login_screen(logo):
         master=menu,
     )
     frame.grid(row=3, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-    entry1.pack(side=tk.LEFT, expand=True)
+    entry2 = tk.Entry(master=frame, show="*", font=("Helvetica", "13"))
+    entry2.pack(side=tk.LEFT, expand=True)
 
     frame = tk.Frame(
         master=menu,
@@ -131,7 +144,13 @@ def create_registration_screen(logo):
     menu = tk.Frame()
 
     def logowanie():
-        set_frame(create_main_menu(img))
+        if entry3.get() == entry4.get():
+            res = c.sign_in(entry1.get(), entry3.get(), entry2.get())
+            if res is True:
+                # set_frame(create_registration_screen(img))
+                set_frame(create_login_screen(img, 'Pomyślnie zarejestrowano! Możesz się zalogować :)'))
+            else:
+                errorlabel['text'] = 'Błędne dane!'
 
     def cofnij():
         set_frame(create_prelogin_screen(img))
@@ -154,6 +173,8 @@ def create_registration_screen(logo):
     frame.grid(row=1, column=1, padx=40, pady=10, sticky="ew", columnspan=3)
     label1 = tk.Label(master=frame, image=logo)
     label1.pack()
+    errorlabel = tk.Label(master=frame, text="", font=("Helvetica", "10", "bold"), fg="red")
+    errorlabel.pack(side=tk.BOTTOM)
 
     frame = tk.Frame(
         master=menu
@@ -182,8 +203,8 @@ def create_registration_screen(logo):
         master=menu,
     )
     frame.grid(row=3, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-    entry1.pack(side=tk.LEFT, expand=True)
+    entry2 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    entry2.pack(side=tk.LEFT, expand=True)
 
     frame = tk.Frame(
         master=menu,
@@ -197,8 +218,8 @@ def create_registration_screen(logo):
         master=menu,
     )
     frame.grid(row=4, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-    entry1.pack(side=tk.LEFT, expand=True)
+    entry3 = tk.Entry(master=frame, show="*", font=("Helvetica", "13"))
+    entry3.pack(side=tk.LEFT, expand=True)
 
     frame = tk.Frame(
         master=menu,
@@ -212,15 +233,15 @@ def create_registration_screen(logo):
         master=menu,
     )
     frame.grid(row=5, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-    entry1.pack(side=tk.LEFT, expand=True)
+    entry4 = tk.Entry(master=frame, show="*", font=("Helvetica", "13"))
+    entry4.pack(side=tk.LEFT, expand=True)
 
     frame = tk.Frame(
         master=menu,
     )
     frame.grid(row=5, column=1, padx=10, pady=10, sticky="e")
-    label1 = tk.Label(master=frame, text="Powtórz hasło", font=("Consolas", "10"))
-    label1.pack()
+    label4 = tk.Label(master=frame, text="Powtórz hasło", font=("Consolas", "10"))
+    label4.pack()
 
     # --------- 6 ROW ----------
     frame = tk.Frame(
@@ -475,7 +496,10 @@ def create_main_menu(logo):
 
         kontakt = scrollable.Scrollable(k)
 
-        testjs = {
+        # TODO nie dziala pobieranie kontaktow
+        testjs = c.get_contacts()
+        print(testjs)
+        """testjs = {
             'dane': [
                 {
                     'imie': 'Jan Kowalski',
@@ -538,7 +562,7 @@ def create_main_menu(logo):
                     'notatka': ''
                 }
             ]
-        }
+        }"""
 
         header.columnconfigure(1, weight=1, minsize=200)
         header.columnconfigure(2, weight=1, minsize=100)
@@ -556,7 +580,7 @@ def create_main_menu(logo):
         recordcounter = 0
         labels = []
         buttons = []
-        for record in testjs['dane']:
+        for record in testjs['contacts']:
             frame = tk.Frame(
                 master=kontakt,
             )
@@ -622,9 +646,15 @@ def create_main_menu(logo):
         kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
         kontakt.update()
 
+    def dodaj_kontakt():
+        c.add_contact(entry1.get())
 
     def zadzwon():
-        entry1.insert(0, 'kliknieto')
+        print(entry1.get())
+        res = c.make_call(entry1.get())
+        print(res)
+        c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
+        c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
 
     def rozlacz():
         pass
@@ -683,7 +713,7 @@ def create_main_menu(logo):
     entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
     entry1.insert(tk.END, 'ID użytkownika')
     entry1.pack(side=tk.LEFT, expand=True)
-    button4 = tk.Button(master=frame, text=" + ", font=("Helvetica", "8", 'bold'))
+    button4 = tk.Button(master=frame, text=" + ", font=("Helvetica", "8", 'bold'), command=dodaj_kontakt)
     button4.pack(side=tk.RIGHT)
 
     frame = tk.Frame(
