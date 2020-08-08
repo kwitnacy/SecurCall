@@ -402,15 +402,21 @@ def create_main_menu(logo):
         ustaw.title("Ustawienia - SecurCall")
 
     def kontakty():
-        def zadzwon_kontakt():
-            pass
+        def zadzwon_kontakt(key):
+            kont.destroy()
+            zadzwon_z_kontaktow(key)
 
-        def edytuj_kontakt(recnum):
+        def edytuj_kontakt(key):
             def zapisz_edycje():
-                pass
+                c.modify_contact(key, {
+                    'user_name': key,
+                    'name': entry1.get(),
+                    'note': text1.get("1.0", "end-1c")
+                })
+                kont.destroy()
+                kontakty()
 
-            recnum -= 2
-            edyt = tk.Toplevel(kontakt)
+            edyt = tk.Toplevel(kont)
             edyt.title("Edycja kontaktu - SecurCall")
             edyt.resizable(False, False)
 
@@ -433,16 +439,15 @@ def create_main_menu(logo):
             frame = tk.Frame(
                 master=edyt,
             )
-            frame.grid(row=2, column=1, padx=10, pady=10, sticky="e", columnspan=2)
-            entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-            entry1.insert(tk.END, testjs['dane'][recnum]['imie'])
-            entry1.pack(side=tk.RIGHT, expand=True)
+            frame.grid(row=2, column=2, padx=4, pady=10, sticky="w", columnspan=1)
+            label = tk.Label(master=frame, text=testjs['contacts'][key]['user_name'], font=("Helvetica", "13"))
+            label.pack(side=tk.RIGHT, expand=True)
 
             frame = tk.Frame(
                 master=edyt,
             )
             frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
-            label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
+            label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
             label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
@@ -450,14 +455,15 @@ def create_main_menu(logo):
             )
             frame.grid(row=3, column=1, padx=10, pady=10, sticky="e", columnspan=2)
             entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
-            entry1.insert(tk.END, testjs['dane'][recnum]['id'])
+            if 'name' in testjs['contacts'][key]:
+                entry1.insert(tk.END, testjs['contacts'][key]['name'])
             entry1.pack(side=tk.RIGHT, expand=True)
 
             frame = tk.Frame(
                 master=edyt,
             )
             frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
-            label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
+            label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
             label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
@@ -465,7 +471,8 @@ def create_main_menu(logo):
             )
             frame.grid(row=4, column=1, padx=10, pady=10, sticky="e", columnspan=2)
             text1 = tk.Text(master=frame, height=4, width=26, font=("Helvetica", "10"))
-            text1.insert(tk.END, testjs['dane'][recnum]['notatka'])
+            if 'note' in testjs['contacts'][key]:
+                text1.insert(tk.END, testjs['contacts'][key]['note'])
             text1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
@@ -483,86 +490,23 @@ def create_main_menu(logo):
                                 command=zapisz_edycje)
             button1.pack(side=tk.RIGHT)
 
-        def usun_kontakt():
-            pass
+        def usun_kontakt(key):
+            c.delete_contact(key)
+            kont.destroy()
+            kontakty()
 
-        kontakty = tk.Toplevel(menu)
-        kontakty.title("Kontakty - SecurCall")
+        kont = tk.Toplevel(menu)
+        kont.title("Kontakty - SecurCall")
 
-        header = tk.Frame(kontakty)
+        header = tk.Frame(kont)
         header.pack()
-        k = tk.Frame(kontakty)
+        k = tk.Frame(kont)
         k.pack()
 
         kontakt = scrollable.Scrollable(k)
 
-        # TODO nie dziala pobieranie kontaktow
         testjs = c.get_contacts()
         print(testjs)
-        """testjs = {
-            'dane': [
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu bla bla bla bla bla bla blablablabla balb al bal balb abla balb ala'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'id': 'janekkk',
-                    'notatka': 'Kierownik działu'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'id': 'robert',
-                    'notatka': ''
-                }
-            ]
-        }"""
 
         header.columnconfigure(1, weight=1, minsize=200)
         header.columnconfigure(2, weight=1, minsize=100)
@@ -576,94 +520,138 @@ def create_main_menu(logo):
         label = tk.Label(master=frame, text='Spis kontaktów', font=("Consolas", "14", 'bold'))
         label.pack()
 
-        rowcounter = 2
-        recordcounter = 0
-        labels = []
-        buttons = []
-        for record in testjs['contacts']:
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=1, padx=15, pady=10, sticky="nw")
-            label = tk.Label(master=frame, text=record['imie'], font=("Consolas", "11", 'bold'))
-            label.pack(side=tk.LEFT)
-            labels.append(label)
-
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
-            button = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"),
-                               command=partial(zadzwon_kontakt, recordcounter))
-            button.pack(side=tk.LEFT)
-            buttons.append(button)
-
-            rowcounter += 1
-
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
-            label = tk.Label(master=frame, text='ID: ' + record['id'], font=("Helvetica", "10"))
-            label.pack(side=tk.LEFT)
-            labels.append(label)
-
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
-            button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"),
-                               command=partial(edytuj_kontakt, recordcounter))
-            button.pack(side=tk.LEFT)
-            buttons.append(button)
-
-            rowcounter += 1
-
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
-            if record['notatka'] == '':
-                label = tk.Label(master=frame, text='Brak notatki.', font=("Helvetica", "10"))
-                label.pack(side=tk.LEFT)
-                labels.append(label)
-            else:
-                label = tk.Label(master=frame, text='Notatka: ' + record['notatka'], font=("Helvetica", "10"), wraplength=250, justify=tk.LEFT)
+        if testjs:
+            rowcounter = 2
+            recordcounter = 0
+            labels = []
+            buttons = []
+            #keys = []
+            for key, record in testjs['contacts'].items():
+                #keys.append(key)
+                print('rec ' + record['user_name'])
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=1, padx=15, pady=10, sticky="nw")
+                label = tk.Label(master=frame, text=record['user_name'], font=("Consolas", "11", 'bold'))
                 label.pack(side=tk.LEFT)
                 labels.append(label)
 
-            frame = tk.Frame(
-                master=kontakt,
-            )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
-            button = tk.Button(master=frame, padx=14.5, text="Usuń", font=("Helvetica", "10"), command=usun_kontakt)
-            button.pack(side=tk.LEFT)
-            buttons.append(button)
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
+                button = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"),
+                                   command=partial(zadzwon_kontakt, key))
+                button.pack(side=tk.LEFT)
+                buttons.append(button)
 
-            rowcounter += 1
-            recordcounter += 1
+                rowcounter += 1
 
-        kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
-        kontakt.update()
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
+                if 'name' in record:
+                    label = tk.Label(master=frame, text=record['name'], font=("Helvetica", "10"))
+                else:
+                    label = tk.Label(master=frame, text='Brak nazwy kontaktu.', font=("Helvetica", "10"))
+                label.pack(side=tk.LEFT)
+                labels.append(label)
+
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
+                button = tk.Button(master=frame, padx=11, text="Edytuj", font=("Helvetica", "10"),
+                                   command=partial(edytuj_kontakt, key))
+                button.pack(side=tk.LEFT)
+                buttons.append(button)
+
+                rowcounter += 1
+
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="nw")
+                if 'note' not in record or record['note'] == '':
+                    label = tk.Label(master=frame, text='Brak notatki.', font=("Helvetica", "10"))
+                    label.pack(side=tk.LEFT)
+                    labels.append(label)
+                else:
+                    label = tk.Label(master=frame, text='Notatka: ' + record['note'], font=("Helvetica", "10"), wraplength=250, justify=tk.LEFT)
+                    label.pack(side=tk.LEFT)
+                    labels.append(label)
+
+                frame = tk.Frame(
+                    master=kontakt,
+                )
+                frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="ne")
+                button = tk.Button(master=frame, padx=14.5, text="Usuń", font=("Helvetica", "10"),
+                                   command=partial(usun_kontakt, key))
+                button.pack(side=tk.LEFT)
+                buttons.append(button)
+
+                rowcounter += 1
+                recordcounter += 1
+
+            kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
+            kontakt.update()
 
     def dodaj_kontakt():
         c.add_contact(entry1.get())
 
-    def zadzwon():
-        print(entry1.get())
+    def zadzwon_z_kontaktow(key):
+        entry1.delete(0, tk.END)
+        entry1.insert(0, key)
         res = c.make_call(entry1.get())
         print(res)
         c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
         c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
 
+    def zadzwon():
+        res = c.make_call(entry1.get())
+        print(res)
+        if res['status'] == 'OK':
+            label4.configure(text=entry1.get())
+            c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
+            c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
+            error_label['text'] = ''
+            button5.configure(state='disabled')
+            button6.configure(state='normal')
+            button7.configure(state='normal')
+            button8.configure(state='normal')
+        else:
+            error_label['text'] = 'Błędne dane!'
+
+
     def rozlacz():
         pass
 
     def wylacz_mikrofon():
-        pass
+        c.MIC_MUTED = True
+        button7.configure(text='Włącz mikrofon', command=wlacz_mikrofon)
+
+    def wlacz_mikrofon():
+        c.MIC_MUTED = False
+        button7.configure(text='Wyłącz mikrofon', command=wylacz_mikrofon)
 
     def wycisz_dzwiek():
-        pass
+        c.AUDIO_MUTED = True
+        button8.configure(text='Włącz dźwięk', command=wlacz_dzwiek)
+
+    def wlacz_dzwiek():
+        c.AUDIO_MUTED = False
+        button8.configure(text='Wycisz dźwięk', command=wycisz_dzwiek)
+
+    def id_entry_callback():
+        key = sv.get()
+        testjs = c.get_contacts()
+        if key in testjs['contacts']:
+            text1.configure(state='normal')
+            text1.delete("1.0", tk.END)
+            text1.insert(tk.END, testjs['contacts'][key]['note'])
+            text1.configure(state='disabled')
 
     menu.columnconfigure(1, weight=1, minsize=70)
     menu.columnconfigure(2, weight=1, minsize=150)
@@ -710,7 +698,8 @@ def create_main_menu(logo):
         borderwidth=1,
     )
     frame.grid(row=2, column=2, pady=10, sticky="e")
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+    sv = tk.StringVar()
+    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"), textvariable=sv, validate="focusout", validatecommand=id_entry_callback)
     entry1.insert(tk.END, 'ID użytkownika')
     entry1.pack(side=tk.LEFT, expand=True)
     button4 = tk.Button(master=frame, text=" + ", font=("Helvetica", "8", 'bold'), command=dodaj_kontakt)
@@ -751,9 +740,9 @@ def create_main_menu(logo):
         master=menu,
     )
     frame.grid(row=4, column=1, padx=15, pady=0, sticky="w", columnspan=2)
-    label4 = tk.Label(master=frame, text="Jan Kowalski", font=("Consolas", "10", "bold"))
+    label4 = tk.Label(master=frame, text="", font=("Consolas", "10", "bold"))
     label4.pack(side=tk.TOP, pady=3)
-    button6 = tk.Button(master=frame, padx=20, fg="red", text="Rozłącz", font=("Helvetica", "10", "bold"), command=rozlacz)
+    button6 = tk.Button(master=frame, state='disabled', padx=20, fg="red", text="Rozłącz", font=("Helvetica", "10", "bold"), command=rozlacz)
     button6.pack(side=tk.BOTTOM, pady=10)
 
     frame = tk.Frame(
@@ -761,9 +750,9 @@ def create_main_menu(logo):
         borderwidth=1
     )
     frame.grid(row=4, column=2, padx=15, pady=0)
-    button7 = tk.Button(master=frame, text="Wyłącz mikrofon", font=("Helvetica", "10"), command=wylacz_mikrofon)
+    button7 = tk.Button(master=frame, state='disabled', text="Wyłącz mikrofon", font=("Helvetica", "10"), command=wylacz_mikrofon)
     button7.pack(side=tk.TOP)
-    button8 = tk.Button(master=frame, padx=6, text="Wycisz dźwięk", font=("Helvetica", "10"), command=wycisz_dzwiek)
+    button8 = tk.Button(master=frame, state='disabled', padx=6, text="Wycisz dźwięk", font=("Helvetica", "10"), command=wycisz_dzwiek)
     button8.pack(side=tk.BOTTOM, pady=10)
 
     frame = tk.Frame(
@@ -771,7 +760,7 @@ def create_main_menu(logo):
         borderwidth=1
     )
     frame.grid(row=4, column=2, padx=15, pady=0, columnspan=2, sticky="ne")
-    text1 = tk.Text(master=frame, height=4, width=15, font=("Helvetica", "10"))
+    text1 = tk.Text(master=frame, state='disabled', height=4, width=15, font=("Helvetica", "10"))
     text1.pack(side=tk.TOP)
     return menu
 

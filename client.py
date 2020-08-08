@@ -18,7 +18,6 @@ from typing import Optional, Union
 
 # TODO update danych klienta
 
-
 def my_hash(b: bytes) -> bytes:
     h = hashes.Hash(hashes.SHA256(), default_backend())
     h.update(b)
@@ -47,6 +46,8 @@ class Client:
         self.rx_session = None
         self.tx_session = None
         self.call_thread = None
+        self.MIC_MUTED = False
+        self.AUDIO_MUTED = False
 
         # --- CLIENT DATA ---
         self.user_data = None
@@ -517,7 +518,6 @@ class Client:
 
         return self.send_req(mess)
 
-
     # --- AUDIO TRANSMISSION ---
     def test(self):
         self.init_UDP_connection()
@@ -559,11 +559,20 @@ class Client:
     def init_audio_input(self, ip_to_send, port_to_send):
         def callback(in_data, frame_count, time_info, status):
             try:
-                in_data = audioop.lin2alaw(in_data, 2)
-                in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
+                if self.MIC_MUTED:
+                    tmp = 0
+                    in_data = audioop.lin2alaw(tmp.to_bytes(1024, 'big'), 2)
+                    in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
+                              self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4,
+                                                                                               byteorder='big') + in_data
+                    in_data = self.tx_session.protect(in_data)
+                    self.UDP_CONNECTION.sendto(in_data, (ip_to_send, port_to_send))
+                else:
+                    in_data = audioop.lin2alaw(in_data, 2)
+                    in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
                           self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4, byteorder='big') + in_data
-                in_data = self.tx_session.protect(in_data)
-                self.UDP_CONNECTION.sendto(in_data, (ip_to_send, port_to_send))
+                    in_data = self.tx_session.protect(in_data)
+                    self.UDP_CONNECTION.sendto(in_data, (ip_to_send, port_to_send))
             except Exception as e:
                 print("UDP sending error:", e)
                 return in_data, pyaudio.paComplete
@@ -590,10 +599,13 @@ class Client:
                 try:
                     self.UDP_CONNECTION.settimeout(1)
                     in_data, _ = self.UDP_CONNECTION.recvfrom(self.CHUNK * 2)
-                    in_data = self.rx_session.unprotect(in_data)
-                    # print('first: ', len(in_data))
-                    in_data = audioop.alaw2lin(in_data[12:], 2)
-                    # print('second', len(in_data))
+                    if self.AUDIO_MUTED:
+                        in_data = int.to_bytes(0, 1024, 'big')
+                    else:
+                        in_data = self.rx_session.unprotect(in_data)
+                        # print('first: ', len(in_data))
+                        in_data = audioop.alaw2lin(in_data[12:], 2)
+                        # print('second', len(in_data))
                     self.UDP_CONNECTION.settimeout(None)
                     break
                 except socket.timeout as e:
@@ -633,5 +645,6 @@ if __name__ == "__main__":
             print("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i))
 
     c = Client()
+    c.SRTPkey = secrets.token_bytes(30)
     c.test()
 
