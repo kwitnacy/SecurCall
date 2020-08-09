@@ -226,10 +226,10 @@ class Client:
         data, server_info_addr = self.socket_info.recvfrom(1024)
         data = self.aes_engine_call.decrypt(data[:12], data[12:], None)
 
-        j = json.load(data[2:].decode('utf-8').replace("'", "\""))
+        j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
         self.caller = {
             'ip_addr': j['ip_addr'],
-            'port': j['port'],
+            'port': j['ip_port'],
             'conversation_token': j['conversation_token'],
             'srtp_security_token': j['srtp_security_token']
         }

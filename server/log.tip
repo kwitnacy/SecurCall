@@ -256,3 +256,38 @@
 [Jul 27 14:43:00] Login from: 127.0.0.1:4000, username: client_a: success :)
 [Jul 27 14:43:00] client_a wanted to add contact but kwitnoncy already exists
 [Jul 27 14:43:00] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:46:59] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 09 14:46:59] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 09 14:46:59] client_a wanted to add contact but kwitnoncy already exists
+[Aug 09 14:46:59] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:46:59] Client A: client_a wanted to call Client B: client_b but client B does not exist
+[Aug 09 14:48:42] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 09 14:48:43] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 09 14:48:46] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 09 14:48:46] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 09 14:48:46] client_a wanted to add contact but kwitnoncy already exists
+[Aug 09 14:48:46] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:48:46] client A: client_a wants to call client b: client_b
+[Aug 09 14:48:47] Call was estamblished between Client A: client_aand Client B: client_b
+[Aug 09 14:50:30] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 09 14:50:30] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 09 14:50:32] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 09 14:50:32] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 09 14:50:32] client_a wanted to add contact but kwitnoncy already exists
+[Aug 09 14:50:32] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:50:32] client A: client_a wants to call client b: client_b
+[Aug 09 14:50:33] Call was estamblished between Client A: client_aand Client B: client_b
+[Aug 09 14:53:15] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 09 14:53:15] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 09 14:53:15] client_a wanted to add contact but kwitnoncy already exists
+[Aug 09 14:53:15] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:53:15] Client A: client_a wanted to call Client B: client_b but client B does not exist
+[Aug 09 14:53:23] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 09 14:53:23] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 09 14:53:25] Sign-in from:127.0.0.1:4000, username: client_a: name taken, account was not created
+[Aug 09 14:53:25] Login from: 127.0.0.1:4000, username: client_a: success :)
+[Aug 09 14:53:25] client_a wanted to add contact but kwitnoncy already exists
+[Aug 09 14:53:25] client_a wanted to add test_wrong but there are no such user
+[Aug 09 14:53:25] client A: client_a wants to call client b: client_b
+[Aug 09 14:53:26] Call was estamblished between Client A: client_aand Client B: client_b
+[Aug 09 14:53:28] Call between: client_a, client_b ended
