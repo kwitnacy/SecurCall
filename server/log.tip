@@ -291,3 +291,419 @@
 [Aug 09 14:53:25] client A: client_a wants to call client b: client_b
 [Aug 09 14:53:26] Call was estamblished between Client A: client_aand Client B: client_b
 [Aug 09 14:53:28] Call between: client_a, client_b ended
+[Aug 10 10:25:49] Sign-in from:127.0.0.1:59702, username: test1: account was created
+[Aug 10 10:26:00] Sign-in from:127.0.0.1:42362, username: test2: account was created
+[Aug 10 10:26:03] Login from: 127.0.0.1:59702, username: test1: success :)
+[Aug 10 10:26:10] Login from: 127.0.0.1:42362, username: test2: success :)
+[Aug 10 10:26:36] client A: test2 wants to call client b: test1
+[Aug 10 10:26:38] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 10:30:10] Login from: 127.0.0.1:12860, username: test1: success :)
+[Aug 10 10:30:17] Login from: 127.0.0.1:29952, username: test2: success :)
+[Aug 10 10:30:24] client A: test2 wants to call client b: test1
+[Aug 10 10:30:25] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 10:53:40] Sign-in from:127.0.0.1:24936, username: test1: account was created
+[Aug 10 10:53:43] Login from: 127.0.0.1:24936, username: test1: success :)
+[Aug 10 10:53:55] Sign-in from:127.0.0.1:38076, username: test2: account was created
+[Aug 10 10:53:58] Login from: 127.0.0.1:38076, username: test2: success :)
+[Aug 10 10:54:07] client A: test2 wants to call client b: test1
+[Aug 10 10:54:08] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 10:56:30] Login from: 127.0.0.1:17428, username: test1: success :)
+[Aug 10 10:56:38] Login from: 127.0.0.1:14030, username: test2: success :)
+[Aug 10 10:56:45] client A: test2 wants to call client b: test1
+[Aug 10 10:56:47] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 10:59:55] Login from: 127.0.0.1:25804, username: test1: success :)
+[Aug 10 11:00:02] Login from: 127.0.0.1:36012, username: test2: success :)
+[Aug 10 11:00:09] client A: test2 wants to call client b: test1
+[Aug 10 11:00:11] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 11:00:49] Login from: 127.0.0.1:46024, username: test1: success :)
+[Aug 10 11:00:55] Login from: 127.0.0.1:32220, username: test2: success :)
+[Aug 10 11:00:59] client A: test2 wants to call client b: test1
+[Aug 10 11:01:00] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 11:01:48] Login from: 127.0.0.1:42564, username: test1: success :)
+[Aug 10 11:01:55] Login from: 127.0.0.1:39108, username: test2: success :)
+[Aug 10 11:01:59] client A: test2 wants to call client b: test1
+[Aug 10 11:02:00] Call was estamblished between Client A: test2and Client B: test1
+[Aug 10 11:03:23] Login from: 127.0.0.1:23986, username: test1: success :)
+[Aug 10 11:03:28] Login from: 127.0.0.1:15948, username: test2: success :)
+[Aug 10 11:03:40] client A: test2 wants to call client b: test1
+[Aug 10 11:03:41] Call was estamblished between Client A: test2and Client B: test1
+[Aug 12 13:57:10] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 12 13:57:10] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 12 13:57:10] test1 wanted to add test_wrong but there are no such user
+[Aug 12 13:57:10] Client A: test1 wanted to call Client B: client_b but client B does not exist
+[Aug 12 13:58:08] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 12 13:58:08] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 12 13:58:08] test1 wanted to add test_wrong but there are no such user
+[Aug 12 14:50:54] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 12 14:50:54] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 12 14:50:54] test1 wanted to add contact but kwitnoncy already exists
+[Aug 12 14:50:54] test1 wanted to add contact but rojber already exists
+[Aug 12 14:50:54] test1 wanted to add test_wrong but there are no such user
+[Aug 12 14:50:54] Client A: test1 wanted to call Client B: client_b but client B does not exist
+[Aug 12 14:51:53] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 12 14:51:53] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 12 14:53:44] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 12 14:53:44] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 12 14:55:09] Sign-in from:127.0.0.1:4200, username: client_b: account was created
+[Aug 12 14:55:09] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 12 14:55:40] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 12 14:55:40] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 12 14:55:40] test1 wanted to add test_wrong but there are no such user
+[Aug 12 14:55:40] Client A: test1 wanted to call Client B: client_b but client B does not exist
+[Aug 12 14:55:56] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 12 14:55:56] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 10:03:07] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:03:07] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:03:07] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:03:07] test1 wanted to add contact but rojber already exists
+[Aug 13 10:03:07] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:03:07] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 10:05:27] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:05:27] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:05:27] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:05:27] test1 wanted to add contact but rojber already exists
+[Aug 13 10:05:27] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:05:27] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 10:12:02] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:12:02] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:12:02] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:12:02] test1 wanted to add contact but rojber already exists
+[Aug 13 10:12:02] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:12:02] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 10:12:45] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:12:45] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:12:45] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:12:45] test1 wanted to add contact but rojber already exists
+[Aug 13 10:12:45] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:12:45] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 10:14:26] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:14:26] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:14:26] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:14:26] test1 wanted to add contact but rojber already exists
+[Aug 13 10:14:26] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:14:26] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 10:16:21] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 10:16:21] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 10:16:21] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 10:16:21] test1 wanted to add contact but rojber already exists
+[Aug 13 10:16:21] test1 wanted to add test_wrong but there are no such user
+[Aug 13 10:16:21] Client A: test1 wanted to call Client B: kwitnoncy but client B does not exist
+[Aug 13 11:30:49] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:30:49] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:30:49] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:30:49] test1 wanted to add contact but rojber already exists
+[Aug 13 11:30:49] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:33:52] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:33:52] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:33:52] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:33:52] test1 wanted to add contact but rojber already exists
+[Aug 13 11:33:52] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:34:28] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:34:28] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:34:28] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:34:28] test1 wanted to add contact but rojber already exists
+[Aug 13 11:34:28] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:34:28] Client A: test1 wanted to call Client B: kwitnoncy but client B is offline
+[Aug 13 11:36:41] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:36:41] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:36:41] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:36:41] test1 wanted to add contact but rojber already exists
+[Aug 13 11:36:41] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:36:41] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 11:36:52] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 11:36:52] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 11:36:55] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:36:55] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:36:55] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:36:55] test1 wanted to add contact but rojber already exists
+[Aug 13 11:36:55] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:36:55] client A: test1 wants to call client b: client_b
+[Aug 13 11:36:57] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 11:36:59] Call between: test1, client_b ended
+[Aug 13 11:56:45] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:56:45] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:56:45] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:56:45] test1 wanted to add contact but rojber already exists
+[Aug 13 11:56:45] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:56:45] Client A: test1 wanted to call Client B: kwitnoncy but client B is offline
+[Aug 13 11:58:39] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 11:58:39] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 11:58:39] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 11:58:39] test1 wanted to add contact but rojber already exists
+[Aug 13 11:58:39] test1 wanted to add test_wrong but there are no such user
+[Aug 13 11:58:39] Client A: test1 wanted to call Client B: kwitnoncy but client B is offline
+[Aug 13 12:00:50] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 12:00:50] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 12:00:50] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 12:00:50] test1 wanted to add contact but rojber already exists
+[Aug 13 12:00:50] test1 wanted to add test_wrong but there are no such user
+[Aug 13 12:00:50] Client A: test1 wanted to call Client B: kwitnoncy but client B is offline
+[Aug 13 12:03:27] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 12:03:27] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 12:03:27] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 12:03:27] test1 wanted to add contact but rojber already exists
+[Aug 13 12:03:27] test1 wanted to add test_wrong but there are no such user
+[Aug 13 12:03:27] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 12:03:33] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 12:03:33] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 12:10:36] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 12:10:36] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 12:10:36] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 12:10:36] test1 wanted to add contact but rojber already exists
+[Aug 13 12:10:36] test1 wanted to add test_wrong but there are no such user
+[Aug 13 12:10:36] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 12:11:00] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 12:11:00] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 13:06:04] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:06:04] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:06:04] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:06:04] test1 wanted to add contact but rojber already exists
+[Aug 13 13:06:04] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:06:04] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:07:57] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:07:57] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:07:57] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:07:57] test1 wanted to add contact but rojber already exists
+[Aug 13 13:07:57] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:07:57] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:08:35] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:08:35] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:08:35] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:08:35] test1 wanted to add contact but rojber already exists
+[Aug 13 13:08:35] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:08:35] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:10:10] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:10:10] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:10:10] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:10:10] test1 wanted to add contact but rojber already exists
+[Aug 13 13:10:10] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:10:10] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:10:54] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:10:54] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:10:54] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:10:54] test1 wanted to add contact but rojber already exists
+[Aug 13 13:10:54] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:10:54] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:10:56] Logout from: 127.0.0.1:4000: No token :(
+[Aug 13 13:11:47] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:11:47] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:11:47] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:11:47] test1 wanted to add contact but rojber already exists
+[Aug 13 13:11:47] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:11:47] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:11:49] Logout from: 127.0.0.1:4000: No token :(
+[Aug 13 13:12:41] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:12:41] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:12:41] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:12:41] test1 wanted to add contact but rojber already exists
+[Aug 13 13:12:41] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:12:41] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 13:12:43] Logout from: 127.0.0.1:4000, username: test1: succes :)
+[Aug 13 13:30:13] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 13:30:13] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 13:30:21] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 13:30:21] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 13:30:21] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 13:30:21] test1 wanted to add contact but rojber already exists
+[Aug 13 13:30:21] test1 wanted to add test_wrong but there are no such user
+[Aug 13 13:30:21] client A: test1 wants to call client b: client_b
+[Aug 13 13:30:23] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 13:30:24] Call between: test1, client_b ended
+[Aug 13 13:30:24] Logout from: 127.0.0.1:4000, username: test1: succes :)
+[Aug 13 17:12:46] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:12:46] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:12:57] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:12:57] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:12:57] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:12:57] test1 wanted to add contact but rojber already exists
+[Aug 13 17:12:57] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:12:57] client A: test1 wants to call client b: client_b
+[Aug 13 17:12:58] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:12:59] Call between: test1, client_b ended
+[Aug 13 17:12:59] client A: test1 wants to call client b: client_b
+[Aug 13 17:13:01] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:13:02] Call between: test1, client_b ended
+[Aug 13 17:14:08] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:14:08] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:14:10] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:14:10] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:14:10] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:14:10] test1 wanted to add contact but rojber already exists
+[Aug 13 17:14:10] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:14:10] client A: test1 wants to call client b: client_b
+[Aug 13 17:14:12] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:14:13] Call between: test1, client_b ended
+[Aug 13 17:14:14] client A: test1 wants to call client b: client_b
+[Aug 13 17:14:15] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:14:16] Call between: test1, client_b ended
+[Aug 13 17:25:53] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:25:53] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:25:58] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:25:58] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:25:58] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:25:58] test1 wanted to add contact but rojber already exists
+[Aug 13 17:25:58] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:25:58] client A: test1 wants to call client b: client_b
+[Aug 13 17:25:59] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:26:00] Call between: test1, client_b ended
+[Aug 13 17:26:01] client A: test1 wants to call client b: client_b
+[Aug 13 17:26:03] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:26:04] Call between: test1, client_b ended
+[Aug 13 17:28:55] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:28:55] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:28:56] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:28:56] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:28:56] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:28:56] test1 wanted to add contact but rojber already exists
+[Aug 13 17:28:56] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:28:56] client A: test1 wants to call client b: client_b
+[Aug 13 17:28:58] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:28:59] Call between: test1, client_b ended
+[Aug 13 17:29:00] client A: test1 wants to call client b: client_b
+[Aug 13 17:29:01] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:29:03] Call between: test1, client_b ended
+[Aug 13 17:32:56] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:32:56] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:32:56] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:32:56] test1 wanted to add contact but rojber already exists
+[Aug 13 17:32:56] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:32:56] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 17:32:58] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 17:33:05] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:33:05] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:33:09] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:33:09] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:33:09] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:33:09] test1 wanted to add contact but rojber already exists
+[Aug 13 17:33:09] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:33:09] client A: test1 wants to call client b: client_b
+[Aug 13 17:33:11] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:33:12] Call between: test1, client_b ended
+[Aug 13 17:33:13] client A: test1 wants to call client b: client_b
+[Aug 13 17:33:14] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:33:15] Call between: test1, client_b ended
+[Aug 13 17:34:10] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:34:10] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:34:14] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:34:14] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:34:14] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:34:14] test1 wanted to add contact but rojber already exists
+[Aug 13 17:34:14] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:34:14] client A: test1 wants to call client b: client_b
+[Aug 13 17:34:15] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:34:16] Call between: test1, client_b ended
+[Aug 13 17:34:17] client A: test1 wants to call client b: client_b
+[Aug 13 17:34:19] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:34:20] Call between: test1, client_b ended
+[Aug 13 17:37:37] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:37:37] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:37:40] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:37:40] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:37:40] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:37:40] test1 wanted to add contact but rojber already exists
+[Aug 13 17:37:40] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:37:40] client A: test1 wants to call client b: client_b
+[Aug 13 17:37:41] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:37:42] Call between: test1, client_b ended
+[Aug 13 17:37:43] client A: test1 wants to call client b: client_b
+[Aug 13 17:37:45] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:37:46] Call between: test1, client_b ended
+[Aug 13 17:40:13] Login from: 127.0.0.1:43680, username: test1: success :)
+[Aug 13 17:40:21] Login from: 127.0.0.1:54734, username: test2: success :)
+[Aug 13 17:40:31] client A: test2 wants to call client b: test1
+[Aug 13 17:40:35] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 17:40:40] Call between: test2, test1 ended
+[Aug 13 17:41:41] client A: test2 wants to call client b: test1
+[Aug 13 17:42:18] Login from: 127.0.0.1:42512, username: test1: success :)
+[Aug 13 17:42:24] Login from: 127.0.0.1:57888, username: test2: success :)
+[Aug 13 17:42:41] client A: test2 wants to call client b: test1
+[Aug 13 17:42:45] Client B: test1 rejectced the call
+[Aug 13 17:42:51] client A: test2 wants to call client b: test1
+[Aug 13 17:43:22] client A: test1 wants to call client b: test2
+[Aug 13 17:43:41] No response (OK/NOK) from Client B: test1
+[Aug 13 17:46:53] Login from: 127.0.0.1:4002, username: test1: success :)
+[Aug 13 17:47:00] Login from: 127.0.0.1:4202, username: test2: success :)
+[Aug 13 17:47:05] client A: test2 wants to call client b: test1
+[Aug 13 17:47:07] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 17:47:20] Call between: test2, test1 ended
+[Aug 13 17:47:26] client A: test2 wants to call client b: test1
+[Aug 13 17:48:16] Login from: 127.0.0.1:4202, username: test1: success :)
+[Aug 13 17:48:20] Login from: 127.0.0.1:4002, username: test2: success :)
+[Aug 13 17:48:26] client A: test1 wants to call client b: test2
+[Aug 13 17:48:30] Call was estamblished between Client A: test1and Client B: test2
+[Aug 13 17:49:26] No response (OK/NOK) from Client B: test1
+[Aug 13 17:56:50] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:56:50] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:56:50] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:56:50] test1 wanted to add contact but rojber already exists
+[Aug 13 17:56:50] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:56:50] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 17:57:36] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:57:36] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:57:37] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:57:37] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:57:37] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:57:37] test1 wanted to add contact but rojber already exists
+[Aug 13 17:57:37] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:57:37] client A: test1 wants to call client b: client_b
+[Aug 13 17:57:38] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:58:48] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:58:48] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:58:48] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:58:48] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:58:48] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:58:48] test1 wanted to add contact but rojber already exists
+[Aug 13 17:58:48] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:58:48] client A: test1 wants to call client b: client_b
+[Aug 13 17:58:50] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 17:58:50] Call between: client_b, test1 ended
+[Aug 13 17:59:47] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 17:59:47] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 17:59:49] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 17:59:49] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 17:59:49] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 17:59:49] test1 wanted to add contact but rojber already exists
+[Aug 13 17:59:49] test1 wanted to add test_wrong but there are no such user
+[Aug 13 17:59:49] client A: test1 wants to call client b: client_b
+[Aug 13 17:59:50] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 18:00:06] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 18:00:06] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 18:00:07] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 18:00:07] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 18:00:07] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 18:00:07] test1 wanted to add contact but rojber already exists
+[Aug 13 18:00:07] test1 wanted to add test_wrong but there are no such user
+[Aug 13 18:00:07] client A: test1 wants to call client b: client_b
+[Aug 13 18:00:09] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 18:00:16] Call between: client_b, test1 ended
+[Aug 13 18:01:53] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 18:01:53] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 18:01:53] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 18:01:53] test1 wanted to add contact but rojber already exists
+[Aug 13 18:01:53] test1 wanted to add test_wrong but there are no such user
+[Aug 13 18:01:53] Client A: test1 wanted to call Client B: client_b but client B is offline
+[Aug 13 18:02:03] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 18:02:03] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 18:02:04] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 18:02:04] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 18:02:04] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 18:02:04] test1 wanted to add contact but rojber already exists
+[Aug 13 18:02:04] test1 wanted to add test_wrong but there are no such user
+[Aug 13 18:02:04] client A: test1 wants to call client b: client_b
+[Aug 13 18:02:05] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 18:02:13] Call between: client_b, test1 ended
+[Aug 13 18:03:56] Sign-in from:127.0.0.1:4200, username: client_b: name taken, account was not created
+[Aug 13 18:03:56] Login from: 127.0.0.1:4200, username: client_b: success :)
+[Aug 13 18:03:56] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 18:03:56] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 18:03:56] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 18:03:56] test1 wanted to add contact but rojber already exists
+[Aug 13 18:03:56] test1 wanted to add test_wrong but there are no such user
+[Aug 13 18:03:56] client A: test1 wants to call client b: client_b
+[Aug 13 18:03:58] Call was estamblished between Client A: test1and Client B: client_b
+[Aug 13 18:04:02] Call between: client_b, test1 ended
+[Aug 13 18:08:31] Sign-in from:127.0.0.1:4000, username: test1: name taken, account was not created
+[Aug 13 18:08:31] Login from: 127.0.0.1:4000, username: test1: success :)
+[Aug 13 18:08:31] test1 wanted to add contact but kwitnoncy already exists
+[Aug 13 18:08:31] test1 wanted to add contact but rojber already exists
+[Aug 13 18:08:31] test1 wanted to add test_wrong but there are no such user

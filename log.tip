@@ -53,3 +53,33 @@
 [Aug 06 10:44:23] client A: client_a wants to call client b: client_b
 [Aug 06 10:44:25] Call was estamblished between Client A: client_aand Client B: client_b
 [Aug 06 10:44:27] Call between: client_a, client_b ended
+[Aug 09 19:02:58] Sign-in from:127.0.0.1:42134, username: test1: account was created
+[Aug 09 19:03:22] Login from: 127.0.0.1:42134, username: test1: success :)
+[Aug 09 19:04:15] Sign-in from:127.0.0.1:32786, username: test2: account was created
+[Aug 09 19:04:27] Login from: 127.0.0.1:32786, username: test2: success :)
+[Aug 09 19:05:18] client A: test2 wants to call client b: test1
+[Aug 09 19:05:20] Call was estamblished between Client A: test2and Client B: test1
+[Aug 09 19:07:27] Trying to log in: 127.0.0.1:47754, {'user_name': 'test1', 'passwd_hash': '1b4f0e9851971998e732078544c96b36c3d01cedf7caa332359d6f1d83567014', 'email_hash': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}
+[Aug 09 19:07:50] Sign-in from:127.0.0.1:47754, username: test1: account was created
+[Aug 09 19:07:55] Login from: 127.0.0.1:47754, username: test1: success :)
+[Aug 09 19:08:05] Sign-in from:127.0.0.1:25074, username: test1: name taken, account was not created
+[Aug 09 19:08:13] Sign-in from:127.0.0.1:25074, username: test2: account was created
+[Aug 09 19:08:20] Login from: 127.0.0.1:25074, username: test2: success :)
+[Aug 09 19:08:36] client A: test1 wants to call client b: test2
+[Aug 09 19:08:38] Call was estamblished between Client A: test1and Client B: test2
+[Aug 09 19:13:46] Sign-in from:127.0.0.1:24130, username: test1: account was created
+[Aug 09 19:13:49] Login from: 127.0.0.1:24130, username: test1: success :)
+[Aug 09 19:14:00] Sign-in from:127.0.0.1:11346, username: test2: account was created
+[Aug 09 19:14:07] Login from: 127.0.0.1:11346, username: test2: success :)
+[Aug 09 19:14:31] client A: test2 wants to call client b: test1
+[Aug 09 19:14:32] Call was estamblished between Client A: test2and Client B: test1
+[Aug 09 19:17:45] Sign-in from:127.0.0.1:54002, username: test1: account was created
+[Aug 09 19:17:51] Login from: 127.0.0.1:54002, username: test1: success :)
+[Aug 09 19:18:13] Sign-in from:127.0.0.1:59642, username: test2: account was created
+[Aug 09 19:18:19] Login from: 127.0.0.1:59642, username: test2: success :)
+[Aug 09 19:19:00] client A: test1 wants to call client b: test2
+[Aug 09 19:19:01] Call was estamblished between Client A: test1and Client B: test2
+[Aug 09 19:25:09] Login from: 127.0.0.1:27604, username: test1: success :)
+[Aug 09 19:25:15] Login from: 127.0.0.1:54460, username: test2: success :)
+[Aug 09 19:25:59] client A: test2 wants to call client b: test1
+[Aug 09 19:26:01] Call was estamblished between Client A: test2and Client B: test1

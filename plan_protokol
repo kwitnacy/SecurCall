@@ -20,12 +20,12 @@
 I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
 1. Piersze bajt - sprawy administracyjne:
 +-------------------------------+---------------------------+
-|	  code -> name 				| value (dec, hex, bin)	    |
-+-------------------------------+---------------------------+
-|		A7 -> ACK				| 128 -> 0x80 -> 0b10000000 | +---> 0x04 -> add contact
-|		A6 -> NACK				| 64  -> 0x40 -> 0b01000000 | |   > 0x08 -> modify contact
-|		A5 -> END_TRANS			| 32  -> 0x20 -> 0b00100000 | |   > 0x0C -> delete contact
-|		A4 -> reserved			| 16  -> 0x10 -> 0b00010000 | |   > 0x0E -> get contacts
+|	  code -> name 				| value (dec, hex, bin)	    | +---> 0x04 -> add contact
++-------------------------------+---------------------------+ |   > 0x08 -> modify contact
+|		A7 -> ACK				| 128 -> 0x80 -> 0b10000000 | |   > 0x0C -> delete contact 
+|		A6 -> NACK				| 64  -> 0x40 -> 0b01000000 | |   > 0x0E -> get contacts
+|		A5 -> END_TRANS			| 32  -> 0x20 -> 0b00100000 | |   > 0x06 -> get history
+|		A4 -> reserved			| 16  -> 0x10 -> 0b00010000 | |   > 0x0A -> NOT USED
 |	A3, A2 -> contact stuff		| 8   -> 0x08 -> 0b00001110 |-+
 |	A1, A0 -> login stuff		| 2   -> 0x02 -> 0b00000011 |-----> 0x01 -> login
 +-------------------------------+---------------------------+		0x02 -> logout

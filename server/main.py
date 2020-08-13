@@ -63,6 +63,12 @@ class Server():
         with open('log.tip', 'a') as log_file:
             log_file.write(time.strftime('[%h %d %H:%M:%S') + '] ' + s + '\n')
 
+    
+    def log_call(client_a: str, client_b: str, client_a_addr, client_b_addr) -> None:
+        with open('billing.tip', 'a') as billing_file:
+            billing_file.write(time.strftime('[%h %d %H:%M:%S') + '] ' + client_a + ' (from ' + client_a_addr + 
+                ' called ' + client_b + ' (from ' + client_b_addr + ')')
+
 
     def log_in(self, j: dict, client_addr: (str, int)) -> dict:
         # find in database and compare password hashes
@@ -87,7 +93,7 @@ class Server():
                 "mess": "Logged in",
                 "token": token,
                 "contacts": self.users[j['user_name']]['contacts'],
-                "missed_call": self.users[j['user_name']]['missed_calls']
+                "history": self.users[j['user_name']]['history']
             }
         else:
             self.log('Login from: ' + str(client_addr[0]) + ':' + str(client_addr[1]) + ', username: ' + j['user_name']
@@ -98,12 +104,12 @@ class Server():
             }
 
 
-    def log_out(self, j, client_a_aes_engine, client_a_addr) -> dict:
+    def log_out(self, j, client_addr) -> dict:
         # check if token exists if not log ip 
         try:
             token = j['token']
         except KeyError:
-            self.log('Logout from: ' + str(client_addr[0]) + ':' + str(client_addr[1]) + ', username: ' + self.ONLINE_USERS[token]['user_name'] + ': No token :(')
+            self.log('Logout from: ' + str(client_addr[0]) + ':' + str(client_addr[1]) + ': No token :(')
             return {
                 "status": "Error",
                 "mess": "No token"
@@ -111,7 +117,9 @@ class Server():
 
         if token in self.ONLINE_USERS:
             self.log('Logout from: ' + str(client_addr[0]) + ':' + str(client_addr[1]) + ', username: ' + self.ONLINE_USERS[token]['user_name'] + ': succes :)')
+            del self.NAME_TOKEN[self.ONLINE_USERS[token]['user_name']]
             del self.ONLINE_USERS[token]
+            
             return {
                 "status": "OK",
                 "mess": "logged out"
@@ -137,7 +145,7 @@ class Server():
             if j['passwd_hash']:
                 self.users[j['user_name']] = j
                 self.users[j['user_name']]['contacts'] = {}
-                self.users[j['user_name']]['missed_calls'] = []
+                self.users[j['user_name']]['history'] = []
                 try:
                     del(self.users[j['user_name']]['busy'])
                 except KeyError:
@@ -193,32 +201,76 @@ class Server():
             client_a = self.ONLINE_USERS[j['token']]
         except KeyError:
             self.log("Client A: " + j['user_name'] + " wanted to call but sent no token")
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "No token"
+            }).replace("'", "\"")))
+
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
+
             return {
                 "status": "Error",
                 "mess": "No token"
             }
 
         to_call = j['to_call']
-        try:
-            # to_call_token = self.users[to_call]['token']
-            to_call_token = self.NAME_TOKEN[to_call]
-        except KeyError:
+        if to_call not in self.users:
             self.log("Client A: " + j['user_name'] + " wanted to call Client B: " + to_call + " but client B does not exist")
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "User does not exists"
+            }).replace("'", "\"")))
+
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
             return {
                 "status": "Error",
                 "mess": "User does not exists"
             }
-        if to_call_token not in self.ONLINE_USERS:
+
+        if to_call not in self.NAME_TOKEN:
+            self.users[to_call]['history'].append({
+                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "who": j['user_name'],
+                "type": "missed"
+            })
+            self.users[j['user_name']]['history'].append({
+                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "who": to_call,
+                "type": "missed, offline"
+            })
+
             self.log("Client A: " + j['user_name'] + " wanted to call Client B: " + to_call + " but client B is offline")
+            mess = bytearray()
+            mess.append(0x00)
+            mess.append(0x40)
+            mess.extend(map(ord, str({
+                "status": "Error",
+                "mess": "User is not online"
+            }).replace("'", "\"")))
+
+            nounce = os.urandom(12)
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            s_sock.sendto(nounce + mess, client_a_addr)
             return {
                 "status": "Error",
                 "mess": "User is not online"
             }
         else:
+            to_call_token = self.NAME_TOKEN[to_call]
             client_b_ip = self.ONLINE_USERS[to_call_token]['ip_addr']
             client_b_ip = client_b_ip[0], client_b_ip[1] + 1
             client_b_user_name = self.ONLINE_USERS[to_call_token]['user_name']
-        
+
         self.log("client A: " + j['user_name']  + " wants to call client b: " + client_b_user_name)
 
         # send pub key to client B
@@ -286,19 +338,25 @@ class Server():
         data = client_b_aes_engine.decrypt(data[:12], data[12:], None)
         if data[1] == 0x06:
             self.log("Client B: " + client_b_user_name + " is busy")
-            # to_send_busy = bytearray()
-            # to_send_busy.append(0x00)
-            # to_send_busy.append(0x06)
-            # nounce = os.urandom(12)
-            # to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
-            # s_sock.sendto(nounce + to_send_busy, client_a_addr)
-            self.users[client_b_user_name]['missed_calls'].append({
+            to_send_busy = bytearray()
+            to_send_busy.append(0x00)
+            to_send_busy.append(0x06)
+            nounce = os.urandom(12)
+            to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
+            s_sock.sendto(nounce + to_send_busy, client_a_addr)
+            self.users[client_b_user_name]['history'].append({
                 "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
-                "who": j['user_name']
+                "who": j['user_name'],
+                "type": "missed, busy"
+            })
+            self.users[j['user_name']]['history'].append({
+                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "who": client_b_user_name,
+                "type": "missed, busy"
             })
 
             return {
-                "status": "OK",
+                "status": "OK/NOK",
                 "mess": "Client B is busy"
             }
         elif data[1] != 0x04:
@@ -425,6 +483,7 @@ class Server():
             to_send_ACK.append(0x00)
             to_send_ACK.append(0x80)
             to_send_ACK.extend(map(ord, str({
+                'user_name': client_a['user_name'],
                 'conversation_token': conversation_token,
                 'srtp_security_token': srtp_security_token,
                 'ip_addr': client_a_addr[0],
@@ -726,6 +785,23 @@ class Server():
         }
 
 
+    def get_history(self, j: dict, client_addr: (str, int)) -> dict:
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to modify contact from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+
+        return {
+            "status": "OK",
+            "mess": "Contacts",
+            "contacts": self.users[self.ONLINE_USERS[token]['user_name']]['history']
+        }
+
+
     def session(self, data, addr, free_port):
         session_socket = s.socket(s.AF_INET, s.SOCK_DGRAM)
         session_socket.bind((self.HOST, free_port))
@@ -780,7 +856,7 @@ class Server():
 
         # log out
         elif code[0] == 0x02:
-            response = self.log_out(data)
+            response = self.log_out(data, addr)
 
         # sign in
         elif code[0] == 0x03:
@@ -802,8 +878,13 @@ class Server():
         elif code[0] == 0x0E:
             response = self.get_conntacts(data, addr)
 
+        # get history
+        elif code[0] == 0x06:
+            response = self.get_history(data, addr)
+
         elif code[1] == 0x01:
             response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
+            print(response)
             send_res = False
 
         elif code[1] == 0x20:
