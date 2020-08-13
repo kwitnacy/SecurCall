@@ -118,6 +118,24 @@ class Client:
         else:
             return False
 
+    # TODO wylogowanie sie
+    def log_out(self) -> dict:
+        mess = bytearray()
+        mess.append(0x02)
+        mess.append(0x00)
+        mess.extend(map(ord, str({"token": self.token}).replace("'", "\"")))
+        res = self.send_req(mess=bytes(mess))
+
+        return res
+
+    def close(self) -> None:
+        if self.caller:
+            self.send_bye(self.caller['user_name'])
+        self.RUNNING = False
+        res = self.log_out()
+        print('quit')
+        return res
+
     # --- SERVER COMMUNICATION ---
     def send_req(self, mess: Union[bytes, bytearray] = None) -> dict:
         server_addr = self.crypto_stuff()
@@ -192,6 +210,8 @@ class Client:
             to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
+
+
         elif code[1] == 0x01:
             if self.BUSY:
                 to_send_busy = bytearray()
@@ -370,6 +390,8 @@ class Client:
 
         if data[1] == 0x02:
             print("TRYING")
+        elif data[1] == 0x40:
+            return json.loads(data.decode('utf-8')[2:].replace("'", "\""))
         else:
             return {"error": "No trying"}
 
@@ -507,6 +529,18 @@ class Client:
 
         return self.send_req(mess)
 
+    # --- HISTORY ---
+    # TODO historia polaczen
+    def get_history(self) -> dict:
+        mess = bytearray()
+        mess.append(0x06)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+        }).replace("'", "\"")))
+
+        return self.send_req(mess)
+
     # --- AUDIO TRANSMISSION ---
     def test(self):
         self.init_UDP_connection()
@@ -545,6 +579,8 @@ class Client:
         inp.close()
         output.stop_stream()
         output.close()
+        self.UDP_CONNECTION.close()
+        self.UDP_CONNECTION = None
 
     def init_audio_input(self, ip_to_send, port_to_send):
         def callback(in_data, frame_count, time_info, status):

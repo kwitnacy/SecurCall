@@ -750,7 +750,9 @@ class main_menu:
             self.error_label['text'] = 'Błędne dane!'
 
     def rozlacz(self):
-        c.send_bye(self.label4['text'])
+        print('Rozlacz: ' + self.label4['text'])
+        tmp = c.send_bye(self.label4['text'])
+        print('response: ' + tmp)
         self.error_label['text'] = ''
         self.label4['text'] = ''
         self.button5.configure(state='normal')
