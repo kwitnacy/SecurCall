@@ -16,6 +16,7 @@ import secrets
 from pylibsrtp import Policy, Session
 from typing import Optional, Union
 
+
 # TODO update danych klienta
 
 def my_hash(b: bytes) -> bytes:
@@ -56,8 +57,12 @@ class Client:
         self.ONLINE = False
         self.BUSY = False
         self.RUNNING = True
-
+        self.ANSWER = None
+        self.GOT_BYE = False
+        self.token = None
+        self.conversation_token = None
         self.aes_engine = None
+        self.caller = {}
 
         # --- SIP SOCKETS ---
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -178,6 +183,8 @@ class Client:
 
         if code[1] == 0x20:
             self.BUSY = False
+            self.caller = {}
+            self.GOT_BYE = True
             to_send_bye = bytearray()
             to_send_bye.append(0x00)
             to_send_bye.append(0x20)
@@ -185,7 +192,6 @@ class Client:
             to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
-
         elif code[1] == 0x01:
             if self.BUSY:
                 to_send_busy = bytearray()
@@ -199,6 +205,7 @@ class Client:
                 # TODO
                 return {}
 
+            self.ANSWER = None
             to_send_ringing = bytearray()
             to_send_ringing.append(0x00)
             to_send_ringing.append(0x04)
@@ -224,23 +231,18 @@ class Client:
             self.server_info_addr = server_info_addr
             print('RING RING')
             print(j['user_name'], 'is calling you')
-            time.sleep(1)
-            self.send_ok()
-
-            """
-            # Send OK/NOK
-            to_send_ok = bytearray()
-            to_send_ok.append(0x00)
-            to_send_ok.append(0x08) # OK
-            # to_send_ok.append(0x10) # NOK
-            nounce = os.urandom(12)
-            to_send_ok = aes_engine_call.encrypt(nounce, bytes(to_send_ok), None)
-            self.socket_info.sendto(nounce + to_send_ok, server_info_addr)
-
-            print("send OK")
-            # print("send NOK")
-            """
-
+            self.caller['user_name'] = j['user_name']
+            while True:
+                if self.ANSWER is not None:
+                    if self.ANSWER:
+                        self.send_ok()
+                        break
+                    elif not self.ANSWER:
+                        self.send_nok()
+                        break
+                time.sleep(1)
+            # time.sleep(1)
+            # self.send_ok()
 
         else:
             print('got shitty mess')
@@ -273,10 +275,8 @@ class Client:
         if data[1] == 0x80:
             self.BUSY = True
             self.SRTPkey = bytes.fromhex(self.caller['srtp_security_token'])
-            thread_call = threading.Thread(target=self.call, args=[self.caller['ip_addr'], self.caller['port']])
+            thread_call = threading.Thread(target=self.call, args=[self.caller['ip_addr'], self.caller['port'] - 2])
             thread_call.start()
-            # self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
-            # self.thread_call_get.start()
 
     def send_nok(self):
         mess = bytearray()
@@ -287,6 +287,35 @@ class Client:
         self.socket_info.sendto(nounce + mess, self.server_info_addr)
 
         print('Send NOK')
+
+    def send_bye(self, user_name: str):
+        mess = bytearray()
+        mess.append(0x00)
+        mess.append(0x20)
+        mess.extend(map(ord, str({
+            "called": user_name,
+            "token": self.token,
+            "user_name": self.user_data['user_name'],
+            "conversation_token": self.conversation_token
+        }).replace("'", "\"")))
+
+        server_addr = self.crypto_stuff()
+        nounce = os.urandom(12)
+        ct = self.aes_engine.encrypt(nounce, bytes(mess), None)
+
+        self.socket.sendto(nounce + ct, server_addr)
+
+        data, addr = self.socket.recvfrom(1024)
+
+        response = self.aes_engine.decrypt(data[:12], data[12:], None)
+
+        print(response)
+
+        self.BUSY = False
+        self.caller = {}
+        self.conversation_token = None
+
+        return response
 
     def crypto_stuff(self) -> (str, int):
         private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
@@ -315,44 +344,9 @@ class Client:
 
         return SERVER_ADDR
 
-    """def call_send_pack(self, client_b_info: dict):
-        # init connection
-        print('Calling somebody')
-        print(client_b_info)
-        mess = 'hi ' + client_b_info['client_b_name'] + ' how are you doing?'
-        mess = mess.encode('utf-8')
-        time.sleep(0.5)
-        self.socket_call.connect((client_b_info['client_b_ip_addr'], client_b_info['client_b_ip_port'] + 1))
-
-        self.socket_call.send(mess)
-
-        data = self.socket_call.recv(1024)
-
-        print(data.decode('utf-8'))
-
-        self.socket_call.close()
-        while self.BUSY:
-            print('rozmowa')
-
-    def call_get_pack(self):
-        # listen for incomming connetcion
-        print('Being called')
-        self.socket_call.bind((self.HOST, self.PORT + 2))
-        self.socket_call.listen(1)
-        print('listening')
-        conn, addr = self.socket_call.accept()
-        print(addr)
-        data = conn.recv(1024)
-        print(data)
-        mess = 'no co tam byczq?'.encode('utf-8')
-        conn.send(mess)
-        conn.close()
-        while self.BUSY:
-            print('rozmowa')"""
-
     # --- SIGNALIZATION ---
 
-    def make_call(self, user_name: str) -> bytes:
+    def make_call(self, user_name: str):
         mess = bytearray()
         mess.append(0x00)
         mess.append(0x01)
@@ -435,7 +429,7 @@ class Client:
                 "status": "OK",
                 "mess": "call is estanblished",
                 "client_b_ip_addr": j['ip_addr'],
-                "client_b_ip_port": j['ip_port'],
+                "client_b_ip_port": j['ip_port']-3,
                 "client_b_name": j['user_name'],
                 "srtp_security_token": j['srtp_security_token']
             }
@@ -466,11 +460,6 @@ class Client:
         nounce = os.urandom(12)
         mess = self.aes_engine.encrypt(nounce, bytes(mess), None)
         self.socket.sendto(nounce + mess, addr)
-
-        """if flag_ok is True:
-            self.call_thread = threading.Thread(target=self.call, args=[j['ip_addr'], j['ip_port']])
-            self.call_thread.start()
-        """
         return res
 
     # --- CONTACTS MANAGEMENT ---
@@ -527,6 +516,7 @@ class Client:
         return True
 
     def call(self, ip_to_send: str, port_to_send: int):
+        self.BUSY = True
         self.init_UDP_connection()
         self.init_session()
         t_udp_controller = threading.Thread(target=self.udp_controller, args=[ip_to_send, port_to_send])
@@ -548,7 +538,7 @@ class Client:
 
         inp.start_stream()
         output.start_stream()
-        while True:  # inp.is_active() and out.is_active():
+        while self.BUSY: # and inp.is_active() and output.is_active():
             print("ON AIR")
             time.sleep(0.1)
         inp.stop_stream()
@@ -570,7 +560,8 @@ class Client:
                 else:
                     in_data = audioop.lin2alaw(in_data, 2)
                     in_data = b'\x80\x08' + self.SEQUENCE_NUM.to_bytes(2, byteorder='big') + \
-                          self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4, byteorder='big') + in_data
+                              self.TIMESTAMP.to_bytes(4, byteorder='big') + self.SSRC.to_bytes(4,
+                                                                                               byteorder='big') + in_data
                     in_data = self.tx_session.protect(in_data)
                     self.UDP_CONNECTION.sendto(in_data, (ip_to_send, port_to_send))
             except Exception as e:
@@ -609,9 +600,7 @@ class Client:
                     self.UDP_CONNECTION.settimeout(None)
                     break
                 except socket.timeout as e:
-                    print("Odtwarzanie błąd 1:", e)
-                    continue
-                except:
+                    # print("Odtwarzanie błąd 1:", e)
                     return in_data, pyaudio.paComplete
             return in_data, pyaudio.paContinue
 
@@ -647,4 +636,3 @@ if __name__ == "__main__":
     c = Client()
     c.SRTPkey = secrets.token_bytes(30)
     c.test()
-

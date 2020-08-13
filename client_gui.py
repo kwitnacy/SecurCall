@@ -1,14 +1,17 @@
+import pprint
+import threading
 import tkinter as tk
 from functools import partial
 import scrollable
+import time
 import client
 
 
-global c
 c = client.Client(
     server_addr='127.0.0.1',
     server_port=1337,
 )
+
 
 def create_prelogin_screen(logo):
     menu = tk.Frame()
@@ -66,7 +69,7 @@ def create_login_screen(logo, errortext=''):
     def logowanie():
         res = c.log_in(entry1.get(), entry2.get())
         if res is True:
-            set_frame(create_main_menu(img))
+            set_frame(1, True)
         else:
             errorlabel['text'] = 'Błędne dane!'
 
@@ -254,10 +257,131 @@ def create_registration_screen(logo):
     return menu
 
 
-def create_main_menu(logo):
-    menu = tk.Frame()
-    def spis_polaczen():
-        spis_pol = tk.Toplevel(menu)
+class main_menu:
+    def __init__(self, master, logo):
+        self.master = master
+        self.menu = tk.Frame()
+
+        self.menu.columnconfigure(1, weight=1, minsize=70)
+        self.menu.columnconfigure(2, weight=1, minsize=150)
+        self.menu.columnconfigure(3, weight=1, minsize=70)
+        self.menu.rowconfigure(1, weight=1, minsize=50)
+        self.menu.rowconfigure(2, weight=1, minsize=50)
+        self.menu.rowconfigure(3, weight=1, minsize=40)
+        self.menu.rowconfigure(4, weight=1, minsize=50)
+
+        # --------- 1 ROW ----------
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=2)
+        self.label1 = tk.Label(master=frame, image=logo)
+        self.label1.pack()
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1
+        )
+        frame.grid(row=1, column=2, pady=10, sticky="e", columnspan=2)
+        self.button1 = tk.Button(master=frame, text="Spis połączeń", font=("Helvetica", "10"), command=self.spis_polaczen)
+        self.button1.pack(side=tk.RIGHT, padx=10)
+        self.button2 = tk.Button(master=frame, text="Ustawienia", font=("Helvetica", "10"), command=self.ustawienia)
+        self.button2.pack()
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1
+        )
+        frame.grid(row=1, column=3, padx=10, pady=15)
+
+        # --------- 2 ROW ----------
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=2, column=1, padx=15, pady=10, sticky="w")
+        self.button3 = tk.Button(master=frame, text="Kontakty", font=("Helvetica", "10"), command=self.kontakty)
+        self.button3.pack()
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1,
+        )
+        frame.grid(row=2, column=2, pady=10, sticky="e")
+        self.sv = tk.StringVar()
+        self.entry1 = tk.Entry(master=frame, font=("Helvetica", "13"), textvariable=self.sv, validate="focusout",
+                          validatecommand=self.id_entry_callback)
+        self.entry1.insert(tk.END, 'ID użytkownika')
+        self.entry1.pack(side=tk.LEFT, expand=True)
+        self.button4 = tk.Button(master=frame, text=" + ", font=("Helvetica", "8", 'bold'), command=self.dodaj_kontakt)
+        self.button4.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=2, column=2, pady=0, sticky="n")
+        self.error_label = tk.Label(master=frame, text="", font=("Helvetica", "8"), fg='red')
+        self.error_label.pack()
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1
+        )
+        frame.grid(row=2, column=3, padx=10, pady=10)
+        self.button5 = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"), command=self.zadzwon)
+        self.button5.pack()
+
+        # --------- 3 ROW ----------
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=3, column=1, padx=15, sticky="w", columnspan=2)
+        self.label2 = tk.Label(master=frame, text="Aktualnie rozmawiasz z:", font=("Helvetica", "8"))
+        self.label2.pack()
+
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=3, column=2, padx=15, sticky="e", columnspan=2)
+        self.label3 = tk.Label(master=frame, text="Notatka o rozmówcy:", font=("Helvetica", "8"))
+        self.label3.pack()
+
+        # --------- 4 ROW ----------
+        frame = tk.Frame(
+            master=self.menu,
+        )
+        frame.grid(row=4, column=1, padx=15, pady=0, sticky="w", columnspan=2)
+        self.label4 = tk.Label(master=frame, text="", font=("Consolas", "10", "bold"))
+        self.label4.pack(side=tk.TOP, pady=3)
+        self.button6 = tk.Button(master=frame, state='disabled', padx=20, fg="red", text="Rozłącz",
+                            font=("Helvetica", "10", "bold"), command=self.rozlacz)
+        self.button6.pack(side=tk.BOTTOM, pady=10)
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1
+        )
+        frame.grid(row=4, column=2, padx=15, pady=0)
+        self.button7 = tk.Button(master=frame, state='disabled', text="Wyłącz mikrofon", font=("Helvetica", "10"),
+                            command=self.wylacz_mikrofon)
+        self.button7.pack(side=tk.TOP)
+        self.button8 = tk.Button(master=frame, state='disabled', padx=6, text="Wycisz dźwięk", font=("Helvetica", "10"),
+                            command=self.wycisz_dzwiek)
+        self.button8.pack(side=tk.BOTTOM, pady=10)
+
+        frame = tk.Frame(
+            master=self.menu,
+            borderwidth=1
+        )
+        frame.grid(row=4, column=2, padx=15, pady=0, columnspan=2, sticky="ne")
+        self.text1 = tk.Text(master=frame, state='disabled', height=4, width=15, font=("Helvetica", "10"))
+        self.text1.pack(side=tk.TOP)
+
+        self.thread = threading.Thread(target=self.sprawdz_pol, args=())
+        self.thread.start()
+        self.menu.pack()
+
+    def spis_polaczen(self):
+        spis_pol = tk.Toplevel(self.menu)
         spis_pol.title("Spis połączeń - SecurCall")
         spis_pol.resizable(False, False)
 
@@ -397,14 +521,14 @@ def create_main_menu(logo):
 
 
     # TODO wszystko tu xd
-    def ustawienia():
-        ustaw = tk.Toplevel(menu)
+    def ustawienia(self):
+        ustaw = tk.Toplevel(self.menu)
         ustaw.title("Ustawienia - SecurCall")
 
-    def kontakty():
+    def kontakty(self):
         def zadzwon_kontakt(key):
             kont.destroy()
-            zadzwon_z_kontaktow(key)
+            self.zadzwon_z_kontaktow(key)
 
         def edytuj_kontakt(key):
             def zapisz_edycje():
@@ -414,7 +538,7 @@ def create_main_menu(logo):
                     'note': text1.get("1.0", "end-1c")
                 })
                 kont.destroy()
-                kontakty()
+                self.kontakty()
 
             edyt = tk.Toplevel(kont)
             edyt.title("Edycja kontaktu - SecurCall")
@@ -433,8 +557,8 @@ def create_main_menu(logo):
                 master=edyt,
             )
             frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=3)
-            label1 = tk.Label(master=frame, text="Edycja kontaktu", font=("Consolas", "14", "bold"))
-            label1.pack()
+            self.label1 = tk.Label(master=frame, text="Edycja kontaktu", font=("Consolas", "14", "bold"))
+            self.label1.pack()
 
             frame = tk.Frame(
                 master=edyt,
@@ -447,8 +571,8 @@ def create_main_menu(logo):
                 master=edyt,
             )
             frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
-            label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
-            label1.pack(side=tk.RIGHT)
+            self.label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
+            self.label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt,
@@ -463,8 +587,8 @@ def create_main_menu(logo):
                 master=edyt,
             )
             frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
-            label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
-            label1.pack(side=tk.RIGHT)
+            self.label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
+            self.label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt,
@@ -479,8 +603,8 @@ def create_main_menu(logo):
                 master=edyt,
             )
             frame.grid(row=4, column=1, padx=10, pady=10, sticky="en")
-            label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
-            label1.pack(side=tk.RIGHT)
+            self.label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
+            self.label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt
@@ -493,9 +617,9 @@ def create_main_menu(logo):
         def usun_kontakt(key):
             c.delete_contact(key)
             kont.destroy()
-            kontakty()
+            self.kontakty()
 
-        kont = tk.Toplevel(menu)
+        kont = tk.Toplevel(self.menu)
         kont.title("Kontakty - SecurCall")
 
         header = tk.Frame(kont)
@@ -598,182 +722,147 @@ def create_main_menu(logo):
             kontakt.rowconfigure(rowcounter, weight=1, minsize=15)
             kontakt.update()
 
-    def dodaj_kontakt():
-        c.add_contact(entry1.get())
+    def dodaj_kontakt(self):
+        c.add_contact(self.entry1.get())
 
-    def zadzwon_z_kontaktow(key):
-        entry1.delete(0, tk.END)
-        entry1.insert(0, key)
-        res = c.make_call(entry1.get())
+    def zadzwon_z_kontaktow(self, key):
+        self.entry1.delete(0, tk.END)
+        self.entry1.insert(0, key)
+        res = c.make_call(self.entry1.get())
         print(res)
         c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
         c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
 
-    def zadzwon():
-        res = c.make_call(entry1.get())
-        print(res)
+    def zadzwon(self):
+        res = c.make_call(self.entry1.get())
+        pprint.pprint(res)
         if res['status'] == 'OK':
-            label4.configure(text=entry1.get())
+            self.label4.configure(text=self.entry1.get())
             c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
             c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
-            error_label['text'] = ''
-            button5.configure(state='disabled')
-            button6.configure(state='normal')
-            button7.configure(state='normal')
-            button8.configure(state='normal')
+            self.error_label['text'] = ''
+            self.label4['text'] = self.entry1.get()
+            self.button5.configure(state='disabled')
+            self.button6.configure(state='normal')
+            self.button7.configure(state='normal')
+            self.button8.configure(state='normal')
         else:
-            error_label['text'] = 'Błędne dane!'
+            self.error_label['text'] = 'Błędne dane!'
 
+    def rozlacz(self):
+        c.send_bye(self.label4['text'])
+        self.error_label['text'] = ''
+        self.label4['text'] = ''
+        self.button5.configure(state='normal')
+        self.button6.configure(state='disabled')
+        self.button7.configure(state='disabled')
+        self.button8.configure(state='disabled')
 
-    def rozlacz():
-        pass
-
-    def wylacz_mikrofon():
+    def wylacz_mikrofon(self):
         c.MIC_MUTED = True
-        button7.configure(text='Włącz mikrofon', command=wlacz_mikrofon)
+        self.button7.configure(text='Włącz mikrofon', command=self.wlacz_mikrofon)
 
-    def wlacz_mikrofon():
+    def wlacz_mikrofon(self):
         c.MIC_MUTED = False
-        button7.configure(text='Wyłącz mikrofon', command=wylacz_mikrofon)
+        self.button7.configure(text='Wyłącz mikrofon', command=self.wylacz_mikrofon)
 
-    def wycisz_dzwiek():
+    def wycisz_dzwiek(self):
         c.AUDIO_MUTED = True
-        button8.configure(text='Włącz dźwięk', command=wlacz_dzwiek)
+        self.button8.configure(text='Włącz dźwięk', command=self.wlacz_dzwiek)
 
-    def wlacz_dzwiek():
+    def wlacz_dzwiek(self):
         c.AUDIO_MUTED = False
-        button8.configure(text='Wycisz dźwięk', command=wycisz_dzwiek)
+        self.button8.configure(text='Wycisz dźwięk', command=self.wycisz_dzwiek)
 
-    def id_entry_callback():
-        key = sv.get()
+    def id_entry_callback(self):
+        key = self.sv.get()
         testjs = c.get_contacts()
         if key in testjs['contacts']:
-            text1.configure(state='normal')
-            text1.delete("1.0", tk.END)
-            text1.insert(tk.END, testjs['contacts'][key]['note'])
-            text1.configure(state='disabled')
+            self.text1.configure(state='normal')
+            self.text1.delete("1.0", tk.END)
+            self.text1.insert(tk.END, testjs['contacts'][key]['note'])
+            self.text1.configure(state='disabled')
 
-    menu.columnconfigure(1, weight=1, minsize=70)
-    menu.columnconfigure(2, weight=1, minsize=150)
-    menu.columnconfigure(3, weight=1, minsize=70)
-    menu.rowconfigure(1, weight=1, minsize=50)
-    menu.rowconfigure(2, weight=1, minsize=50)
-    menu.rowconfigure(3, weight=1, minsize=40)
-    menu.rowconfigure(4, weight=1, minsize=50)
+    def sprawdz_pol(self):
+        def odbierz_pol():
+            c.ANSWER = True
+            self.label4['text'] = c.caller['user_name']
+            self.error_label['text'] = ''
+            self.button5.configure(state='disabled')
+            self.button6.configure(state='normal')
+            self.button7.configure(state='normal')
+            self.button8.configure(state='normal')
+            global pol_exists
+            pol_exists = False
+            pol.destroy()
 
-    # --------- 1 ROW ----------
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=2)
-    label1 = tk.Label(master=frame, image=logo)
-    label1.pack()
+        def rozlacz_pol():
+            c.ANSWER = False
+            global pol_exists
+            pol_exists = False
+            pol.destroy()
 
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1
-    )
-    frame.grid(row=1, column=2, pady=10, sticky="e", columnspan=2)
-    button1 = tk.Button(master=frame, text="Spis połączeń", font=("Helvetica", "10"), command=spis_polaczen)
-    button1.pack(side=tk.RIGHT, padx=10)
-    button2 = tk.Button(master=frame, text="Ustawienia", font=("Helvetica", "10"), command=ustawienia)
-    button2.pack()
+        pol_exists = False
 
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1
-    )
-    frame.grid(row=1, column=3, padx=10, pady=15)
+        while True:
+            if not c.BUSY and c.caller and 'user_name' in c.caller and not pol_exists:
+                pol_exists = True
+                pol = tk.Toplevel(self.menu)
+                pol.columnconfigure(1, weight=1, minsize=70)
+                pol.columnconfigure(2, weight=1, minsize=70)
+                pol.rowconfigure(1, weight=1, minsize=50)
+                pol.rowconfigure(2, weight=1, minsize=50)
+                pol.rowconfigure(3, weight=1, minsize=40)
 
-    # --------- 2 ROW ----------
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=2, column=1, padx=15, pady=10, sticky="w")
-    button3 = tk.Button(master=frame, text="Kontakty", font=("Helvetica", "10"), command=kontakty)
-    button3.pack()
+                # --------- 1 ROW ----------
+                frame = tk.Frame(
+                    master=pol,
+                )
+                frame.grid(row=1, column=1, padx=15, pady=10, sticky="we", columnspan=2)
+                self.label1 = tk.Label(master=frame, text=c.caller['user_name'] + ' dzwoni do Ciebie!', font=("Helvetica", "10", 'bold'))
+                self.label1.pack()
 
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1,
-    )
-    frame.grid(row=2, column=2, pady=10, sticky="e")
-    sv = tk.StringVar()
-    entry1 = tk.Entry(master=frame, font=("Helvetica", "13"), textvariable=sv, validate="focusout", validatecommand=id_entry_callback)
-    entry1.insert(tk.END, 'ID użytkownika')
-    entry1.pack(side=tk.LEFT, expand=True)
-    button4 = tk.Button(master=frame, text=" + ", font=("Helvetica", "8", 'bold'), command=dodaj_kontakt)
-    button4.pack(side=tk.RIGHT)
+                frame = tk.Frame(
+                    master=pol,
+                    borderwidth=1
+                )
+                frame.grid(row=2, column=1, pady=10, padx=15)
+                self.button1 = tk.Button(master=frame, fg="green", text="Odbierz", font=("Helvetica", "10", 'bold'),
+                                         command=odbierz_pol)
+                self.button1.pack()
+                frame = tk.Frame(
+                    master=pol,
+                    borderwidth=1
+                )
+                frame.grid(row=2, column=2, pady=10, padx=15)
+                self.button2 = tk.Button(master=frame, fg="red", text="Rozłącz", font=("Helvetica", "10", 'bold'),
+                                         command=rozlacz_pol)
+                self.button2.pack()
 
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=2, column=2, pady=0, sticky="n")
-    error_label = tk.Label(master=frame, text="", font=("Helvetica", "8"), fg='red')
-    error_label.pack()
+            if c.GOT_BYE:
+                self.error_label['text'] = ''
+                self.label4['text'] = ''
+                self.button5.configure(state='normal')
+                self.button6.configure(state='disabled')
+                self.button7.configure(state='disabled')
+                self.button8.configure(state='disabled')
+                c.GOT_BYE = False
 
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1
-    )
-    frame.grid(row=2, column=3, padx=10, pady=10)
-    button5 = tk.Button(master=frame, fg="green", text="Zadzwoń", font=("Helvetica", "10", "bold"), command=zadzwon)
-    button5.pack()
-
-    # --------- 3 ROW ----------
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=3, column=1, padx=15, sticky="w", columnspan=2)
-    label2 = tk.Label(master=frame, text="Aktualnie rozmawiasz z:", font=("Helvetica", "8"))
-    label2.pack()
-
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=3, column=2, padx=15, sticky="e", columnspan=2)
-    label3 = tk.Label(master=frame, text="Notatka o rozmówcy:", font=("Helvetica", "8"))
-    label3.pack()
-
-    # --------- 4 ROW ----------
-    frame = tk.Frame(
-        master=menu,
-    )
-    frame.grid(row=4, column=1, padx=15, pady=0, sticky="w", columnspan=2)
-    label4 = tk.Label(master=frame, text="", font=("Consolas", "10", "bold"))
-    label4.pack(side=tk.TOP, pady=3)
-    button6 = tk.Button(master=frame, state='disabled', padx=20, fg="red", text="Rozłącz", font=("Helvetica", "10", "bold"), command=rozlacz)
-    button6.pack(side=tk.BOTTOM, pady=10)
-
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1
-    )
-    frame.grid(row=4, column=2, padx=15, pady=0)
-    button7 = tk.Button(master=frame, state='disabled', text="Wyłącz mikrofon", font=("Helvetica", "10"), command=wylacz_mikrofon)
-    button7.pack(side=tk.TOP)
-    button8 = tk.Button(master=frame, state='disabled', padx=6, text="Wycisz dźwięk", font=("Helvetica", "10"), command=wycisz_dzwiek)
-    button8.pack(side=tk.BOTTOM, pady=10)
-
-    frame = tk.Frame(
-        master=menu,
-        borderwidth=1
-    )
-    frame.grid(row=4, column=2, padx=15, pady=0, columnspan=2, sticky="ne")
-    text1 = tk.Text(master=frame, state='disabled', height=4, width=15, font=("Helvetica", "10"))
-    text1.pack(side=tk.TOP)
-    return menu
+            time.sleep(0.5)
 
 
-def set_frame(new_frame):
+def set_frame(new_frame, is_main_menu=False):
     global current
 
     # hide current tk.Frame
     current.pack_forget()
 
+    if is_main_menu:
+        mm = main_menu(root, img)
     # show new tk.Frame
-    current = new_frame
-    current.pack()
+    else:
+        current = new_frame
+        current.pack()
 
 
 if __name__ == '__main__':
@@ -786,6 +875,5 @@ if __name__ == '__main__':
 
     current = create_prelogin_screen(img)
     current.pack()
-    #set_frame(create_main_menu(img))
     root.mainloop()
 
