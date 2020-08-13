@@ -210,7 +210,7 @@ class Client:
             to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
-
+            self.conversation_token = None
 
         elif code[1] == 0x01:
             if self.BUSY:
@@ -291,6 +291,7 @@ class Client:
             'conversation_token': j['conversation_token'],
             'srtp_security_token': j['srtp_security_token']
         }
+        self.conversation_token = j['conversation_token']
 
         if data[1] == 0x80:
             self.BUSY = True

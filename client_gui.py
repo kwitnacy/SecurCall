@@ -752,7 +752,7 @@ class main_menu:
     def rozlacz(self):
         print('Rozlacz: ' + self.label4['text'])
         tmp = c.send_bye(self.label4['text'])
-        print('response: ' + tmp)
+        print('response: ', tmp)
         self.error_label['text'] = ''
         self.label4['text'] = ''
         self.button5.configure(state='normal')
@@ -794,16 +794,19 @@ class main_menu:
             self.button6.configure(state='normal')
             self.button7.configure(state='normal')
             self.button8.configure(state='normal')
+            pol.destroy()
+            time.sleep(1)
             global pol_exists
             pol_exists = False
-            pol.destroy()
 
         def rozlacz_pol():
             c.ANSWER = False
+            pol.destroy()
+            time.sleep(1)
             global pol_exists
             pol_exists = False
-            pol.destroy()
 
+        global pol_exists
         pol_exists = False
 
         while True:
@@ -850,7 +853,7 @@ class main_menu:
                 self.button8.configure(state='disabled')
                 c.GOT_BYE = False
 
-            time.sleep(0.5)
+            time.sleep(1)
 
 
 def set_frame(new_frame, is_main_menu=False):
