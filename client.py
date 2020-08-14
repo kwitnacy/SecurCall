@@ -306,6 +306,8 @@ class Client:
         nounce = os.urandom(12)
         mess = self.aes_engine_call.encrypt(nounce, bytes(mess), None)
         self.socket_info.sendto(nounce + mess, self.server_info_addr)
+        self.caller = {}
+        self.conversation_token = None
 
         print('Send NOK')
 

@@ -747,7 +747,7 @@ class main_menu:
             self.button7.configure(state='normal')
             self.button8.configure(state='normal')
         else:
-            self.error_label['text'] = 'Błędne dane!'
+            self.error_label['text'] = 'Błęd!'
 
     def rozlacz(self):
         print('Rozlacz: ' + self.label4['text'])
