@@ -167,6 +167,7 @@ class Client:
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
             self.caller = None
+            self.conversation_token = None
             self.socket_call.close()
             self.socket_call = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -471,7 +472,7 @@ class Client:
             "token": self.token,
             "user_name": self.user_data['user_name'],
             "conversation_token": self.conversation_token
-            }).replace("'", "\"")))
+        }).replace("'", "\"")))
 
         print("conversation_token is : ", self.conversation_token)
         server_addr = self.crypto_stuff()

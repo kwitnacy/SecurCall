@@ -239,12 +239,12 @@ class Server():
 
         if to_call not in self.NAME_TOKEN:
             self.users[to_call]['history'].append({
-                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
                 "who": j['user_name'],
                 "type": "missed"
             })
             self.users[j['user_name']]['history'].append({
-                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
                 "who": to_call,
                 "type": "missed, offline"
             })
@@ -345,12 +345,12 @@ class Server():
             to_send_busy = client_a_aes_engine.encrypt(nounce, bytes(to_send_busy), None)
             s_sock.sendto(nounce + to_send_busy, client_a_addr)
             self.users[client_b_user_name]['history'].append({
-                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
                 "who": j['user_name'],
                 "type": "missed, busy"
             })
             self.users[j['user_name']]['history'].append({
-                "time": time.strftime('%h %d %H:%M:%S').replace("'", "\""),
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
                 "who": client_b_user_name,
                 "type": "missed, busy"
             })
@@ -433,6 +433,17 @@ class Server():
             to_send_ok = client_a_aes_engine.encrypt(nounce, bytes(to_send_ok), None)
             s_sock.sendto(nounce + to_send_ok, client_a_addr)
             
+            self.users[to_call]['history'].append({
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+                "who": j['user_name'],
+                "type": "outgoing"
+            })
+            self.users[j['user_name']]['history'].append({
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+                "who": to_call,
+                "type": "incoming"
+            })
+
         elif data[1] == 0x10:
             # NOK
             to_send_nok = bytearray()
@@ -442,12 +453,23 @@ class Server():
             to_send_nok = client_a_aes_engine.encrypt(nounce, bytes(to_send_nok), None)
             s_sock.sendto(nounce + to_send_nok, client_a_addr)
             self.log("Client B: " + client_b_user_name + " rejectced the call")
+
+            self.users[to_call]['history'].append({
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+                "who": j['user_name'],
+                "type": "rejected"
+            })
+            self.users[j['user_name']]['history'].append({
+                "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+                "who": to_call,
+                "type": "rejected"
+            })
+
             return {
                 "status": "OK",
                 "mess": "Call was rejected"
             }
         else:
-            print("Got some shit")
             to_send_nok = bytearray()
             to_send_nok.append(0x00)
             to_send_nok.append(0x10)
@@ -636,8 +658,7 @@ class Server():
                 "status": "Error",
                 "mess": "Got no ACK for BYE"
             }).replace("'", "\"")))
-            nounce = os.urandom(12)
-            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            nounce = os.urandom(12) mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
             s_sock.sendto(nounce + mess, client_a_addr)
             return {
                 "status": "Error",
@@ -657,6 +678,9 @@ class Server():
         nounce = os.urandom(12)
         mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
         s_sock.sendto(nounce + mess, client_a_addr)
+
+        self.users[j['called']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
+        self.users[j['user_name']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
 
         self.log("Call between: " + client_a['user_name'] + ", " + client_b['user_name'] + " ended")
         return {

@@ -707,3 +707,216 @@
 [Aug 13 18:08:31] test1 wanted to add contact but kwitnoncy already exists
 [Aug 13 18:08:31] test1 wanted to add contact but rojber already exists
 [Aug 13 18:08:31] test1 wanted to add test_wrong but there are no such user
+[Aug 13 18:31:07] Login from: 127.0.0.1:4002, username: test1: success :)
+[Aug 13 18:31:13] Login from: 127.0.0.1:4202, username: test2: success :)
+[Aug 13 18:31:21] client A: test2 wants to call client b: test1
+[Aug 13 18:31:23] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 18:37:47] Login from: 127.0.0.1:4002, username: test1: success :)
+[Aug 13 18:37:53] Login from: 127.0.0.1:4202, username: test2: success :)
+[Aug 13 18:38:02] client A: test2 wants to call client b: test1
+[Aug 13 18:38:06] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 18:40:48] Login from: 127.0.0.1:4002, username: test1: success :)
+[Aug 13 18:40:58] Login from: 127.0.0.1:4202, username: test2: success :)
+[Aug 13 18:41:08] client A: test2 wants to call client b: test1
+[Aug 13 18:41:12] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 18:41:15] Call between: test2, test1 ended
+[Aug 13 18:41:26] Client A: test2 wanted to call Client B: kwitnoncy but client B is offline
+[Aug 13 18:41:52] client A: test2 wants to call client b: test1
+[Aug 13 18:43:52] No response (OK/NOK) from Client B: test1
+[Aug 13 18:47:53] Login from: 127.0.0.1:4002, username: test1: success :)
+[Aug 13 18:47:58] Login from: 127.0.0.1:4202, username: test2: success :)
+[Aug 13 18:48:03] client A: test2 wants to call client b: test1
+[Aug 13 18:48:07] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 21:57:45] Login from: 127.0.0.1:31254, username: test1: success :)
+[Aug 13 21:57:51] Login from: 127.0.0.1:41044, username: test2: success :)
+[Aug 13 21:58:05] client A: test2 wants to call client b: test1
+[Aug 13 21:58:09] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 21:58:11] Call between: test2, test1 ended
+[Aug 13 22:05:31] Login from: 127.0.0.1:48268, username: test1: success :)
+[Aug 13 22:05:36] Login from: 127.0.0.1:14082, username: test2: success :)
+[Aug 13 22:05:41] client A: test2 wants to call client b: test1
+[Aug 13 22:05:43] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:05:45] Call between: test2, test1 ended
+[Aug 13 22:09:19] Login from: 127.0.0.1:59190, username: test1: success :)
+[Aug 13 22:09:23] Login from: 127.0.0.1:46136, username: test2: success :)
+[Aug 13 22:09:52] client A: test2 wants to call client b: test1
+[Aug 13 22:09:55] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:09:57] Call between: test1, test2 ended
+[Aug 13 22:10:13] client A: test1 wants to call client b: test2
+[Aug 13 22:10:16] Call was estamblished between Client A: test1and Client B: test2
+[Aug 13 22:10:18] Call between: test2, test1 ended
+[Aug 13 22:10:29] client A: test2 wants to call client b: test1
+[Aug 13 22:12:29] No response (OK/NOK) from Client B: test1
+[Aug 13 22:13:53] Login from: 127.0.0.1:32986, username: test1: success :)
+[Aug 13 22:14:00] Login from: 127.0.0.1:50188, username: test2: success :)
+[Aug 13 22:14:09] client A: test2 wants to call client b: test1
+[Aug 13 22:14:13] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:14:15] Call between: test1, test2 ended
+[Aug 13 22:15:00] client A: test2 wants to call client b: test1
+[Aug 13 22:17:01] No response (OK/NOK) from Client B: test1
+[Aug 13 22:17:13] client A: test2 wants to call client b: test1
+[Aug 13 22:17:23] Client B: test1 but client B did not send key
+[Aug 13 22:28:43] Login from: 127.0.0.1:38206, username: test1: success :)
+[Aug 13 22:30:29] Login from: 127.0.0.1:42914, username: test2: success :)
+[Aug 13 22:30:45] client A: test2 wants to call client b: test1
+[Aug 13 22:30:48] Client B: test1 rejectced the call
+[Aug 13 22:30:55] client A: test2 wants to call client b: test1
+[Aug 13 22:33:30] Login from: 127.0.0.1:47652, username: test1: success :)
+[Aug 13 22:33:34] Login from: 127.0.0.1:37890, username: test2: success :)
+[Aug 13 22:33:40] client A: test2 wants to call client b: test1
+[Aug 13 22:33:43] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:33:45] Call between: test1, test2 ended
+[Aug 13 22:44:09] Login from: 127.0.0.1:57862, username: test1: success :)
+[Aug 13 22:44:15] Login from: 127.0.0.1:35666, username: test2: success :)
+[Aug 13 22:44:25] client A: test2 wants to call client b: test1
+[Aug 13 22:44:32] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:44:34] Call between: test1, test2 ended
+[Aug 13 22:44:56] client A: test2 wants to call client b: test1
+[Aug 13 22:46:10] Login from: 127.0.0.1:28110, username: test1: success :)
+[Aug 13 22:46:15] Login from: 127.0.0.1:20028, username: test2: success :)
+[Aug 13 22:46:23] client A: test2 wants to call client b: test1
+[Aug 13 22:46:37] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:46:42] Call between: test2, test1 ended
+[Aug 13 22:46:45] client A: test2 wants to call client b: test1
+[Aug 13 22:46:57] No response (OK/NOK) from Client B: test1
+[Aug 13 22:48:41] Login from: 127.0.0.1:11770, username: test1: success :)
+[Aug 13 22:48:46] Login from: 127.0.0.1:15126, username: test2: success :)
+[Aug 13 22:48:46] No response (OK/NOK) from Client B: test1
+[Aug 13 22:48:53] client A: test2 wants to call client b: test1
+[Aug 13 22:49:03] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:49:05] Call between: test1, test2 ended
+[Aug 13 22:52:18] Login from: 127.0.0.1:27360, username: test1: success :)
+[Aug 13 22:52:22] Login from: 127.0.0.1:13604, username: test2: success :)
+[Aug 13 22:52:26] client A: test2 wants to call client b: test1
+[Aug 13 22:52:31] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:52:35] Call between: test1, test2 ended
+[Aug 13 22:52:45] client A: test2 wants to call client b: test1
+[Aug 13 22:54:45] No response (OK/NOK) from Client B: test1
+[Aug 13 22:56:59] Login from: 127.0.0.1:11372, username: test1: success :)
+[Aug 13 22:57:08] Login from: 127.0.0.1:24714, username: test2: success :)
+[Aug 13 22:57:16] client A: test2 wants to call client b: test1
+[Aug 13 22:57:21] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 22:57:22] Call between: test1, test2 ended
+[Aug 13 22:57:27] client A: test2 wants to call client b: test1
+[Aug 13 22:59:27] No response (OK/NOK) from Client B: test1
+[Aug 13 23:02:07] Login from: 127.0.0.1:29282, username: test1: success :)
+[Aug 13 23:02:13] Login from: 127.0.0.1:51426, username: test2: success :)
+[Aug 13 23:02:18] client A: test2 wants to call client b: test1
+[Aug 13 23:02:22] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:02:24] Call between: test1, test2 ended
+[Aug 13 23:02:27] client A: test2 wants to call client b: test1
+[Aug 13 23:04:28] Login from: 127.0.0.1:20482, username: test1: success :)
+[Aug 13 23:04:28] No response (OK/NOK) from Client B: test1
+[Aug 13 23:04:33] Login from: 127.0.0.1:39720, username: test2: success :)
+[Aug 13 23:04:36] client A: test2 wants to call client b: test1
+[Aug 13 23:04:40] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:04:42] Call between: test1, test2 ended
+[Aug 13 23:04:45] client A: test2 wants to call client b: test1
+[Aug 13 23:06:45] No response (OK/NOK) from Client B: test1
+[Aug 13 23:31:07] Login from: 127.0.0.1:27338, username: test1: success :)
+[Aug 13 23:31:13] Login from: 127.0.0.1:13414, username: test2: success :)
+[Aug 13 23:31:19] client A: test2 wants to call client b: test1
+[Aug 13 23:31:23] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:31:25] Call between: test1, test2 ended
+[Aug 13 23:31:30] client A: test2 wants to call client b: test1
+[Aug 13 23:31:37] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:32:01] Call between: test2, test1 ended
+[Aug 13 23:32:03] client A: test2 wants to call client b: test1
+[Aug 13 23:32:07] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:32:18] Call between: test1, test2 ended
+[Aug 13 23:34:13] Login from: 127.0.0.1:58374, username: test1: success :)
+[Aug 13 23:34:17] Login from: 127.0.0.1:23718, username: test2: success :)
+[Aug 13 23:34:22] client A: test2 wants to call client b: test1
+[Aug 13 23:34:26] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:34:49] Call between: test2, test1 ended
+[Aug 13 23:34:55] client A: test2 wants to call client b: test1
+[Aug 13 23:37:25] Login from: 127.0.0.1:30658, username: test1: success :)
+[Aug 13 23:37:28] Login from: 127.0.0.1:24140, username: test2: success :)
+[Aug 13 23:37:32] client A: test2 wants to call client b: test1
+[Aug 13 23:37:44] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:37:59] Call between: test1, test2 ended
+[Aug 13 23:38:04] client A: test2 wants to call client b: test1
+[Aug 13 23:38:11] Client B: test1 rejectced the call
+[Aug 13 23:38:45] client A: test1 wants to call client b: test2
+[Aug 13 23:38:48] Call was estamblished between Client A: test1and Client B: test2
+[Aug 13 23:39:02] Call between: test2, test1 ended
+[Aug 13 23:39:47] Login from: 127.0.0.1:53974, username: test1: success :)
+[Aug 13 23:39:53] Login from: 127.0.0.1:17152, username: test2: success :)
+[Aug 13 23:39:57] client A: test2 wants to call client b: test1
+[Aug 13 23:40:03] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:40:15] Call between: test2, test1 ended
+[Aug 13 23:46:03] Login from: 127.0.0.1:56914, username: test1: success :)
+[Aug 13 23:46:08] Login from: 127.0.0.1:43178, username: test2: success :)
+[Aug 13 23:46:12] client A: test2 wants to call client b: test1
+[Aug 13 23:46:15] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:46:18] Call between: test1, test2 ended
+[Aug 13 23:46:20] client A: test2 wants to call client b: test1
+[Aug 13 23:46:24] Call was estamblished between Client A: test2and Client B: test1
+[Aug 13 23:46:29] Call between: test1, test2 ended
+[Aug 13 23:46:35] client A: test2 wants to call client b: test1
+[Aug 13 23:47:07] client A: test2 wants to call client b: test1
+[Aug 13 23:47:17] Client B: test1 but client B did not send key
+[Aug 13 23:48:36] No response (OK/NOK) from Client B: test1
+[Aug 14 10:42:41] Login from: 127.0.0.1:28158, username: test1: success :)
+[Aug 14 10:42:47] Login from: 127.0.0.1:30384, username: test2: success :)
+[Aug 14 10:42:51] client A: test2 wants to call client b: test1
+[Aug 14 10:42:56] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 10:42:59] Call between: test2, test1 ended
+[Aug 14 10:47:33] Login from: 127.0.0.1:37108, username: test1: success :)
+[Aug 14 10:47:38] Login from: 127.0.0.1:20822, username: test2: success :)
+[Aug 14 10:47:43] client A: test2 wants to call client b: test1
+[Aug 14 10:47:47] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 10:47:49] Call between: test1, test2 ended
+[Aug 14 10:47:53] client A: test2 wants to call client b: test1
+[Aug 14 10:47:56] Client B: test1 rejectced the call
+[Aug 14 10:54:43] Login from: 127.0.0.1:43990, username: test1: success :)
+[Aug 14 10:54:48] Login from: 127.0.0.1:52500, username: test2: success :)
+[Aug 14 10:55:23] client A: test2 wants to call client b: test1
+[Aug 14 10:55:25] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 10:55:28] Call between: test1, test2 ended
+[Aug 14 10:55:42] client A: test2 wants to call client b: test1
+[Aug 14 10:55:45] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 10:56:28] Call between: test2, test1 ended
+[Aug 14 10:56:30] client A: test2 wants to call client b: test1
+[Aug 14 10:56:33] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 10:56:37] Call between: test1, test2 ended
+[Aug 14 10:56:39] client A: test2 wants to call client b: test1
+[Aug 14 10:56:42] Client B: test1 rejectced the call
+[Aug 14 10:57:10] client A: test2 wants to call client b: test1
+[Aug 14 11:00:16] Login from: 127.0.0.1:38358, username: test1: success :)
+[Aug 14 11:04:46] Login from: 127.0.0.1:35836, username: test2: success :)
+[Aug 14 11:05:02] client A: test2 wants to call client b: test1
+[Aug 14 11:06:37] Login from: 127.0.0.1:35422, username: test1: success :)
+[Aug 14 11:06:41] Login from: 127.0.0.1:24204, username: test2: success :)
+[Aug 14 11:06:48] client A: test2 wants to call client b: test1
+[Aug 14 11:06:52] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 11:06:59] Call between: test1, test2 ended
+[Aug 14 11:07:01] client A: test2 wants to call client b: test1
+[Aug 14 11:07:04] Client B: test1 rejectced the call
+[Aug 14 11:07:12] client A: test2 wants to call client b: test1
+[Aug 14 11:09:12] No response (OK/NOK) from Client B: test1
+[Aug 14 11:09:28] Login from: 127.0.0.1:29474, username: test1: success :)
+[Aug 14 11:09:31] Login from: 127.0.0.1:36996, username: test2: success :)
+[Aug 14 11:09:36] client A: test2 wants to call client b: test1
+[Aug 14 11:09:39] Client B: test1 rejectced the call
+[Aug 14 11:11:36] Login from: 127.0.0.1:38290, username: test1: success :)
+[Aug 14 11:11:42] Login from: 127.0.0.1:59684, username: test2: success :)
+[Aug 14 11:12:30] Login from: 127.0.0.1:33946, username: test1: success :)
+[Aug 14 11:12:34] Login from: 127.0.0.1:12190, username: test2: success :)
+[Aug 14 11:12:38] client A: test2 wants to call client b: test1
+[Aug 14 11:12:48] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 11:12:52] Call between: test1, test2 ended
+[Aug 14 11:12:59] client A: test2 wants to call client b: test1
+[Aug 14 11:13:04] Client B: test1 rejectced the call
+[Aug 14 11:16:38] Login from: 127.0.0.1:28754, username: test1: success :)
+[Aug 14 11:16:42] Login from: 127.0.0.1:38544, username: test2: success :)
+[Aug 14 11:16:46] client A: test2 wants to call client b: test1
+[Aug 14 11:16:54] Client B: test1 rejectced the call
+[Aug 14 11:17:02] client A: test2 wants to call client b: test1
+[Aug 14 11:17:05] Call was estamblished between Client A: test2and Client B: test1
+[Aug 14 11:17:15] Call between: test1, test2 ended
+[Aug 14 11:17:24] client A: test1 wants to call client b: test2
+[Aug 14 11:17:29] Call was estamblished between Client A: test1and Client B: test2
+[Aug 14 11:17:34] Call between: test2, test1 ended
+[Aug 14 11:17:36] client A: test1 wants to call client b: test2
+[Aug 14 11:17:41] Client B: test2 rejectced the call
