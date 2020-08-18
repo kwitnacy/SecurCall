@@ -1,1 +1,7 @@
 
+[Aug 18 15:06:15] Login from: 127.0.0.1:14872, username: test1: success :)
+[Aug 18 15:07:42] Login from: 127.0.0.1:49396, username: test1: success :)
+[Aug 18 15:07:47] Login from: 127.0.0.1:30284, username: test2: success :)
+[Aug 18 15:07:51] client A: test2 wants to call client b: test1
+[Aug 18 15:07:55] Call was estamblished between Client A: test2and Client B: test1
+[Aug 18 15:07:55] User test2 got his contacts from: ('127.0.0.1', 30284)

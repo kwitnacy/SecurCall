@@ -682,9 +682,6 @@ class Server():
         mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
         s_sock.sendto(nounce + mess, client_a_addr)
 
-        self.users[j['called']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
-        self.users[j['user_name']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
-
         self.users[conversation['A']]['history'].append({
             "begin": conversation['start'],
             "end": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
