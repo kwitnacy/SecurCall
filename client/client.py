@@ -25,7 +25,8 @@ class Client:
         self.user_data = {
             'user_name' : user_name,
             'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-            'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex())
+            'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex()),
+            'email': email
         }
 
         self.HOST = '127.0.0.1'
@@ -58,7 +59,8 @@ class Client:
             self.user_data = {
                 'user_name' : user_name,
                 'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex())
+                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex()),
+                'email': email
             }
         else:
             self.user_data = {
@@ -574,7 +576,8 @@ class Client:
         if passwd:
             data['new_passwd_hash'] = str(my_hash(bytes(passwd, encoding='utf-8')).hex())
         if email:
-            data['new_passwd_hash'] = str(my_hash(bytes(email, encoding='utf-8')).hex())
+            data['new_email_hash'] = str(my_hash(bytes(email, encoding='utf-8')).hex())
+            data['new_email'] = email
         
         if not data:
             return {
@@ -589,6 +592,17 @@ class Client:
         mess.append(0x0A)
         mess.append(0x00)
         mess.extend(map(ord, str(data).replace("'", "\"")))
+
+        return self.send_req(mess)
+
+
+    def get_data_from_server(self) -> dict:
+        mess = bytearray()
+        mess.append(0x20)
+        mess.append(0x00)
+        mess.extend(map(ord, str({
+            "token": self.token,
+        }).replace("'", "\"")))
 
         return self.send_req(mess)
 

@@ -24,7 +24,7 @@ I Dwa pierwsze bajty komunikatu beda reprezentowaly typ komunikatu:
 +-------------------------------+---------------------------+ |   > 0x08 -> modify contact
 |		  A7 -> ACK				| 128 -> 0x80 -> 0b10000000 | |   > 0x0C -> delete contact 
 |		  A6 -> NACK			| 64  -> 0x40 -> 0b01000000 | |   > 0x0E -> get contacts
-|		  A5 -> END_TRANS		| 32  -> 0x20 -> 0b00100000 | |   > 0x06 -> get history
+|		  A5 ->	GET DATA		| 32  -> 0x20 -> 0b00100000 | |   > 0x06 -> get history
 |	 	  A4 -> reserved		| 16  -> 0x10 -> 0b00010000 | |   > 0x0A -> change data
 | A3, A2, A1 -> contact stuff	| 8   -> 0x08 -> 0b00001110 |-+
 |	  A1, A0 -> login stuff		| 2   -> 0x02 -> 0b00000011 |-----> 0x01 -> login

@@ -820,6 +820,7 @@ class Server():
                 "mess": "No token"
             }
 
+        self.log("User " + self.ONLINE_USERS[token]['user_name'] + " got his contacts from: " + str(client_addr))
         return {
             "status": "OK",
             "mess": "Contacts",
@@ -837,6 +838,7 @@ class Server():
                 "mess": "No token"
             }
 
+        self.log("User " + self.ONLINE_USERS[token]['user_name'] + " got his history from: " + str(client_addr))
         return {
             "status": "OK",
             "mess": "Contacts",
@@ -845,7 +847,6 @@ class Server():
 
 
     def change_user_data(self, j: dict, client_addr: (str, int)) -> dict:
-        print("change user data")
         try:
             token = j['token']
         except KeyError:
@@ -870,6 +871,12 @@ class Server():
 
         new_passwd_hash = None
         new_email_hash = None
+        new_email = None
+
+        try:
+            new_email = j['new_email']
+        except KeyError:
+            pass
 
         try:
             new_passwd_hash = j['new_passwd_hash']
@@ -883,12 +890,34 @@ class Server():
 
         if new_email_hash:
             self.users[self.ONLINE_USERS[token]['user_name']]['email_hash'] = new_email_hash
+
         if new_passwd_hash:
             self.users[self.ONLINE_USERS[token]['user_name']]['passwd_hash'] = new_passwd_hash
+
+        if new_email:
+            self.users[self.ONLINE_USERS[token]['user_name']]['email'] = new_email
 
         return {
             "status": "OK",
             "mess": "Data changed"
+        }
+
+
+    def get_user_data(self, j: dict, client_addr: (str, int)) -> dict:
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to get user data from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+
+        self.log("User " + self.ONLINE_USERS[token]['user_name'] + " got his data from: " + str(client_addr))
+        return {
+            "status": "OK",
+            "mess": "data",
+            "data": self.users[self.ONLINE_USERS[token]['user_name']]
         }
 
 
@@ -962,7 +991,6 @@ class Server():
 
         # change data
         elif code[0] == 0x0A:
-            print("guwno")
             response = self.change_user_data(data, addr)
 
         # delete contact
@@ -976,6 +1004,10 @@ class Server():
         # get history
         elif code[0] == 0x06:
             response = self.get_history(data, addr)
+
+        # get user data
+        elif code[0] == 0x20:
+            response = self.get_user_data(data, addr)
 
         elif code[1] == 0x01:
             response = self.call(data, addr, aesgcm, public_key_bytes, private_key, session_socket)
