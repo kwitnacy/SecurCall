@@ -433,6 +433,7 @@ class Server():
             to_send_ok = client_a_aes_engine.encrypt(nounce, bytes(to_send_ok), None)
             s_sock.sendto(nounce + to_send_ok, client_a_addr)
             
+            """
             self.users[to_call]['history'].append({
                 "time": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
                 "who": j['user_name'],
@@ -443,6 +444,7 @@ class Server():
                 "who": to_call,
                 "type": "incoming"
             })
+            """
 
         elif data[1] == 0x10:
             # NOK
@@ -658,7 +660,8 @@ class Server():
                 "status": "Error",
                 "mess": "Got no ACK for BYE"
             }).replace("'", "\"")))
-            nounce = os.urandom(12) mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
+            nounce = os.urandom(12) 
+            mess = client_a_aes_engine.encrypt(nounce, bytes(mess), None)
             s_sock.sendto(nounce + mess, client_a_addr)
             return {
                 "status": "Error",
@@ -681,6 +684,21 @@ class Server():
 
         self.users[j['called']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
         self.users[j['user_name']]['history'][-1]['ended'] = time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
+
+        self.users[conversation['A']]['history'].append({
+            "begin": conversation['start'],
+            "end": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+            "who": conversation['B'],
+            "type": "outgoing"
+        })
+        self.users[conversation['B']]['history'].append({
+            "begin": conversation['start'],
+            "end": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\""),
+            "who": conversation['A'],
+            "type": "incoming"
+        })
+
+        del self.CALLS[conversation_token]
 
         self.log("Call between: " + client_a['user_name'] + ", " + client_b['user_name'] + " ended")
         return {
@@ -826,6 +844,54 @@ class Server():
         }
 
 
+    def change_user_data(self, j: dict, client_addr: (str, int)) -> dict:
+        print("change user data")
+        try:
+            token = j['token']
+        except KeyError:
+            self.log('No token passed to change data from: ' + str(client_addr))
+            return {
+                "status": "Error",
+                "mess": "No token"
+            }
+        try:
+            if j['email_hash'] != self.users[self.ONLINE_USERS[token]['user_name']]['email_hash']:
+                return {
+                    "status": "Error",
+                    "mess": "wrong email"
+                }
+        except KeyError as e:
+            print(e)
+            return {
+                "status": "Error",
+                "mess": "No email hash"
+            }
+
+
+        new_passwd_hash = None
+        new_email_hash = None
+
+        try:
+            new_passwd_hash = j['new_passwd_hash']
+        except KeyError:
+            pass
+
+        try:
+            new_email_hash = j['new_email_hash']
+        except KeyError:
+            pass
+
+        if new_email_hash:
+            self.users[self.ONLINE_USERS[token]['user_name']]['email_hash'] = new_email_hash
+        if new_passwd_hash:
+            self.users[self.ONLINE_USERS[token]['user_name']]['passwd_hash'] = new_passwd_hash
+
+        return {
+            "status": "OK",
+            "mess": "Data changed"
+        }
+
+
     def session(self, data, addr, free_port):
         session_socket = s.socket(s.AF_INET, s.SOCK_DGRAM)
         session_socket.bind((self.HOST, free_port))
@@ -893,6 +959,11 @@ class Server():
         # edit contact
         elif code[0] == 0x08:
             response = self.modify_contact(data, addr)
+
+        # change data
+        elif code[0] == 0x0A:
+            print("guwno")
+            response = self.change_user_data(data, addr)
 
         # delete contact
         elif code[0] == 0x0C:

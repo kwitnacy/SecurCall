@@ -1,4 +1,5 @@
 import client 
+import time
 
 c = client.Client(
     server_addr='127.0.0.1',
@@ -39,4 +40,20 @@ time.sleep(1)
 if call['status'] == 'OK':
     c.send_bye('client_b')
 """
+print(c.change_passwd_email_on_server(passwd="test2"))
+
+time.sleep(0.15)
+
+print(c.log_out())
+
+time.sleep(0.15)
+
+print(c.update_user_data('test1', 'test2'))
+
+time.sleep(0.15)
+
+print(c.log_in())
+
+time.sleep(0.15)
+
 # print(c.close())

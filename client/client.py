@@ -310,7 +310,7 @@ class Client:
         res = self.send_req(mess=bytes(mess))
     
 
-    def log_in(self) -> None:
+    def log_in(self) -> dict:
         mess = bytearray()
         mess.append(0x01)
         mess.append(0x00)
@@ -322,6 +322,8 @@ class Client:
             self.token = res['token']
             self.thread_info.start()
 
+        return res
+
 
     def log_out(self) -> dict:
         mess = bytearray()
@@ -330,6 +332,8 @@ class Client:
         mess.extend(map(ord, str({"token": self.token}).replace("'", "\"")))
         res = self.send_req(mess=bytes(mess))
         
+        self.ONLINE = False
+        self.RUNNING = False
         return res
 
 
@@ -564,4 +568,27 @@ class Client:
         return res
 
 
+    def change_passwd_email_on_server(self, passwd: str = '', email: str = '') -> dict:
+        data = {}
+
+        if passwd:
+            data['new_passwd_hash'] = str(my_hash(bytes(passwd, encoding='utf-8')).hex())
+        if email:
+            data['new_passwd_hash'] = str(my_hash(bytes(email, encoding='utf-8')).hex())
+        
+        if not data:
+            return {
+                "status": "OK",
+                "mess": "Nothing to change"
+            }
+
+        data["token"] =  self.token
+        data["email_hash"] =  self.user_data['email_hash']
+
+        mess = bytearray()
+        mess.append(0x0A)
+        mess.append(0x00)
+        mess.extend(map(ord, str(data).replace("'", "\"")))
+
+        return self.send_req(mess)
 
