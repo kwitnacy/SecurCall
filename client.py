@@ -17,8 +17,6 @@ from pylibsrtp import Policy, Session
 from typing import Optional, Union
 
 
-# TODO update danych klienta
-
 def my_hash(b: bytes) -> bytes:
     h = hashes.Hash(hashes.SHA256(), default_backend())
     h.update(b)
@@ -111,14 +109,13 @@ class Client:
             self.user_data = {
                 'user_name': user_name,
                 'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-                'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex())
+                'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex()),
             }
             self.thread_info.start()
             return True
         else:
             return False
 
-    # TODO wylogowanie sie
     def log_out(self) -> dict:
         mess = bytearray()
         mess.append(0x02)
@@ -532,8 +529,23 @@ class Client:
 
         return self.send_req(mess)
 
+    def update_user_data(self, user_name: str, passwd: str, email: str = '') -> None:
+        if email:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex())
+            }
+        else:
+            self.user_data = {
+                'user_name' : user_name,
+                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash' : ''
+            }
+
+        return None
+
     # --- HISTORY ---
-    # TODO historia polaczen
     def get_history(self) -> dict:
         mess = bytearray()
         mess.append(0x06)
@@ -658,7 +670,6 @@ class Client:
             self.UDP_CONNECTION.bind((self.HOST, self.PORT))
         except Exception as e:
             pass
-            # print("UDP init error:", str(e))
 
 
 if __name__ == "__main__":

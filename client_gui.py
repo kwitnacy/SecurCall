@@ -4,6 +4,7 @@ import tkinter as tk
 from functools import partial
 import scrollable
 import time
+from datetime import datetime
 import client
 
 
@@ -392,82 +393,7 @@ class main_menu:
 
         spis = scrollable.Scrollable(sp)
 
-        testjs = {
-            'dane': [
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                },
-                {
-                    'imie': 'Jan Kowalski',
-                    'czas_rozmowy': '45:21',
-                    'data': '10.04.2020',
-                    'godzina': '12:05'
-                },
-                {
-                    'imie': 'Robert Molenda',
-                    'czas_rozmowy': '1:21',
-                    'data': '21.04.2020',
-                    'godzina': '3:05'
-                }
-            ]
-        }
+        testjs = c.get_history()
 
         header.columnconfigure(1, weight=1, minsize=200)
         header.columnconfigure(2, weight=1, minsize=100)
@@ -482,20 +408,27 @@ class main_menu:
         label.pack()
 
         rowcounter = 2
+        pprint.pprint(testjs)
 
-        for record in testjs['dane']:
+        for record in testjs['contacts']:
             frame = tk.Frame(
                 master=spis,
             )
             frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
-            label = tk.Label(master=frame, text=record['imie'], font=("Consolas", "11", 'bold'))
+            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+                label = tk.Label(master=frame, fg='red', text=record['who'], font=("Consolas", "11", 'bold'))
+            else:
+                label = tk.Label(master=frame, text=record['who'], font=("Consolas", "11", 'bold'))
             label.pack(side=tk.LEFT)
 
             frame = tk.Frame(
                 master=spis,
             )
             frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
-            label = tk.Label(master=frame, text=record['data'], font=("Helvetica", "10"))
+            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+                label = tk.Label(master=frame, fg='red', text=record['time'], font=("Helvetica", "10"))
+            else:
+                label = tk.Label(master=frame, text=record['time'], font=("Helvetica", "10"))
             label.pack(side=tk.RIGHT)
 
             rowcounter += 1
@@ -504,26 +437,113 @@ class main_menu:
                 master=spis,
             )
             frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
-            label = tk.Label(master=frame, text='Czas rozmowy: ' + record['czas_rozmowy'], font=("Helvetica", "10"))
+            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+                label = tk.Label(master=frame, fg='red', text='Nieodebrane', font=("Helvetica", "10"))
+            else:
+                from_date = datetime.strptime(record['time'], '%d.%m.%y %H:%M:%S')
+                to_date = datetime.strptime(record['ended'], '%d.%m.%y %H:%M:%S')
+                label = tk.Label(master=frame, text='Czas rozmowy: ' + str(to_date - from_date) , font=("Helvetica", "10"))
             label.pack(side=tk.LEFT)
-
-            frame = tk.Frame(
-                master=spis,
-            )
-            frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
-            label = tk.Label(master=frame, text=record['godzina'], font=("Helvetica", "10"))
-            label.pack(side=tk.RIGHT)
 
             rowcounter += 1
 
         spis.rowconfigure(rowcounter, weight=1, minsize=15)
         spis.update()
 
-
-    # TODO wszystko tu xd
     def ustawienia(self):
+        def zapisz_zmiane():
+            c.update_user_data(c.user_data['user_name'], entry2.get(), entry1.get())
+            entry1.configure(state='disabled')
+            entry2.configure(state='disabled')
+            button1.configure(text="Zmień dane", command=zmien_dane)
+
+        def zmien_dane():
+            entry1.configure(state='normal')
+            entry2.configure(state='normal')
+            button1.configure(text="Zapisz", command=zapisz_zmiane)
+
+        def wyloguj():
+            global c
+            c.close()
+            c = client.Client(
+                server_addr='127.0.0.1',
+                server_port=1337,
+            )
+            self.menu.destroy()
+            set_frame(create_prelogin_screen(img))
+
         ustaw = tk.Toplevel(self.menu)
         ustaw.title("Ustawienia - SecurCall")
+
+        ustaw.columnconfigure(1, weight=1, minsize=50)
+        ustaw.columnconfigure(2, weight=1, minsize=200)
+        ustaw.rowconfigure(1, weight=1, minsize=50)
+        ustaw.rowconfigure(2, weight=1, minsize=50)
+        ustaw.rowconfigure(3, weight=1, minsize=50)
+        ustaw.rowconfigure(4, weight=1, minsize=50)
+        ustaw.rowconfigure(5, weight=1, minsize=50)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=3)
+        label1 = tk.Label(master=frame, text="Ustawienia konta", font=("Consolas", "14", "bold"))
+        label1.pack()
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=2, column=2, padx=4, pady=10, sticky="w", columnspan=1)
+        label = tk.Label(master=frame, text=c.user_data['user_name'], font=("Helvetica", "13"))
+        label.pack(side=tk.RIGHT, expand=True)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
+        label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
+        label1.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=3, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+        entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+        entry1.configure(state='disabled')
+        entry1.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+        label1 = tk.Label(master=frame, text="Email", font=("Consolas", "10"))
+        label1.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=4, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+        entry2 = tk.Entry(master=frame, show='*', font=("Helvetica", "13"))
+        entry2.configure(state='disabled')
+        entry2.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=ustaw,
+        )
+        frame.grid(row=4, column=1, padx=10, pady=10, sticky="e")
+        label1 = tk.Label(master=frame, text="Hasło", font=("Consolas", "10"))
+        label1.pack(side=tk.RIGHT)
+
+        frame = tk.Frame(
+            master=ustaw
+        )
+        frame.grid(row=5, column=1, padx=10, pady=10, sticky="e", columnspan=2)
+        button1 = tk.Button(master=frame, text="Zmień dane", font=("Helvetica", "10", "bold"),
+                            command=zmien_dane)
+        button1.pack(side=tk.LEFT, padx=10)
+        button2 = tk.Button(master=frame, fg='red', text="Wyloguj", font=("Helvetica", "10", "bold"),
+                            command=wyloguj)
+        button2.pack(side=tk.RIGHT)
 
     def kontakty(self):
         def zadzwon_kontakt(key):
@@ -557,8 +577,8 @@ class main_menu:
                 master=edyt,
             )
             frame.grid(row=1, column=1, padx=15, pady=10, sticky="w", columnspan=3)
-            self.label1 = tk.Label(master=frame, text="Edycja kontaktu", font=("Consolas", "14", "bold"))
-            self.label1.pack()
+            label1 = tk.Label(master=frame, text="Edycja kontaktu", font=("Consolas", "14", "bold"))
+            label1.pack()
 
             frame = tk.Frame(
                 master=edyt,
@@ -571,8 +591,8 @@ class main_menu:
                 master=edyt,
             )
             frame.grid(row=2, column=1, padx=10, pady=10, sticky="e")
-            self.label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
-            self.label1.pack(side=tk.RIGHT)
+            label1 = tk.Label(master=frame, text="ID", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt,
@@ -587,8 +607,8 @@ class main_menu:
                 master=edyt,
             )
             frame.grid(row=3, column=1, padx=10, pady=10, sticky="e")
-            self.label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
-            self.label1.pack(side=tk.RIGHT)
+            label1 = tk.Label(master=frame, text="Nazwa", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt,
@@ -603,8 +623,8 @@ class main_menu:
                 master=edyt,
             )
             frame.grid(row=4, column=1, padx=10, pady=10, sticky="en")
-            self.label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
-            self.label1.pack(side=tk.RIGHT)
+            label1 = tk.Label(master=frame, text="Notatka", font=("Consolas", "10"))
+            label1.pack(side=tk.RIGHT)
 
             frame = tk.Frame(
                 master=edyt
@@ -723,17 +743,19 @@ class main_menu:
             kontakt.update()
 
     def dodaj_kontakt(self):
-        c.add_contact(self.entry1.get())
+        res = c.add_contact(self.entry1.get())
+        if res['status'] != 'OK':
+            self.error_label['text'] = 'Nie można dodać kontaktu!'
 
     def zadzwon_z_kontaktow(self, key):
         self.entry1.delete(0, tk.END)
         self.entry1.insert(0, key)
-        res = c.make_call(self.entry1.get())
-        print(res)
-        c.SRTPkey = bytes.fromhex(res['srtp_security_token'])
-        c.call(res['client_b_ip_addr'], res['client_b_ip_port'])
+        self.zadzwon()
 
     def zadzwon(self):
+        if self.entry1.get() == c.user_data['user_name']:
+            self.error_label['text'] = 'Nie możesz dzwonić sam do siebie!'
+            return
         res = c.make_call(self.entry1.get())
         pprint.pprint(res)
         if res['status'] == 'OK':
@@ -747,7 +769,7 @@ class main_menu:
             self.button7.configure(state='normal')
             self.button8.configure(state='normal')
         else:
-            self.error_label['text'] = 'Błęd!'
+            self.error_label['text'] = 'Błąd!'
 
     def rozlacz(self):
         print('Rozlacz: ' + self.label4['text'])
