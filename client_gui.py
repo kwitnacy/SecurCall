@@ -409,7 +409,7 @@ class main_menu:
 
         rowcounter = 2
         pprint.pprint(testjs)
-
+        # TODO json z danymi do poprawy
         for record in testjs['contacts']:
             frame = tk.Frame(
                 master=spis,
@@ -452,7 +452,7 @@ class main_menu:
 
     def ustawienia(self):
         def zapisz_zmiane():
-            c.update_user_data(c.user_data['user_name'], entry2.get(), entry1.get())
+            c.change_passwd_email_on_server(entry2.get(), entry1.get())
             entry1.configure(state='disabled')
             entry2.configure(state='disabled')
             button1.configure(text="Zmień dane", command=zmien_dane)
@@ -509,6 +509,7 @@ class main_menu:
         )
         frame.grid(row=3, column=1, padx=10, pady=10, sticky="e", columnspan=2)
         entry1 = tk.Entry(master=frame, font=("Helvetica", "13"))
+        entry1.insert(tk.END, c.get_data_from_server()['data']['email'])
         entry1.configure(state='disabled')
         entry1.pack(side=tk.RIGHT)
 
@@ -880,13 +881,10 @@ class main_menu:
 
 def set_frame(new_frame, is_main_menu=False):
     global current
-
-    # hide current tk.Frame
     current.pack_forget()
 
     if is_main_menu:
         mm = main_menu(root, img)
-    # show new tk.Frame
     else:
         current = new_frame
         current.pack()
