@@ -410,12 +410,12 @@ class main_menu:
         rowcounter = 2
         pprint.pprint(testjs)
         # TODO json z danymi do poprawy
-        for record in testjs['contacts']:
+        for record in testjs['history']:
             frame = tk.Frame(
                 master=spis,
             )
             frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
-            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+            if record['type'] == 'missed' or record['type'] == 'missed, offline' or record['type'] == 'missed, busy' or record['type'] == 'rejected':
                 label = tk.Label(master=frame, fg='red', text=record['who'], font=("Consolas", "11", 'bold'))
             else:
                 label = tk.Label(master=frame, text=record['who'], font=("Consolas", "11", 'bold'))
@@ -425,10 +425,10 @@ class main_menu:
                 master=spis,
             )
             frame.grid(row=rowcounter, column=2, padx=15, pady=3, sticky="e")
-            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+            if record['type'] == 'missed' or record['type'] == 'missed, offline' or record['type'] == 'missed, busy' or record['type'] == 'rejected':
                 label = tk.Label(master=frame, fg='red', text=record['time'], font=("Helvetica", "10"))
             else:
-                label = tk.Label(master=frame, text=record['time'], font=("Helvetica", "10"))
+                label = tk.Label(master=frame, text=record['begin'], font=("Helvetica", "10"))
             label.pack(side=tk.RIGHT)
 
             rowcounter += 1
@@ -437,11 +437,11 @@ class main_menu:
                 master=spis,
             )
             frame.grid(row=rowcounter, column=1, padx=15, pady=3, sticky="w")
-            if record['type'] == 'missed' or record['type'] == 'missed, offline':
+            if record['type'] == 'missed' or record['type'] == 'missed, offline' or record['type'] == 'missed, busy' or record['type'] == 'rejected':
                 label = tk.Label(master=frame, fg='red', text='Nieodebrane', font=("Helvetica", "10"))
             else:
-                from_date = datetime.strptime(record['time'], '%d.%m.%y %H:%M:%S')
-                to_date = datetime.strptime(record['ended'], '%d.%m.%y %H:%M:%S')
+                from_date = datetime.strptime(record['begin'], '%d.%m.%y %H:%M:%S')
+                to_date = datetime.strptime(record['end'], '%d.%m.%y %H:%M:%S')
                 label = tk.Label(master=frame, text='Czas rozmowy: ' + str(to_date - from_date) , font=("Helvetica", "10"))
             label.pack(side=tk.LEFT)
 
