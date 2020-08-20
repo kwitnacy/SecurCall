@@ -533,7 +533,7 @@ class Server():
         self.CALLS[conversation_token] = {
             "A": client_a['user_name'],
             "B": client_b_user_name,
-            "start": time.strftime('[%h %d %H:%M:%S') + ']'
+            "start": time.strftime('%d.%m.%y %H:%M:%S').replace("'", "\"")
         }
         return {
             "status": "OK",
@@ -695,7 +695,7 @@ class Server():
             "type": "incoming"
         })
 
-        del self.CALLS[conversation_token]
+        del self.CALLS[j['conversation_token']]
 
         self.log("Call between: " + client_a['user_name'] + ", " + client_b['user_name'] + " ended")
         return {
@@ -838,8 +838,8 @@ class Server():
         self.log("User " + self.ONLINE_USERS[token]['user_name'] + " got his history from: " + str(client_addr))
         return {
             "status": "OK",
-            "mess": "Contacts",
-            "contacts": self.users[self.ONLINE_USERS[token]['user_name']]['history']
+            "mess": "history",
+            "history": self.users[self.ONLINE_USERS[token]['user_name']]['history']
         }
 
 

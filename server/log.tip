@@ -5,3 +5,25 @@
 [Aug 18 15:07:51] client A: test2 wants to call client b: test1
 [Aug 18 15:07:55] Call was estamblished between Client A: test2and Client B: test1
 [Aug 18 15:07:55] User test2 got his contacts from: ('127.0.0.1', 30284)
+[Aug 18 15:09:30] Login from: 127.0.0.1:41556, username: test1: success :)
+[Aug 18 15:09:34] Login from: 127.0.0.1:31130, username: test2: success :)
+[Aug 18 15:09:38] client A: test2 wants to call client b: test1
+[Aug 18 15:09:40] Call was estamblished between Client A: test2and Client B: test1
+[Aug 18 15:09:40] User test2 got his contacts from: ('127.0.0.1', 31130)
+[Aug 18 15:09:51] User test1 got his contacts from: ('127.0.0.1', 41556)
+[Aug 18 15:10:12] client A: test2 wants to call client b: test1
+[Aug 18 15:12:05] Login from: 127.0.0.1:49090, username: test1: success :)
+[Aug 18 15:12:08] Login from: 127.0.0.1:20756, username: test2: success :)
+[Aug 18 15:12:12] client A: test2 wants to call client b: test1
+[Aug 18 15:12:15] Call was estamblished between Client A: test2and Client B: test1
+[Aug 18 15:12:15] User test2 got his contacts from: ('127.0.0.1', 20756)
+[Aug 18 15:12:19] Call between: test2, test1 ended
+[Aug 20 10:02:45] Login from: 127.0.0.1:55662, username: test1: success :)
+[Aug 20 10:02:49] Login from: 127.0.0.1:47526, username: test2: success :)
+[Aug 20 10:02:55] client A: test2 wants to call client b: test1
+[Aug 20 10:02:59] Call was estamblished between Client A: test2and Client B: test1
+[Aug 20 10:02:59] User test2 got his contacts from: ('127.0.0.1', 47526)
+[Aug 20 10:03:02] Call between: test1, test2 ended
+[Aug 20 10:03:05] User test2 got his history from: ('127.0.0.1', 47526)
+[Aug 20 10:04:50] Login from: 127.0.0.1:27794, username: test1: success :)
+[Aug 20 10:04:52] User test1 got his history from: ('127.0.0.1', 27794)
