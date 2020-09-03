@@ -27,3 +27,168 @@
 [Aug 20 10:03:05] User test2 got his history from: ('127.0.0.1', 47526)
 [Aug 20 10:04:50] Login from: 127.0.0.1:27794, username: test1: success :)
 [Aug 20 10:04:52] User test1 got his history from: ('127.0.0.1', 27794)
+[Aug 30 14:05:12] Login from: 192.168.0.20:12508, username: test1: success :)
+[Aug 30 14:05:12] User test1 got his data from: ('192.168.0.20', 12508)
+[Aug 30 14:05:25] Login from: 192.168.0.20:19208, username: test2: success :)
+[Aug 30 14:05:25] User test2 got his data from: ('192.168.0.20', 19208)
+[Aug 30 14:05:36] client A: test2 wants to call client b: test1
+[Aug 30 14:05:40] Call was estamblished between Client A: test2and Client B: test1
+[Aug 30 14:05:40] User test2 got his contacts from: ('192.168.0.20', 19208)
+[Aug 30 14:06:19] Call between: test2, test1 ended
+[Aug 30 14:06:23] client A: test2 wants to call client b: test1
+[Aug 30 14:06:26] Client B: test1 rejectced the call
+[Aug 30 14:06:31] User test2 got his history from: ('192.168.0.20', 19208)
+[Aug 30 14:06:37] User test2 got his history from: ('192.168.0.20', 19208)
+[Aug 30 14:06:40] User test2 got his contacts from: ('192.168.0.20', 19208)
+[Aug 30 14:06:49] User test1 got his history from: ('192.168.0.20', 12508)
+[Aug 30 14:06:49] User test1 got his contacts from: ('192.168.0.20', 12508)
+[Aug 30 14:07:00] client A: test1 wants to call client b: test2
+[Aug 30 14:07:05] Call was estamblished between Client A: test1and Client B: test2
+[Aug 30 14:07:14] Call between: test1, test2 ended
+[Aug 30 14:07:18] client A: test2 wants to call client b: test1
+[Aug 30 14:07:20] Call was estamblished between Client A: test2and Client B: test1
+[Aug 30 14:07:36] Call between: test2, test1 ended
+[Aug 30 14:15:50] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:15:50] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:04] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:04] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:09] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:09] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:10] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:10] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:10] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:10] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:10] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:10] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:10] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:10] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:11] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:11] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:12] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:12] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:12] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:12] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:12] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:12] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:12] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:12] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:12] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:12] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:13] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:13] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:13] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:13] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:13] Login from: 192.168.0.20:53680, username: test1: success :)
+[Aug 30 14:16:13] User test1 got his data from: ('192.168.0.20', 53680)
+[Aug 30 14:16:14] Logout from: 192.168.0.20:53680, username: test1: succes :)
+[Aug 30 14:16:31] Login from: 192.168.0.20:41264, username: test1: success :)
+[Aug 30 14:16:31] User test1 got his data from: ('192.168.0.20', 41264)
+[Aug 30 14:18:32] Login from: 192.168.0.20:31578, username: test1: success :)
+[Aug 30 14:18:32] User test1 got his data from: ('192.168.0.20', 31578)
+[Aug 30 14:22:15] Login from: 192.168.0.20:28436, username: test1: success :)
+[Aug 30 14:22:15] User test1 got his data from: ('192.168.0.20', 28436)
+[Aug 30 14:24:10] Login from: 192.168.0.20:31432, username: test1: success :)
+[Aug 30 14:27:53] Login from: 192.168.0.20:53766, username: test1: success :)
+[Aug 30 14:27:53] User test1 got his data from: ('192.168.0.20', 53766)
+[Aug 30 14:30:22] Login from: 192.168.0.20:52332, username: test1: success :)
+[Aug 30 14:30:22] User test1 got his data from: ('192.168.0.20', 52332)
+[Aug 30 14:33:01] Login from: 192.168.0.20:41864, username: test1: success :)
+[Aug 30 14:33:01] User test1 got his data from: ('192.168.0.20', 41864)
+[Aug 30 14:34:22] Login from: 192.168.0.20:44152, username: test1: success :)
+[Aug 30 14:34:22] User test1 got his data from: ('192.168.0.20', 44152)
+[Aug 30 14:40:27] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:40:27] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:40:27] test1 wanted to add contact but kwitnoncy already exists
+[Aug 30 14:40:27] test1 wanted to add contact but rojber already exists
+[Aug 30 14:40:27] test1 wanted to add test_wrong but there are no such user
+[Aug 30 14:40:27] User test1 got his contacts from: ('192.168.0.20', 4000)
+[Aug 30 14:40:27] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:45:00] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:45:00] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:45:00] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:49:57] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:49:57] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:49:57] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:50:38] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:50:38] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:50:38] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:53:07] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:53:07] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:53:07] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:54:29] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:54:29] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:54:29] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:57:50] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:57:50] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:57:50] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 14:59:01] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 14:59:01] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 14:59:01] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:00:37] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:00:37] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:00:37] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:04:15] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:04:15] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:04:15] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:04:34] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:04:34] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:04:34] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:04:50] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:04:50] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:04:50] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:05:37] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:05:37] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:05:37] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:06:42] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:06:42] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:06:42] User test1 got his history from: ('192.168.0.20', 4000)
+[Aug 30 15:07:31] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:07:31] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:07:31] User test1 got his history from: ('192.168.0.20', 4000)
+[Aug 30 15:07:45] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:07:45] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:07:45] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:08:04] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:08:04] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:08:04] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:10:21] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:10:40] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:10:52] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:10:52] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:10:52] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:11:38] Sign-in from:192.168.0.20:4000, username: test1: name taken, account was not created
+[Aug 30 15:11:38] Login from: 192.168.0.20:4000, username: test1: success :)
+[Aug 30 15:11:38] User test1 got his data from: ('192.168.0.20', 4000)
+[Aug 30 15:13:12] Login from: 192.168.0.20:55894, username: test1: success :)
+[Aug 30 15:13:12] User test1 got his data from: ('192.168.0.20', 55894)
+[Aug 30 21:31:14] Login from: 192.168.0.20:46220, username: test1: success :)
+[Aug 30 21:31:14] User test1 got his data from: ('192.168.0.20', 46220)
+[Aug 30 21:31:20] Client A: test1 wanted to call Client B: test2 but client B is offline
+[Aug 30 21:31:23] User test1 got his contacts from: ('192.168.0.20', 46220)
+[Aug 30 21:31:28] User test1 got his history from: ('192.168.0.20', 46220)
+[Aug 30 21:34:25] Login from: 192.168.0.20:34178, username: test1: success :)
+[Aug 30 21:34:25] User test1 got his data from: ('192.168.0.20', 34178)
+[Aug 30 21:34:27] User test1 got his history from: ('192.168.0.20', 34178)
+[Aug 30 21:34:27] User test1 got his contacts from: ('192.168.0.20', 34178)
+[Aug 30 21:34:33] Client A: test1 wanted to call Client B: test2 but client B is offline
+[Aug 30 21:34:37] User test1 got his history from: ('192.168.0.20', 34178)
+[Sep 03 10:46:15] Login from: 192.168.0.20:52592, username: test1: success :)
+[Sep 03 10:46:15] User test1 got his data from: ('192.168.0.20', 52592)
+[Sep 03 10:46:21] Client A: test1 wanted to call Client B: test2 but client B is offline
+[Sep 03 10:46:25] User test1 got his contacts from: ('192.168.0.20', 52592)
+[Sep 03 10:46:25] User test1 got his contacts from: ('192.168.0.20', 52592)
+[Sep 03 10:48:57] Login from: 192.168.0.20:40940, username: test1: success :)
+[Sep 03 10:48:57] User test1 got his data from: ('192.168.0.20', 40940)
+[Sep 03 10:48:59] User test1 got his contacts from: ('192.168.0.20', 40940)
+[Sep 03 10:49:24] User test1 got his contacts from: ('192.168.0.20', 40940)
+[Sep 03 10:49:24] User test1 got his contacts from: ('192.168.0.20', 40940)

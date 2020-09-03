@@ -9,7 +9,7 @@ from typing import Optional, Union
 import atexit
 import os
 import time
-import socket 
+import socket
 import threading
 import json
 
@@ -21,15 +21,16 @@ def my_hash(b: bytes) -> bytes:
 
 
 class Client:
-    def __init__(self, server_addr: str = '', server_port: int = 0, user_name: str = '', passwd: str = '', email: str ='', port: int = 4000):
+    def __init__(self, server_addr: str = '', server_port: int = 0, user_name: str = '', passwd: str = '', email: str = '', port: int = 4000):
         self.user_data = {
-            'user_name' : user_name,
-            'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-            'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex()),
+            'user_name': user_name,
+            'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+            'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex()),
             'email': email
         }
 
         self.HOST = '127.0.0.1'
+        self.HOST = socket.gethostbyname(socket.gethostname())
         self.PORT = port
         self.TIMESOUT = 10
 
@@ -53,28 +54,26 @@ class Client:
 
         self.thread_info = threading.Thread(target=self.info_fun, args=())
 
-
     def update_user_data(self, user_name: str, passwd: str, email: str = '') -> None:
         if email:
             self.user_data = {
-                'user_name' : user_name,
-                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-                'email_hash' : str(my_hash(bytes(email, encoding='utf-8')).hex()),
+                'user_name': user_name,
+                'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash': str(my_hash(bytes(email, encoding='utf-8')).hex()),
                 'email': email
             }
         else:
             self.user_data = {
-                'user_name' : user_name,
-                'passwd_hash' : str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
-                'email_hash' : ''
+                'user_name': user_name,
+                'passwd_hash': str(my_hash(bytes(passwd, encoding='utf-8')).hex()),
+                'email_hash': ''
             }
 
         return None
 
-
     def info_fun(self):
         print('info :)')
-        
+
         # listen for datagrams from server about phonecalls
         self.socket_info.settimeout(self.TIMESOUT)
         while self.RUNNING:
@@ -84,7 +83,6 @@ class Client:
             except socket.timeout:
                 pass
 
-
     def call_send_pack(self, client_b_info: dict):
         # init connection
         print('Calling somebody')
@@ -93,8 +91,9 @@ class Client:
         mess = mess.encode('utf-8')
         time.sleep(0.5)
         print(client_b_info)
-        self.socket_call.connect((client_b_info['client_b_ip_addr'], client_b_info['client_b_ip_port'] + 1))
-        
+        self.socket_call.connect(
+            (client_b_info['client_b_ip_addr'], client_b_info['client_b_ip_port'] + 1))
+
         self.socket_call.send(mess)
 
         data = self.socket_call.recv(1024)
@@ -105,7 +104,6 @@ class Client:
         while self.BUSY:
             time.sleep(0.5)
             print('rozmowa')
-
 
     def call_get_pack(self):
         # listen for incomming connetcion
@@ -123,7 +121,6 @@ class Client:
         while self.BUSY:
             print('rozmowa')
 
-
     def get_info(self, server_public_bytes: bytes, server_info_addr: (str, int)) -> None:
         print("chyba ktos bedzie dzwonil")
         private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
@@ -132,19 +129,20 @@ class Client:
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         )
-        server_public_key = serialization.load_pem_public_key(server_public_bytes, backend=default_backend())
+        server_public_key = serialization.load_pem_public_key(
+            server_public_bytes, backend=default_backend())
         shared_key = private_key.exchange(ec.ECDH(), server_public_key)
 
         derived_key = HKDF(
             algorithm=hashes.SHA256(),
             length=32,
             salt=None,
-            info=b'handshake data', 
+            info=b'handshake data',
             backend=default_backend()
         ).derive(shared_key)
 
         aes_engine_call = AESGCM(derived_key)
-        
+
         # Got server public key
 
         # Sent self public key to server
@@ -158,20 +156,22 @@ class Client:
         print(data, "hej hej")
         code = data[:2]
         j = json.loads(data[2:].decode('utf-8').replace("'", "\""))
- 
+
         if code[1] == 0x20:
             self.BUSY = False
             to_send_bye = bytearray()
             to_send_bye.append(0x00)
             to_send_bye.append(0x20)
             nounce = os.urandom(12)
-            to_send_bye = aes_engine_call.encrypt(nounce, bytes(to_send_bye), None)
+            to_send_bye = aes_engine_call.encrypt(
+                nounce, bytes(to_send_bye), None)
             self.socket_info.sendto(nounce + to_send_bye, server_info_addr)
             print('Got BYE sent BYE')
             self.caller = None
             self.conversation_token = None
             self.socket_call.close()
-            self.socket_call = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket_call = socket.socket(
+                socket.AF_INET, socket.SOCK_STREAM)
 
         elif code[1] == 0x01:
             if self.BUSY:
@@ -179,18 +179,21 @@ class Client:
                 to_send_busy.append(0x00)
                 to_send_busy.append(0x06)
                 nounce = os.urandom(12)
-                to_send_busy = aes_engine_call.encrypt(nounce, bytes(to_send_busy), None)
-                self.socket_info.sendto(nounce + to_send_busy, server_info_addr)
+                to_send_busy = aes_engine_call.encrypt(
+                    nounce, bytes(to_send_busy), None)
+                self.socket_info.sendto(
+                    nounce + to_send_busy, server_info_addr)
                 print('Sent BUSY, PAPA')
 
                 # TODO
                 return {}
-                
+
             to_send_ringing = bytearray()
             to_send_ringing.append(0x00)
             to_send_ringing.append(0x04)
             nounce = os.urandom(12)
-            to_send_ringing = aes_engine_call.encrypt(nounce, bytes(to_send_ringing), None)
+            to_send_ringing = aes_engine_call.encrypt(
+                nounce, bytes(to_send_ringing), None)
             time.sleep(0.5)
             self.socket_info.sendto(nounce + to_send_ringing, server_info_addr)
             print("sent RINGING")
@@ -219,8 +222,7 @@ class Client:
             return None
 
         # TODO
-        return None 
-            
+        return None
 
     def send_ok(self):
         mess = bytearray()
@@ -247,9 +249,9 @@ class Client:
 
         if data[1] == 0x80:
             self.BUSY = True
-            self.thread_call_get = threading.Thread(target=self.call_get_pack, args=())
+            self.thread_call_get = threading.Thread(
+                target=self.call_get_pack, args=())
             self.thread_call_get.start()
-
 
     def send_nok(self):
         mess = bytearray()
@@ -261,7 +263,6 @@ class Client:
 
         print('Send NOK')
 
-
     def crypto_stuff(self) -> (str, int):
         private_key = ec.generate_private_key(ec.SECP384R1, default_backend())
         public_key = private_key.public_key()
@@ -269,24 +270,25 @@ class Client:
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         )
-        
-        self.socket.sendto(public_key_bytes, (self.server_addr_main, self.server_port_main))
+
+        self.socket.sendto(
+            public_key_bytes, (self.server_addr_main, self.server_port_main))
         data, SERVER_ADDR = self.socket.recvfrom(1024)
 
-        server_public_key = serialization.load_pem_public_key(data, backend=default_backend())
+        server_public_key = serialization.load_pem_public_key(
+            data, backend=default_backend())
         shared_key = private_key.exchange(ec.ECDH(), server_public_key)
         derived_key = HKDF(
             algorithm=hashes.SHA256(),
             length=32,
             salt=None,
-            info=b'handshake data', 
+            info=b'handshake data',
             backend=default_backend()
         ).derive(shared_key)
 
         self.aes_engine = AESGCM(derived_key)
 
         return SERVER_ADDR
-
 
     def send_req(self, mess: Union[bytes, bytearray] = None) -> dict:
         server_addr = self.crypto_stuff()
@@ -303,14 +305,12 @@ class Client:
 
         return j
 
-
     def sign_in(self) -> bytes:
         mess = bytearray()
         mess.append(0x03)
         mess.append(0x00)
         mess.extend(map(ord, str(self.user_data).replace("'", "\"")))
         res = self.send_req(mess=bytes(mess))
-    
 
     def log_in(self) -> dict:
         mess = bytearray()
@@ -326,18 +326,16 @@ class Client:
 
         return res
 
-
     def log_out(self) -> dict:
         mess = bytearray()
         mess.append(0x02)
         mess.append(0x00)
         mess.extend(map(ord, str({"token": self.token}).replace("'", "\"")))
         res = self.send_req(mess=bytes(mess))
-        
+
         self.ONLINE = False
         self.RUNNING = False
         return res
-
 
     def make_call(self, user_name: str) -> bytes:
         mess = bytearray()
@@ -347,7 +345,7 @@ class Client:
             "to_call": user_name,
             "token": self.token,
             "user_name": self.user_data['user_name']
-            }).replace("'", "\"")))
+        }).replace("'", "\"")))
 
         server_addr = self.crypto_stuff()
         nounce = os.urandom(12)
@@ -355,7 +353,7 @@ class Client:
 
         # sending CALLING to server
         self.socket.sendto(nounce + ct, server_addr)
-        
+
         # waiting for TRYING
         data, addr = self.socket.recvfrom(1024)
         data = self.aes_engine.decrypt(data[:12], data[12:], None)
@@ -368,7 +366,7 @@ class Client:
         else:
             return {"error": "No trying"}
 
-        self.socket.settimeout(15) # to wait for ringing
+        self.socket.settimeout(15)  # to wait for ringing
         try:
             data, addr = self.socket.recvfrom(1024)
         except socket.timeout:
@@ -400,7 +398,7 @@ class Client:
         mess = self.aes_engine.encrypt(nounce, bytes(mess), None)
         self.socket.sendto(nounce + mess, addr)
 
-        self.socket.settimeout(120) # wainting for OK or for NOK
+        self.socket.settimeout(120)  # wainting for OK or for NOK
 
         try:
             data, addr = self.socket.recvfrom(1024)
@@ -412,7 +410,7 @@ class Client:
 
         data = self.aes_engine.decrypt(data[:12], data[12:], None)
         print(data)
-        
+
         res = {}
         client_b_info = {}
         flag_ok = False
@@ -463,11 +461,11 @@ class Client:
         self.socket.sendto(nounce + mess, addr)
 
         if flag_ok:
-            self.thread_call_init = threading.Thread(target=self.call_send_pack, args=(client_b_info, ))
+            self.thread_call_init = threading.Thread(
+                target=self.call_send_pack, args=(client_b_info, ))
             self.thread_call_init.start()
 
         return res
-
 
     def send_bye(self, user_name: str) -> bytes:
         mess = bytearray()
@@ -490,7 +488,7 @@ class Client:
         data, addr = self.socket.recvfrom(1024)
 
         response = self.aes_engine.decrypt(data[:12], data[12:], None)
-        
+
         # print(response)
 
         self.BUSY = False
@@ -500,7 +498,6 @@ class Client:
         self.socket_call = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         return response
-
 
     def add_contact(self, user_name: str) -> dict:
         mess = bytearray()
@@ -512,7 +509,6 @@ class Client:
         }).replace("'", "\"")))
 
         return self.send_req(mess)
-
 
     def modify_contact(self, user_name: str, data: dict) -> dict:
         mess = bytearray()
@@ -526,7 +522,6 @@ class Client:
 
         return self.send_req(mess)
 
-
     def delete_contact(self, user_name: str) -> dict:
         mess = bytearray()
         mess.append(0x0C)
@@ -538,7 +533,6 @@ class Client:
 
         return self.send_req(mess)
 
-
     def get_contacts(self) -> dict:
         mess = bytearray()
         mess.append(0x0E)
@@ -548,7 +542,6 @@ class Client:
         }).replace("'", "\"")))
 
         return self.send_req(mess)
-
 
     def get_history(self) -> dict:
         mess = bytearray()
@@ -560,7 +553,6 @@ class Client:
 
         return self.send_req(mess)
 
-    
     def close(self) -> None:
         if self.caller:
             self.send_bye(self.caller['user_name'])
@@ -569,24 +561,25 @@ class Client:
         print('quit')
         return res
 
-
     def change_passwd_email_on_server(self, passwd: str = '', email: str = '') -> dict:
         data = {}
 
         if passwd:
-            data['new_passwd_hash'] = str(my_hash(bytes(passwd, encoding='utf-8')).hex())
+            data['new_passwd_hash'] = str(
+                my_hash(bytes(passwd, encoding='utf-8')).hex())
         if email:
-            data['new_email_hash'] = str(my_hash(bytes(email, encoding='utf-8')).hex())
+            data['new_email_hash'] = str(
+                my_hash(bytes(email, encoding='utf-8')).hex())
             data['new_email'] = email
-        
+
         if not data:
             return {
                 "status": "OK",
                 "mess": "Nothing to change"
             }
 
-        data["token"] =  self.token
-        data["email_hash"] =  self.user_data['email_hash']
+        data["token"] = self.token
+        data["email_hash"] = self.user_data['email_hash']
 
         mess = bytearray()
         mess.append(0x0A)
@@ -594,7 +587,6 @@ class Client:
         mess.extend(map(ord, str(data).replace("'", "\"")))
 
         return self.send_req(mess)
-
 
     def get_data_from_server(self) -> dict:
         mess = bytearray()
@@ -605,4 +597,3 @@ class Client:
         }).replace("'", "\"")))
 
         return self.send_req(mess)
-
